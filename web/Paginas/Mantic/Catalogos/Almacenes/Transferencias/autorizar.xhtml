@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Ajustar las cantidades de la transferencia de articulos" />
+	<ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'aplicar': {multiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'}
+			};	
+			
+    	$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.nombreAccion}')", 500);
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos.size()});
+				janal.decimals= 4;
+      });
+		</script>   
+		<style>
+			.janal-tr-diferencias {
+				background-color: #ABEBC6 !important;
+			}
+			.janal-tr-nuevo {
+				background-color: #FDF5EF !important;
+			}
+			.janal-tr-error {
+				background-color: #FF7F50 !important;
+			}
+		</style>
+	</ui:define>
+  <ui:define name="contenido">
+		<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+		<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="Articulos">
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-12">
+									<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-40, janal-wid-100, janal-wid-col-70">
+										<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:left;">
+											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.seleccionado}" value="#{null}"/>
+										</p:commandButton>
+										<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+										<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
+											<p:ajax event="change" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAutorizar.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
+										</p:inputSwitch>			
+									</p:panelGrid>	
+								</div>
+							</div>	
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
+								<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.paginator}" rows="#{manticCatalogosAlmacenesTransferenciasAutorizar.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasAutorizar.doOrdenColor(row)}">
+									<p:column class="MarAuto Responsive janal-wid-3">
+										<f:facet name="header">
+											<h:outputText value="No."/>
+										</f:facet>
+										<h:outputText value="#{index+ 1}.-"/>
+									</p:column>													
+									<p:column class="MarAuto Responsive janal-wid-10 janal-column-center">
+										<f:facet name="header">
+											<h:outputText value="No. confronta"/>
+										</f:facet>
+										<p:commandLink action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doConfronta}">
+											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.idConfronta}" value="#{row.idProveedor}"/>
+  										<h:outputText value="#{row['origen']}"/>
+										</p:commandLink>											
+									</p:column>		
+									<p:column class="MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="Código"/>
+										</f:facet>
+										<h:outputText value="#{row['codigo']}"/>
+									</p:column>		
+									<p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+										<f:facet name="header">
+											<h:outputText value="Nombre"/>
+										</f:facet>
+										<h:outputText value="#{row['nombre']}"/>
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+										<f:facet name="header">
+											<h:outputText value="Recibierón"/>
+										</f:facet>
+										<h:outputText value="#{row['cantidad']}"/>
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+										<f:facet name="header">
+											<h:outputText value="Solicitarón"/>
+										</f:facet>
+										<h:outputText value="#{row['solicitados']}"/>
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+										<f:facet name="header">
+											<h:outputText value="Diferencia"/>
+										</f:facet>
+										<h:outputText value="#{row['cuantos']}"/>
+									</p:column>		
+									<p:column class="MarAuto Responsive janal-wid-15 janal-column-center aplicar">
+										<f:facet name="header">
+											<h:outputText value="Aplicar"/>
+										</f:facet>
+										<p:selectOneMenu id="aplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" styleClass="janal-wid-88 filas janal-name-La_fila_#{index+ 1}">
+											<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAutorizar.items}" var="element" itemValue="#{element}" itemLabel="#{element.label}"/>
+										</p:selectOneMenu>	
+									</p:column>		
+ 								</p:dataTable>
+							</p:panelGrid>	
+							<p:outputLabel value="Las filas que estan en color naranja son articulos no solicitados en la transferencia, los de color verde son articulos que difieren en su cantidad" style="float: left;"/>
+						</p:tab>
+					</p:tabView>	
+				</div>
+			</div>		    
+	</div>
+  </ui:define> 
+	<ui:define name="acciones">
+    <div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doRegresar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doRegresar}" immediate="true"/>
+		</div>	
+  </ui:define>
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{null}"/>
+		</ui:include>
+  </ui:define>	
+</ui:composition>

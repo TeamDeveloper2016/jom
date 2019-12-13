@@ -1,0 +1,1221 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las vistas de KAJOOL
+-->
+<process>
+  <dml>
+    <unit id="VistaTcJanalUsuariosDto">
+      <select id="acceso">
+        select
+					tc_janal_usuarios.id_usuario, tc_mantic_personas.cuenta, 
+					tc_mantic_personas.contrasenia, tc_janal_usuarios.registro, 
+				  tc_janal_perfiles.descripcion as descripcion_perfil, 
+				  tc_janal_usuarios.id_perfil,
+					tc_janal_grupos.descripcion as descripcion_grupo, 
+				  tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, 
+				  tc_mantic_personas.id_persona, nombres, 
+				  paterno primer_apellido,
+					materno segundo_apellido, 
+				  id_tipo_sexo, tc_janal_grupos.id_grupo,
+				  tc_janal_grupos.clave as clave_grupo,
+				  tc_janal_usuarios.ultimo_acceso
+				from
+					tc_janal_usuarios
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				inner join
+					tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				where
+					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
+      </select>
+      <select id="cambioUsuario">
+        select
+					tc_janal_usuarios.id_usuario as id_key, 
+					tc_mantic_personas.cuenta, 
+					tc_mantic_personas.contrasenia, 
+					tc_janal_usuarios.registro, 
+				  tc_janal_perfiles.descripcion as descripcion_perfil, 
+				  tc_janal_usuarios.id_perfil,
+					tc_janal_grupos.descripcion as descripcion_grupo, 
+				  tc_mantic_personas.estilo, 
+					tc_janal_perfiles.id_menu, 
+				  tc_mantic_personas.id_persona, 
+					nombres, 
+				  paterno primer_apellido,
+					materno segundo_apellido, 
+					concat(nombres, ' ', paterno, ' ', materno) as nombre_completo,
+				  id_tipo_sexo, 
+					tc_janal_grupos.id_grupo,
+				  tc_janal_grupos.clave as clave_grupo,
+				  tc_janal_usuarios.ultimo_acceso
+				from
+					tc_janal_usuarios
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				inner join
+					tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				where
+					tc_janal_perfiles.descripcion = '{perfil}' and tc_janal_usuarios.activo=1
+				and 
+					tc_janal_grupos.id_grupo= {idGrupo}
+				and 
+					tc_janal_usuarios.id_usuario not in ({idUsuario})
+      </select>
+      <select id="cambioUsuarioAutentifica">
+        select
+					tc_janal_usuarios.id_usuario as id_key, 
+					tc_janal_usuarios.id_usuario, 
+					tc_mantic_personas.cuenta, 
+					tc_mantic_personas.contrasenia, 
+					tc_janal_usuarios.registro, 
+				  tc_janal_perfiles.descripcion as descripcion_perfil, 
+				  tc_janal_usuarios.id_perfil,
+					tc_janal_grupos.descripcion as descripcion_grupo, 
+				  tc_mantic_personas.estilo, 
+					tc_janal_perfiles.id_menu, 
+				  tc_mantic_personas.id_persona, 
+					nombres, 
+				  paterno primer_apellido,
+					materno segundo_apellido, 
+					concat(nombres, ' ', paterno, ' ', materno) as nombre_completo,
+				  id_tipo_sexo, 
+					tc_janal_grupos.id_grupo,
+				  tc_janal_grupos.clave as clave_grupo,
+				  tc_janal_usuarios.ultimo_acceso
+				from
+					tc_janal_usuarios
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				inner join
+					tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				inner join
+					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+				where
+					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
+      </select>
+      <select id="recuperar">
+        select
+          tc_mantic_personas.id_persona  as id_key
+        from
+		      tc_janal_usuarios
+		    inner join 
+          tc_mantic_personas on tc_janal_usuarios.id_persona=tc_mantic_personas.id_persona
+        where
+          tc_mantic_personas.cuenta='{cuenta}' and activo=1 and tc_mantic_personas.curp = '{curp}'
+      </select>
+      <select id="sucursales">           
+        select 
+          tr_mantic_empresa_personal.id_empresa_persona,
+				  tc_mantic_empresas.id_empresa,
+          tc_mantic_empresas.id_empresa_depende,
+				  tc_mantic_empresas.id_tipo_empresa,
+				  tc_mantic_empresas.nombre,
+          tc_mantic_empresas.clave,
+          tc_mantic_empresas.clave as nombre_corto,
+				  tc_mantic_empresas.titulo,
+				  tc_mantic_empresas.ticket				  
+        from 
+          tr_mantic_empresa_personal
+        inner join
+          tc_mantic_empresas on tc_mantic_empresas.id_empresa=tr_mantic_empresa_personal.id_empresa  
+        inner join 
+          tc_mantic_personas on tc_mantic_personas.id_persona=tr_mantic_empresa_personal.id_persona
+        inner join 
+          tc_janal_usuarios on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        where 
+          tc_mantic_personas.id_persona={idPersona}
+				order by
+				  tr_mantic_empresa_personal.registro
+      </select>
+     	<select id="detalleUsuarioPerfil">
+				select 					
+          tc_janal_usuarios.id_usuario,
+					tc_mantic_personas.cuenta,
+					tc_mantic_personas.contrasenia,
+					tc_janal_usuarios.registro,
+					tc_janal_perfiles.descripcion as descripcion_perfil,
+					tc_janal_usuarios.id_perfil,
+					tc_mantic_personas.id_persona,
+					tc_mantic_personas.nombres,
+					ifnull(tc_mantic_personas.paterno,'') primer_apellido,
+					ifnull(tc_mantic_personas.materno,'') segundo_apellido,					
+					tc_mantic_personas.id_tipo_sexo,										
+					tc_janal_grupos.descripcion as descripcion_grupo,					
+					tc_mantic_personas.estilo,
+					tc_janal_perfiles.id_menu,
+          tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo
+        from 					
+          tc_janal_usuarios
+        inner join
+          tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_usuarios.id_usuario= {idUsuario}
+        and
+          tc_mantic_personas.cuenta='{cuenta}'
+        and
+          tc_janal_usuarios.id_perfil= {idPerfil}
+			</select>
+			<select id="mensajes">
+        select
+          tc_janal_usuarios.id_usuario id_key,
+          concat(tc_kajool_personas.curp, tc_kajool_personas.nombres,' ',tc_kajool_personas.primer_apellido,' ',tc_kajool_personas.segundo_apellido) usuario,
+          tc_janal_perfiles.descripcion perfil, tc_janal_grupos.clave grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_kajool_empleados on tc_kajool_empleados.id_empleado= tc_janal_usuarios.id_persona
+        inner join
+          tc_kajool_personas on tc_kajool_personas.id_empleado = tc_kajool_empleados.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          curp like '{curp}%' and tc_janal_grupos.id_grupo in ({idGrupo}) and tc_janal_usuarios.id_perfil in ({idPerfil})
+			</select>
+    </unit>
+    <unit id="VistaGruposDto">
+      <select id="row">
+       select
+          tc_janal_grupos.id_grupo as id_key,
+          tc_janal_grupos.clave,
+          tc_janal_grupos.descripcion,
+          count (tc_janal_perfiles.id_perfil) perfiles
+        from
+          tc_janal_grupos
+        left join
+          tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.descripcion like '%{descripcion}%'
+        group by
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave,
+          tc_janal_grupos.descripcion
+        {sortOrder}
+      </select>
+			<select id="perfilesGrupos">
+				select
+					tc_janal_perfiles.id_perfil as id_key_perfil,
+					tc_janal_perfiles.descripcion
+				from
+					tc_janal_grupos
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				where
+					tc_janal_grupos.id_grupo = {idGrupo}
+				order by
+					tc_janal_perfiles.descripcion
+			</select>
+		</unit>
+    <unit id="VistaPerfilesDto">
+      <select id="row">
+        select
+          tc_janal_perfiles.id_perfil as id_key_perfil,
+          tc_janal_perfiles.descripcion,
+          tc_janal_perfiles.acceso,
+          count(tc_janal_usuarios.id_perfil) usuarios
+        from
+          tc_janal_perfiles
+          left join
+          tc_janal_usuarios
+        on
+          tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+        where
+          tc_janal_perfiles.id_grupo= {idGrupo}
+        and
+          tc_janal_perfiles.descripcion like '%{descripcion}%'
+        group by
+          tc_janal_perfiles.id_perfil,
+          tc_janal_perfiles.descripcion,
+          tc_janal_perfiles.acceso
+        {sortOrder}
+       </select>
+	</unit>	
+		<unit id="VistaPerfilesMenusDto">
+       <select id="row">
+				 select
+           menus.id_menu,
+           menus.descripcion,
+           menus.clave,
+           menus.nivel,
+           menus.publicar,
+           id_menu_perfil,
+           menus.id_menu_grupo,
+           ifnull(id_menu_perfil, 0) as id_seleccion
+        from
+          (select
+            tc_janal_menus.id_menu,
+            tc_janal_menus.descripcion,
+            tc_janal_menus.clave,
+            tc_janal_menus.nivel ,
+            tc_janal_menus.publicar,
+            tr_janal_menus_grupos.id_menu_grupo,
+            tr_janal_menus_grupos.id_grupo
+           from
+             tc_janal_menus
+           inner join
+             tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu and tr_janal_menus_grupos.id_grupo = {idGrupo}
+           ) menus
+        left join
+         (select
+            tr_janal_menus_perfiles.id_perfil,
+            tr_janal_menus_perfiles.id_menu_grupo,
+            tr_janal_menus_perfiles.id_menu_perfil
+          from
+            tr_janal_menus_perfiles
+          inner join tr_janal_menus_grupos on tr_janal_menus_perfiles.id_menu_grupo = tr_janal_menus_grupos.id_menu_grupo
+         )  perfiles
+        on menus.id_menu_grupo = perfiles.id_menu_grupo
+        and perfiles.id_perfil = {idPerfil} order by clave
+       </select>
+        <select id="seleccionados">
+				select
+           menus.id_menu,
+           menus.descripcion,
+           menus.clave,
+           menus.nivel,
+           id_menu_perfil,
+           menus.publicar,
+           menus.id_menu_grupo,
+           ifnull(id_menu_perfil, 0) as id_seleccion
+        from
+          (select
+            tc_janal_menus.id_menu,
+            tc_janal_menus.descripcion ,
+            tc_janal_menus.clave,
+            tc_janal_menus.nivel ,
+            tc_janal_menus.publicar,
+            tr_janal_menus_grupos.id_menu_grupo,
+            tr_janal_menus_grupos.id_grupo
+           from
+             tc_janal_menus
+           inner join
+             tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+            where
+             tr_janal_menus_grupos.id_grupo = {idGrupo}
+           ) menus
+        left join
+         (select
+            tr_janal_menus_perfiles.id_perfil,
+            tr_janal_menus_perfiles.id_menu_grupo,
+            tr_janal_menus_perfiles.id_menu_perfil
+          from
+            tr_janal_menus_perfiles
+          inner join tr_janal_menus_grupos on tr_janal_menus_perfiles.id_menu_grupo = tr_janal_menus_grupos.id_menu_grupo
+         )  perfiles
+        on menus.id_menu_grupo = perfiles.id_menu_grupo
+        where
+          perfiles.id_perfil = {idPerfil} order by clave
+       </select>
+        <select id="paginaInicial">
+          select
+               menus.id_menu id_key, menus.clave, menus.descripcion,menus.ruta, menus.nivel, menus.ispagina, tc_janal_perfiles.id_menu
+          from
+              (select
+               if(instr(tc_janal_menus.ruta,'.jsf')= 0,'0','1') ispagina,  tc_janal_menus.*
+               from tc_janal_menus) menus
+          inner join
+              tr_janal_menus_grupos on tr_janal_menus_grupos .id_menu = menus.id_menu and tr_janal_menus_grupos.id_grupo={idGrupo}
+          inner join
+              tr_janal_menus_perfiles on tr_janal_menus_perfiles.id_menu_grupo=tr_janal_menus_perfiles.id_menu_grupo and tr_janal_menus_perfiles.id_perfil = {idPerfil}
+          left join
+              tc_janal_perfiles on tc_janal_perfiles.id_menu = menus.id_menu
+          where
+              menus.ispagina=1
+					group by 
+						menus.id_menu, menus.clave, menus.descripcion,menus.ruta, menus.nivel, menus.ispagina, tc_janal_perfiles.id_menu
+          order by
+              menus.clave
+        </select>
+        <select id="paginaInicialAsignada">
+          select
+              tc_janal_perfiles.id_perfil, tc_janal_perfiles.id_menu,tc_janal_menus.descripcion, tc_janal_menus.ruta
+          from
+              tc_janal_perfiles
+          inner join
+              tc_janal_menus on tc_janal_perfiles.id_menu = tc_janal_menus.id_menu
+          where
+              tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.id_perfil={idPerfil}
+      </select>
+			<select id="menuPerfil">				
+					select
+            tc_janal_menus.*
+          from
+            tr_janal_menus_perfiles
+          inner join
+            tr_janal_menus_grupos on tr_janal_menus_perfiles.id_menu_grupo = tr_janal_menus_grupos.id_menu_grupo
+          inner join
+            tc_janal_menus on tr_janal_menus_grupos.id_menu = tc_janal_menus.id_menu
+          where
+            tr_janal_menus_perfiles.id_perfil= {idPerfil}			
+					order by
+					  clave
+			</select>
+			<select id="menuEncabezado">				
+				select
+					tc_janal_menus_encabezado.id_menu_encabezado id_menu,
+					tc_janal_menus_encabezado.*
+				from
+					tc_janal_menus_encabezado
+				inner join
+					tr_janal_menus_enc_perfil on tr_janal_menus_enc_perfil.id_menu_encabezado= tc_janal_menus_encabezado.id_menu_encabezado
+				where
+					tc_janal_menus_encabezado.publicar= {publicar}
+					and tr_janal_menus_enc_perfil.id_perfil= {idPerfil}
+				order by
+					clave
+			</select>
+     </unit>
+		<!--   Mensajes del sistema   -->
+     <unit id="VistaGruposMenusDto">
+      <select id="row">
+        select
+           tc_janal_menus.id_menu,
+           tc_janal_menus.descripcion,
+           tc_janal_menus.clave,
+           tc_janal_menus.nivel ,
+           tc_janal_menus.publicar,
+           tr_janal_menus_grupos.id_menu_grupo,
+           ifnull(tr_janal_menus_grupos.id_grupo,0)  as id_seleccion
+         from
+           tc_janal_menus
+         left join
+           tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+           and tr_janal_menus_grupos.id_grupo = {idGrupo}
+         order by tc_janal_menus.clave
+       </select>
+       <select id="seleccionados">
+				 select
+           tc_janal_menus.id_menu,
+           tc_janal_menus.descripcion,
+           tc_janal_menus.clave,
+           tc_janal_menus.nivel ,
+           tc_janal_menus.publicar,
+           tr_janal_menus_grupos.id_menu_grupo,
+           ifnull(tr_janal_menus_grupos.id_menu_grupo,0)  as id_seleccion
+         from
+           (select * from tc_janal_menus where clave like '%') tc_janal_menus
+         left join
+           tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+          where
+           id_grupo = {idGrupo} and tr_janal_menus_grupos.id_menu_grupo is not null
+         order by
+           tc_janal_menus.clave
+       </select>
+			 <select id="maxClaveMenu">
+				 select max(to_number(substr(clave,0,2)) + 1) clave from tc_janal_menus where nivel = 1
+			 </select>
+     </unit>
+     <unit id="VistaTrJanalMensajesUsuariosDto">
+       <select id="mensajesUsuario">
+         select
+           tc_janal_mensajes.id_mensaje as id_key, tc_janal_mensajes.nombre, tc_janal_mensajes.descripcion, tc_janal_mensajes.vigencia_ini, tc_janal_mensajes.vigencia_fin,
+           tr_janal_mensajes_usuarios.id_mensaje_usuario, tc_janal_mensajes.registro
+         from
+           tr_janal_mensajes_usuarios
+         inner join
+           tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
+         where
+           tr_janal_mensajes_usuarios.id_usuario={idUsuario}
+         and
+           tc_janal_mensajes.id_tipo_mensaje=5
+         order by
+           tc_janal_mensajes.registro desc
+       </select>
+       <select id="notificacion">
+         select
+					tr_janal_mensajes_usuarios.id_mensaje_usuario as id_key,
+					tr_janal_mensajes_usuarios.id_mensaje_usuario,
+					tc_janal_mensajes.descripcion,
+					tc_janal_mensajes.nombre,
+					tc_janal_mensajes.registro,
+					ifnull(tc_janal_mensajes.periodo,0) periodo,
+					ifnull(tc_janal_mensajes.periodo_repite,0) periodo_repite,
+					tc_janal_mensajes.id_prioridad, tc_janal_mensajes.fecha_repite,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) nombre_empleado,
+					tc_janal_prioridades.descripcion prioridad,
+					tc_janal_booleanos.id_booleano,
+					tc_janal_booleanos.descripcion leido
+				from
+					tr_janal_mensajes_usuarios
+				inner join
+					tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
+				inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_usuario = tr_janal_mensajes_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona        
+				inner join
+					tc_janal_prioridades on tc_janal_prioridades.id_prioridad = tc_janal_mensajes.id_prioridad
+				inner join
+					tc_janal_booleanos on tr_janal_mensajes_usuarios.id_booleano = tc_janal_booleanos.id_booleano
+				where
+					tc_janal_usuarios.id_usuario = {idUsuario}
+				and
+					tr_janal_mensajes_usuarios.id_booleano in ({idBooleano})
+				and
+					tc_janal_mensajes.id_prioridad in ({idPrioridad})
+        and
+          tc_janal_mensajes.descripcion like '%{mensaje}%'
+				and
+          (str_to_date(date_format(now(), '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        between
+          str_to_date(date_format(tc_janal_mensajes.vigencia_ini, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        and
+          str_to_date(date_format(tc_janal_mensajes.vigencia_fin, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i'))
+				{sortOrder}
+      </select>
+      <select id="contadorNoLeidos">
+        select
+          count(*) cantidad
+        from
+          tr_janal_mensajes_usuarios
+        inner join
+          tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
+        where
+          tr_janal_mensajes_usuarios.id_usuario={idUsuario} and id_booleano=2
+        and
+          (str_to_date(date_format(now(), '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        between
+          str_to_date(date_format(tc_janal_mensajes.vigencia_ini, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        and
+          str_to_date(date_format(tc_janal_mensajes.vigencia_fin, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i'))
+        order by
+          tc_janal_mensajes.registro desc
+       </select>
+     </unit>
+    <unit id="VistaTrJanalMensajesGruposDto">
+      <select id="row">
+        select
+          tc_janal_mensajes.nombre as nombre,
+          tc_janal_mensajes.descripcion as descc,
+          tc_janal_mensajes.url_seguimiento as url,
+          tc_janal_mensajes.vigencia_ini as ini,
+          tc_janal_mensajes.vigencia_fin as fin,
+          tc_janal_prioridades.descripcion as prioridad,
+          tr_janal_mensajes_grupos.id_mensaje_grupo as idMensajeGrupo,
+          tc_janal_mensajes.id_mensaje as id_key_mensaje
+        from
+          tr_janal_mensajes_grupos
+        inner join
+          tc_janal_mensajes
+        on
+          tr_janal_mensajes_grupos.id_mensaje=tc_janal_mensajes.id_mensaje
+        inner join
+          tc_janal_prioridades
+        on
+          tc_janal_mensajes.id_prioridad=tc_janal_prioridades.id_prioridad
+        where
+          tc_janal_mensajes.id_tipo_mensaje=2
+        and
+          tr_janal_mensajes_grupos.id_grupo={idGrupo}
+        and
+          tc_janal_mensajes.descripcion like '%{descripcion}%'
+        {sortOrder}
+      </select>
+    </unit>
+
+    <unit id="VistaMensajesPerfiles">
+      <select id="row">
+        select
+        tc_janal_mensajes.id_mensaje as id_key, tc_janal_grupos.descripcion, tc_janal_perfiles.descripcion descripcion_perfil, tc_janal_mensajes.descripcion descripcion_mensaje, tc_janal_mensajes.vigencia_ini, tc_janal_mensajes.vigencia_fin
+        from
+        tc_janal_mensajes
+        inner join
+        tr_janal_mensajes_perfiles on tc_janal_mensajes.id_mensaje=tr_janal_mensajes_perfiles.id_mensaje
+        inner join
+        tc_janal_perfiles on tr_janal_mensajes_perfiles.id_perfil=tc_janal_perfiles.id_perfil
+        inner join
+        tc_janal_grupos on tc_janal_perfiles.id_grupo=tc_janal_grupos.id_grupo
+        where
+        tr_janal_mensajes_perfiles.id_perfil={idPerfil}
+        {sortOrder}
+      </select>
+    </unit>
+
+    <unit id="VistaAccesoCentroTrabajo">
+      <select id="escuelasResponsable">
+          select
+            tc_kajool_escuelas.id_escuela as id_key,
+            clave, nombres, tc_kajool_escuelas.id_servicio_educativo
+          from
+            tc_kajool_escuelas
+          inner join
+            tr_kajool_responsables_esc on tr_kajool_responsables_esc.id_escuela = tc_kajool_escuelas.id_escuela
+          inner join
+            tc_kajool_empleados on tc_kajool_empleados.id_empleado = tr_kajool_responsables_esc.id_empleado
+          where
+            id_empleado={idEmpleado}
+        </select>
+        <select id="escuelaSesion">
+          select tc_kajool_escuelas.id_escuela as id_key,
+                 tc_kajool_turnos.clave as clave,
+                 tc_kajool_sostenimientos.descripcion as descripcion,
+                 tc_kajool_personas.nombres as nombres,
+                 tc_kajool_personas.primer_apellido as primerApellido,
+                 tc_kajool_personas.segundo_apellido as segundoApellido
+          from
+                 tc_kajool_escuelas
+          inner join
+            tr_kajool_responsables_esc
+                on tr_kajool_responsables_esc.id_escuela=tc_kajool_escuelas.id_escuela
+         inner join
+            tc_kajool_empleados
+                on tc_kajool_empleados.id_empleado=tr_kajool_responsables_esc.id_empleado
+        inner join
+            tc_kajool_personas
+                on tc_kajool_empleados.id_empleado=tc_kajool_personas.id_empleado
+        inner join
+            tc_kajool_turnos
+                on tc_kajool_escuelas.id_turno=tc_kajool_turnos.id_turno
+        inner  join
+            tc_kajool_sostenimientos
+                on tc_kajool_sostenimientos.id_sostenimiento=tc_kajool_escuelas.id_sostenimiento
+        </select>
+      </unit>
+			
+	 <!-- Inicio usuarios -->
+		<unit id="VistaUsuariosDto">
+			<select id="row">
+				select
+			  	tc_janal_usuarios.id_usuario as id_key_usuario,
+          tc_mantic_personas.id_persona,
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+				  if(isnull(tc_mantic_personas.nombres), ' ', tc_mantic_personas.nombres) nombres,
+					if(isnull(tc_mantic_personas.paterno), ' ', tc_mantic_personas.paterno) primer_apellido,
+					if(isnull(tc_mantic_personas.materno), ' ', tc_mantic_personas.materno) segundo_apellido,
+				  tc_janal_perfiles.descripcion desc_perfil,				
+				  tc_janal_usuarios.activo,				
+				  lower(tc_mantic_personas.cuenta) cuenta,
+          tc_mantic_personas.curp
+				from
+				  tc_janal_usuarios
+				inner join 				
+				  tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join				
+				  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona    
+				inner join
+				  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona           				
+				inner join
+				  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa           				
+				inner join
+				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
+				where
+				  {condicion}		
+				{sortOrder}
+			</select>
+			<select id="perfilUsuario">
+				select
+					tc_janal_usuarios.id_usuario as id_key,
+					concat(nombres,' ',paterno,' ',materno) nombre_completo,
+					tc_janal_perfiles.descripcion as nombre_perfil,
+					tc_mantic_personas.id_persona
+				from
+					tc_janal_usuarios
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				inner join
+					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+					tc_janal_usuarios.id_usuario= {idUsuario}
+			</select>			
+			<select id="findIdPersona">
+				select
+					tc_mantic_personas.id_persona as id_key,
+					tc_mantic_personas.id_persona,
+					tc_janal_usuarios.id_usuario,
+					tc_mantic_personas.cuenta,
+					tc_mantic_personas.contrasenia
+				from
+					tc_mantic_personas
+				inner join
+					tc_janal_usuarios on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				where
+					tc_mantic_personas.id_persona = {idPersona}
+			</select>
+		</unit>
+		<unit id="VistaDelegaPrivilegiosDto">
+			<select id="usuariosConDelega">
+				select
+					id_usuario_delega as id_key,
+					tr_janal_usuarios_delega.id_usuario,
+					tr_janal_usuarios_delega.id_empleado,
+					tr_janal_usuarios_delega.vigencia_ini,
+					tr_janal_usuarios_delega.vigencia_fin,
+					tr_janal_usuarios_delega.registro,
+					if(tr_janal_usuarios_delega.activo=1,'Activo','Desactivado') estatus,
+					tr_janal_usuarios_delega.activo,
+					tr_janal_usuarios_delega.login,
+					tr_janal_usuarios_delega.contrasenia,					
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,
+					tc_mantic_personas.nombres,
+					concat(paterno,' ',materno,' ',nombres) nombre_completo,
+					tc_janal_perfiles.descripcion nombre_perfil
+				from
+					tr_janal_usuarios_delega
+        inner join           					
+					tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
+				inner join
+				  tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				inner join
+					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+					tr_janal_usuarios_delega.id_usuario= {idUsuario}					
+				and
+					(now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)		
+				and
+					(concat(nombres,' ',primer_apellido,' ',segundo_apellido) like '%{parametro}%' or curp like '%{parametro}%' or login like '%{parametro}%')
+				{sortOrder}
+			</select>
+			<select id="usuariosDelega">
+        select
+          concat(nombres,' ',primer_apellido,' ',segundo_apellido) nombre,
+          tc_mantic_personas.cuenta
+        from
+          tc_janal_usuarios
+        inner join
+          tr_janal_usuarios_delega on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
+        inner join
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+        where
+          tr_janal_usuarios_delega.id_usuario= {idUsuario}
+        group by
+          nombre, cuenta
+			</select>
+			<select id="gruposDelegados">
+			  select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
+        inner join
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				where
+				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
+          tc_mantic_personas.cuenta = '{cuenta}' and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1
+			</select>
+			<select id="gruposDelegadosActivos">
+					select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
+        inner join
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				where
+				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
+          tc_janal_usuarios.cuenta = '{cuenta}' and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1 and
+					tc_janal_grupos.id_grupo in ({gruposActivos})
+				</select>
+				<select id="perfilesDelegados">
+					select
+						tc_janal_usuarios.id_perfil as id_key,
+						tc_janal_usuarios.id_perfil,
+						tc_janal_perfiles.descripcion, 	
+						tc_janal_perfiles.id_menu,
+						tc_janal_usuarios.id_usuario,
+						concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil
+					from
+						tc_janal_usuarios
+					inner join
+						tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario					
+          inner join
+            tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+					inner join
+						tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
+					inner join
+						tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo					
+          where 						
+						tc_mantic_personas.cuenta= '{cuenta}'
+						and tr_janal_usuarios_delega.id_usuario = {idUsuario}
+						and tc_janal_grupos.id_grupo= {idGrupo}
+						and tc_janal_usuarios.activo=1
+						and tc_janal_perfiles.acceso=1
+						and tr_janal_usuarios_delega.activo= 1
+						and (now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+          order by	
+            tc_janal_perfiles.descripcion
+			</select>			
+			<select id="detalleUsuarioDelega">
+				select
+					tr_janal_usuarios_delega.id_usuario_delega as id_key,
+          tc_janal_usuarios.id_usuario,
+					tc_mantic_personas.cuenta,
+					tc_mantic_personas.contrasenia,
+					tc_janal_usuarios.registro,
+					tc_janal_perfiles.descripcion as descripcion_perfil,
+					tc_janal_usuarios.id_perfil,
+					tc_mantic_personas.id_persona,
+					tc_mantic_personas.nombres,
+					ifnull(tc_mantic_personas.paterno,'') primer_apellido,
+					ifnull(tc_mantic_personas.materno,'') segundo_apellido,					
+					tc_mantic_personas.id_tipo_sexo,										
+					tc_janal_grupos.descripcion as descripcion_grupo,																				
+					tc_mantic_personas.estilo,
+					tc_janal_perfiles.id_menu
+        from
+					tr_janal_usuarios_delega
+        inner join
+          tc_janal_usuarios ON tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
+        inner join
+          tc_mantic_personas ON tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join
+          tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos ON tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tr_janal_usuarios_delega.id_usuario= {idUsuario}
+        and
+          tc_mantic_personas.cuenta='{cuenta}'
+        and
+          tc_janal_usuarios.id_perfil= {idPerfil}
+			</select>
+			<select id="delegaActivo">
+		      select
+			    tr_janal_usuarios_delega.id_usuario_delega id_key,
+			    tr_janal_usuarios_delega.id_usuario_delega,
+		        tr_janal_usuarios_delega.login,
+		        tr_janal_usuarios_delega.contrasenia,
+			    tr_janal_usuarios_delega.id_empleado,	
+			    tr_janal_usuarios_delega.id_usuario,						
+			    tc_janal_usuarios.id_perfil,
+			    tc_janal_usuarios.id_persona empleado_origen,
+				tc_mantic_personas.cuenta
+              from
+			    tr_janal_usuarios_delega
+               inner join
+			     tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario= tc_janal_usuarios.id_usuario
+			   inner join tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_persona
+              where
+				tr_janal_usuarios_delega.login = '{cuenta}'
+        and
+					tr_janal_usuarios_delega.activo= 1
+        and
+					(now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+			</select>
+		</unit>
+		<!-- Fin usuarios -->
+		<unit id="VistaGruposAccesoDto">
+			<select id="row">
+				select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				where
+				  tc_janal_usuarios.id_usuario= {idUsuario} and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1
+			</select>
+			<select id="gruposActivos">
+				select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				where
+				  tc_janal_usuarios.id_usuario= {idUsuario} and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1 and
+					tc_janal_grupos.id_grupo in ({gruposActivos})
+			</select>
+			<select id="perfiles">
+				 select
+					tc_janal_perfiles.id_perfil id_key,
+					tc_janal_perfiles.descripcion,
+					tc_janal_perfiles.id_menu,
+					tc_mantic_personas.cuenta,
+				  tc_janal_usuarios.id_usuario,
+	        concat(nombres,' ',materno,' ',paterno) usuario_perfil
+				 from
+					tc_janal_grupos
+				 inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				 inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
+				 inner join
+			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona			
+         where
+					tc_mantic_personas.id_persona= {idPersona}				 					
+					and tc_janal_grupos.id_grupo= {idGrupo}
+					and tc_janal_usuarios.activo=1
+					and tc_janal_perfiles.acceso=1										
+			</select>
+			<select id="perfilesPersona">
+				 select
+					tc_janal_perfiles.id_perfil id_key,
+					tc_janal_perfiles.descripcion,
+					tc_janal_perfiles.id_menu,
+					tc_mantic_personas.cuenta,
+				  tc_janal_usuarios.id_usuario,
+	        concat(nombres,' ',materno,' ',paterno) usuario_perfil
+				 from
+					tc_janal_grupos
+				 inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				 inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
+				 inner join
+			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona			
+         where
+					tc_mantic_personas.id_persona= {idPersona}				 					
+					and tc_janal_usuarios.activo=1
+					and tc_janal_perfiles.acceso=1										
+			</select>
+		</unit>
+    <unit id="VistaEntidadesMunicipiosDto">
+      <select id="row">
+         select
+          tc_kajool_codigos_postales.id_codigo_postal id_key,tc_janal_municipios.id_municipio, tc_janal_entidades.id_entidad
+         from
+          tc_kajool_codigos_postales
+         inner join
+          tc_janal_municipios on tc_janal_municipios.id_municipio = tc_kajool_codigos_postales.id_municipio
+         inner join
+          tc_janal_entidades on tc_janal_municipios.id_entidad = tc_janal_entidades.id_entidad
+         where
+          tc_kajool_codigos_postales.id_codigo_postal={idCodigoPostal}
+      </select>
+    </unit>
+		<unit id="VistaContadorAyudasDto">
+				<select id="row">
+					select
+						tc_kajool_ayudas.id_ayuda as id_Key,
+						tc_kajool_ayudas.clave,
+						count(tc_kajool_ayudas.clave) as total,
+						row_number()over(order by tc_kajool_ayudas.clave asc) renglon
+					from
+						tc_kajool_ayudas
+					inner join
+						tc_kajool_contador_ayudas
+					on
+						tc_kajool_ayudas.id_ayuda = tc_kajool_contador_ayudas.id_ayuda
+					where
+					 {condicion}
+					group by
+						tc_kajool_contador_ayudas.id_ayuda, tc_kajool_ayudas.id_ayuda, tc_kajool_ayudas.clave
+				</select>
+			</unit>
+			<unit id="VistaIndicadoresDirectivos">												
+				<select id="indicadoresGrupos">
+					select
+						tc_janal_grupos.id_grupo id_key_grupo,
+						tc_janal_grupos.clave,
+						count(tc_janal_definiciones_avances.id_definicion_avance) total
+					from
+						tc_janal_grupos
+					left join
+						tc_janal_definiciones_avances on tc_janal_definiciones_avances.id_grupo= tc_janal_grupos.id_grupo
+					group by
+						tc_janal_grupos.id_grupo, tc_janal_grupos.clave
+					{sortOrder}
+				</select>				
+			</unit>
+			
+		<unit id="VistaAvanceIndicadores">
+			<insert id="executeDetallesAvances">
+				insert into tr_detalles_avances (id_detalle_avance, id_bitacora_avance, total, porcentaje, id_organizacion, id_entidad, id_municipio, id_organizacion_grupo, id_campo, nivel)
+					select
+						seq_tr_detalles_avances.NEXTVAL,
+            {idBitacoraAvance},
+            {nombreEstatus},
+            porcentaje_{nombreEstatus},
+            ifnull(id_organizacion, 100),
+            ifnull(id_entidad, 1),
+            ifnull(id_municipio, 1),
+            ifnull(id_organizacion_grupo, 1), estatus_{nombreEstatus}, {nivel}
+					from
+						{tablaTemporal}
+					where
+						{condicion}
+			</insert>
+		</unit>
+		
+		<unit id="VistaGruposPrivilegiosPerfilesDto">		
+			<select id="perfilesGrupo">
+				select
+					tc_janal_perfiles.id_perfil as id_key_perfil,
+					tc_janal_perfiles.descripcion
+				from
+					tc_janal_grupos
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				where
+					tc_janal_grupos.id_grupo= {idGrupo}
+				order by
+					tc_janal_perfiles.descripcion
+			</select>
+		</unit>	
+				
+    <unit id="VistaPerfilesMenusEncabezadoDto">
+      <select id="row">
+        select
+          tr_janal_menus_enc_perfil.id_menu_enc_perfil id_key, tr_janal_menus_enc_perfil.id_perfil, tc_janal_menus_encabezado.id_menu_encabezado, tc_janal_menus_encabezado.clave,
+          tc_janal_menus_encabezado.descripcion, tc_janal_menus_encabezado.nivel, ifnull(tr_janal_menus_enc_perfil.id_menu_encabezado,0) id_seleccion
+        from
+            tc_janal_menus_encabezado
+        left join
+            tr_janal_menus_enc_perfil on tr_janal_menus_enc_perfil.id_menu_encabezado =tc_janal_menus_encabezado.id_menu_encabezado and tr_janal_menus_enc_perfil.id_perfil={idPerfil}
+         order by
+           tc_janal_menus_encabezado.clave
+      </select>
+      <select id="seleccionados">
+        select
+          tr_janal_menus_enc_perfil.id_menu_enc_perfil id_key, tr_janal_menus_enc_perfil.id_perfil, tc_janal_menus_encabezado.id_menu_encabezado, tc_janal_menus_encabezado.clave,
+          tc_janal_menus_encabezado.descripcion, tc_janal_menus_encabezado.nivel, ifnull(tr_janal_menus_enc_perfil.id_menu_encabezado,0) id_seleccion
+        from
+         tc_janal_menus_encabezado
+        left join
+         tr_janal_menus_enc_perfil on tr_janal_menus_enc_perfil.id_menu_encabezado =tc_janal_menus_encabezado.id_menu_encabezado
+        where
+         tr_janal_menus_enc_perfil.id_perfil={idPerfil} and tr_janal_menus_enc_perfil.id_menu_encabezado is not null
+      </select>
+    </unit>
+    <unit id="VistaInformacionDb">
+      <select id="descripcion">
+        select version() as descripcion
+      </select>
+    </unit>
+		<unit id="VistaMantenimientoPerfilesDto">
+			<select id="row">
+				select
+				 tc_janal_perfiles.id_perfil as id_key_perfil,tc_janal_perfiles.descripcion,count(tc_janal_usuarios.id_perfil) usuarios
+				from
+				 tc_janal_perfiles
+        left join
+          tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+				  tc_janal_perfiles.id_grupo={idGrupo}
+				group by
+				  tc_janal_perfiles.id_perfil, tc_janal_perfiles.descripcion
+			</select>
+
+			<select id="filtroDescripcion">
+        select
+				 tc_janal_perfiles.id_perfil as id_key_perfil,tc_janal_perfiles.descripcion,  count(tc_janal_usuarios.id_perfil) usuarios
+				from
+				 tc_janal_perfiles
+        left join
+          tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+				    tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.descripcion like  '%{descripcion}%'
+				group by
+				  tc_janal_perfiles.id_perfil,tc_janal_perfiles.descripcion				
+			</select>
+				
+			<select id="filtroMantenimientoPerfilesDescripcion">
+				select
+					tc_janal_perfiles.id_perfil as id_key_perfil,
+					tc_janal_perfiles.descripcion as nombre,
+					tc_janal_perfiles.acceso,
+					count(tc_janal_usuarios.id_perfil) usuarios
+				from
+					tc_janal_perfiles
+        left join
+          tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+				  tc_janal_perfiles.id_grupo={idGrupo}
+				group by
+				  tc_janal_perfiles.id_perfil,
+          tc_janal_perfiles.acceso,
+          tc_janal_perfiles.descripcion		
+			</select>
+				
+			<select id="filtroOpcionMenu">
+				select
+				rownum,tc_janal_menus.*
+				from
+				tc_janal_menus
+				inner join
+				tr_modulos_grupos  on tc_janal_menus.id_menu=tr_modulos_grupos.id_menu
+				inner join
+				tr_modulos_perfiles on tr_modulos_perfiles.id_modulo_grupo=tr_modulos_grupos.id_modulo_grupo
+				where
+				{condicion}
+				order by
+				tc_janal_menus.clave
+			</select>
+			<select id="jerarquiaMostrarDisponibles">
+				select
+					tc_janal_perfiles.id_perfil id_key_perfil, tc_janal_perfiles.id_grupo, tc_janal_perfiles.descripcion, acceso
+				from
+					tc_janal_perfiles
+				where
+					id_grupo= {idGrupo}
+				and
+					id_perfil  not in  (
+						select
+							tr_janal_perfiles_jerarquias.id_perfil_alta
+						from
+							tr_janal_perfiles_jerarquias where id_perfil={idPerfil} )
+			</select>
+			<select id="jerarquiaMostrarAsignados">
+				select
+					tc_janal_perfiles.id_perfil id_key_perfil, tc_janal_perfiles.descripcion
+				from
+					tr_janal_perfiles_jerarquias
+				inner join
+				  tc_janal_perfiles on tr_janal_perfiles_jerarquias.id_perfil_alta = tc_janal_perfiles.id_perfil
+				where
+					tr_janal_perfiles_jerarquias.id_perfil ={idPerfil}
+				order by
+					tr_janal_perfiles_jerarquias.orden
+			</select>
+			<select id="jerarquiaMostrarAsignadosPersona">
+				select
+					tc_janal_perfiles.id_perfil id_key_perfil, 
+					tc_janal_perfiles.descripcion
+				from
+					tr_janal_perfiles_jerarquias
+				inner join
+				  tc_janal_perfiles on tr_janal_perfiles_jerarquias.id_perfil_alta = tc_janal_perfiles.id_perfil
+				where
+					tr_janal_perfiles_jerarquias.id_perfil ={idPerfil}
+				and 
+					tc_janal_perfiles.id_perfil not in (select id_perfil from tc_janal_usuarios where id_persona={idPersona})
+				order by
+					tr_janal_perfiles_jerarquias.orden
+			</select>
+			<select id="paginaInicial">
+				select
+					tc_janal_perfiles.id_menu, menus.id_menu id_key, menus.clave, menus.des,menus.ruta, menus.nivel, menus.ispagina
+				from
+					(select
+							decode(instr(tc_janal_menus.ruta,'.jsf'),'0','0','1') ispagina,  tc_janal_menus.*
+					 from tc_janal_menus) menus
+				inner join
+					tr_modulos_grupos on tr_modulos_grupos.id_menu = menus.id_menu and tr_modulos_grupos.id_grupo={idGrupo}
+				inner join
+					tr_modulos_perfiles on tr_modulos_perfiles.id_modulo_grupo=tr_modulos_grupos.id_modulo_grupo and tr_modulos_perfiles.id_perfil = {idPerfil}
+				left join
+					tc_janal_perfiles on tc_janal_perfiles.id_menu = menus.id_menu
+				where
+					menus.ispagina=1
+				order by
+					menus.clave
+			</select>
+			<select id="paginaInicialAsignada">
+				select
+					tc_janal_perfiles.id_perfil, tc_janal_perfiles.id_menu,tc_janal_menus.des, tc_janal_menus.ruta
+				from
+					tc_janal_perfiles
+				inner join
+					tc_janal_menus on tc_janal_perfiles.id_menu = tc_janal_menus.id_menu
+				where
+					tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.id_perfil={idPerfil}
+			</select>
+		</unit>
+    <unit id="VistaContadoresBienvenidaDto">
+      <select id="nacional">
+        select
+          id_key, 
+          sum(admin_encuesta) admin_encuesta,
+          sum(gerente) gerente,
+          sum(vendedor) vendedor,
+          sum(cajero) cajero,
+          (sum(admin_encuesta) + sum(gerente) + sum(vendedor) + sum(cajero)) total
+        from(
+          select
+            tc_janal_proyectos.id_grupo as id_key,
+            case when tc_janal_perfiles.id_perfil=1 then 1 else 0 end admin_encuesta,
+            case when tc_janal_perfiles.id_perfil=2 then 1 else 0 end gerente,
+            case when tc_janal_perfiles.id_perfil=3 then 1 else 0 end vendedor,
+            case when tc_janal_perfiles.id_perfil=4 then 1 else 0 end cajero
+          from 
+            tc_janal_proyectos
+          inner join 
+            tc_janal_perfiles on tc_janal_proyectos.id_grupo = tc_janal_perfiles.id_grupo
+          inner join 
+            tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil          
+          where 
+            tc_janal_proyectos.id_grupo= {idGrupo}) principal
+      </select>
+      <select id="estatal">
+        select
+          id_key, 
+          sum(admin_encuesta) admin_encuesta,
+          sum(admin) admin,
+          sum(resp_estatal) resp_estatal,
+          sum(consultor) consultor,
+          sum(capturista) capturista,
+          (sum(admin)+
+            sum(resp_estatal)+sum(consultor)+
+            sum(capturista)) total
+        from(
+          select
+            tc_janal_proyectos.id_grupo as id_key,
+            case when tc_janal_perfiles.id_perfil=1 then 1 else 0 end admin_encuesta,
+            case when tc_janal_perfiles.id_perfil=2 then 1 else 0 end admin,
+            case when tc_janal_perfiles.id_perfil=3 then 1 else 0 end resp_estatal,
+            case when tc_janal_perfiles.id_perfil=5 then 1 else 0 end consultor,
+            case when tc_janal_perfiles.id_perfil=4 then 1 else 0 end capturista
+          from 
+            tc_janal_proyectos
+          inner join 
+            tc_janal_perfiles on tc_janal_proyectos.id_grupo = tc_janal_perfiles.id_grupo
+          inner join 
+            tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+          where 
+            tc_janal_proyectos.id_grupo= {idGrupo} 
+      </select>      
+    </unit>   
+    <unit id="VistaRespaldosBdDto">
+      <select id="respaldos">
+        select 
+          tc_mantic_respaldos.id_respaldo as id_key,
+          tc_mantic_respaldos.*,
+          concat(tc_mantic_personas.nombres, ' ' , tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
+        from 
+          tc_mantic_respaldos 
+        inner join 
+          tc_mantic_personas on tc_mantic_respaldos.id_usuario = tc_mantic_personas.id_persona 
+        where 
+          {condicion}
+        {sortOrder}
+      </select>      
+    </unit>     		
+  </dml>
+</process>

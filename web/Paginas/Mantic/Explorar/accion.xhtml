@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/pedidos/filtro.xhtml">
+	<ui:param name="backingPedido" value="#{manticExplorarAccion}" />
+	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />	
+	<ui:param name="atributoPedidoNombre" value="#{manticExplorarAccion.attrs.nombre}" />
+	<ui:param name="atributoPedidoHidden" value="#{manticExplorarAccion.attrs.nombreHidden}" />
+	<ui:param name="atributoPedidoCount" value="#{manticExplorarAccion.attrs.pedidoCount}" />	
+	<ui:param name="titulo" value="Detalle del articulo"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				codigo: {validaciones: 'requerido', mascara: 'libre'}
+			};
+			$(document).ready(function () {
+				$('#source-image').attr('href', $('#icon-image').attr('src'));
+			});
+		</script>   
+		<style type="text/css">
+			.ui-treetable table {
+				table-layout: fixed
+			}
+			.janal-letter-capitalized {
+				text-transform: uppercase;
+			}
+		</style>		
+	</ui:define>
+	<ui:define name="contenido">
+		<p:commandButton id="replace" action="#{manticExplorarAccion.doBusqueda}" process="@this" onstart="return janal.bloquear();" style="display:none"/>
+		<p:focus context="cantidad"/>
+		<p:defaultCommand target="tabla"/>
+		<h:panelGrid columns="2" class="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">
+			<h:panelGrid columns="1" class="janal-wid-100">
+				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+						</div>	
+					</div>	
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">	
+								<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
+									<a id="source-image" data-magnify="gallery" data-caption="#{manticExplorarAccion.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+										<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="305" height="250" stream="false" style="cursor:zoom-in;"/>
+									</a>	
+								</p:panel>
+								<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
+									<p:panelGrid columns="1" layout="grid" styleClass="janal-column-left janal-wid-100-txt">		
+										<p:outputLabel value="#{manticExplorarAccion.attrs.articulo.propio} | #{manticExplorarAccion.attrs.articulo.nombre}" style="font-size: x-large"/>
+										<p:rating value="3" readonly="true" />
+										<p:separator/>
+										<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-17 janal-column-left, janal-wid-100-txt janal-column-left">
+											<p:outputLabel value="Precio sugerido: " style="font-weight: bold !important"/>
+											<p:outputLabel value=" $ #{manticExplorarAccion.attrs.articulo.menudeo}" styleClass="janal-wid-96 filas"/>
+											<p:outputLabel value="Precio: " style="font-weight: bold !important"/>
+											<p:outputLabel value=" $ #{0}" styleClass="janal-wid-96 filas janal-precio-azul"/>
+											<p:outputLabel value="Ahorras: " style="font-weight: bold !important"/>
+											<p:outputLabel value=" $ #{0}" styleClass="janal-wid-96 filas janal-precio-rojo"/>
+											<p:outputLabel value="Descripción: " style="font-weight: bold !important"/>
+											<p:outputLabel value="#{manticExplorarAccion.attrs.articulo.descripcion}" styleClass="janal-wid-96 filas"/>
+										</p:panelGrid>
+										<p:spacer width="10px"/>
+										<p:outputLabel value="Especificaciones técnicas" style="font-size: x-large"/>
+										<p:separator/>										
+											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-17 janal-column-left, janal-wid-100-txt janal-column-left">
+												<c:forEach items="#{manticExplorarAccion.attrs.especificaciones}" var="prop" varStatus="index">
+													<p:outputLabel value="#{prop.nombre}" style="font-weight: bold !important"/>
+													<p:outputLabel value="#{prop.valor}" styleClass="janal-wid-96 filas"/>											
+												</c:forEach>
+											</p:panelGrid>											
+									</p:panelGrid>
+								</p:panel>	
+							</p:panelGrid>	
+						</div>		
+					</div>							
+				</div>				
+			</h:panelGrid>
+			<h:panelGrid columns="1" class="janal-wid-100" columnClasses="janal-wid-100">
+				<p:outputLabel for="subTotal" value="Sub total: " styleClass="janal-wid-100-txt"/>
+				<p:inputNumber id="subTotal" value="#{manticExplorarAccion.attrs.subTotal}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
+				<p:outputLabel for="total" value="Total: " styleClass="janal-wid-100-txt"/>
+				<p:inputNumber id="total" value="#{manticExplorarAccion.attrs.total}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
+				<p:separator/>
+				<p:spacer height="10px"/>
+				<p:outputLabel for="cantidad" value="Cantidad: " styleClass="janal-wid-100-txt"/>
+				<p:inputNumber id="cantidad" value="#{manticExplorarAccion.attrs.cantidad}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>					
+				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this cantidad" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>												
+				<p:separator/>
+				<p:commandButton id="cancelar" value="Seguir comprando ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
+				<p:spacer height="45px"/>				
+			</h:panelGrid>			
+		</h:panelGrid>				
+		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
+	</ui:define>	
+</ui:composition>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Por favor, escriba el importe del abona a caja"/>
+	<ui:define name="librerias">
+		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>		
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+        'contenedorGrupos\\:importe' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+        'contenedorGrupos\\:concepto': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+			};			
+			
+    	$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticVentasCajaCierresAbonos.attrs.nombreAccion}')", 500);
+      });
+			
+			function executeReturn(cons){
+				janal.alert('Se generó el abono de efectivo, con consecutivo: ' + cons);								
+				$('#cancelar').click();
+			};
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">		
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+						<p:tab title="General">
+							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+     								<p:outputLabel for="idEmpresas" value="Sucursal:"/>
+									</div>	
+									<div class="ui-grid-col-11">
+										<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresAbonos.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+											<p:ajax event="change" listener="#{manticVentasCajaCierresAbonos.doLoadCajas}" process="@this" update="idCajas"/>
+											<f:selectItems value="#{manticVentasCajaCierresAbonos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.clave}"/>
+											</p:column>   
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+										</p:selectOneMenu>
+  	  						</div>	
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel for="idCajas" value="Caja:"/>
+									</div>
+									<div class="ui-grid-col-11">
+										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAbonos.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+											<f:selectItems value="#{manticVentasCajaCierresAbonos.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.clave}"/>
+											</p:column>   
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+											<p:column styleClass="janal-column-right" headerText="Limite">
+												<h:outputText value="#{manticVentasCajaCierresAbonos.doDecimalSat(item.limite)}"/>
+											</p:column>   
+										</p:selectOneMenu>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel for="importe" value="Importe:"/>
+									</div>
+									<div class="ui-grid-col-11">
+										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.attrs.importe}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:importe'), '0');"/>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:spacer height="5px"/>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:outputLabel for="concepto" value="Concepto:"/>
+        						<p:inputTextarea id="concepto" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAbonos.attrs.concepto}"/>
+									</div>		
+								</div>	
+							</div>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<svg id="barcode" style="display: none"></svg>	
+		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasCajaCierresAbonos.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaCierresAbonos.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAbonos.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAbonos.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
+		</div>		
+	</ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>
+</ui:composition>
+

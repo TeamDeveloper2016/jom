@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">	
+	<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryPreciosJs}"/>
+	<h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+	<h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />			
+	<script type="text/javascript">
+		function setActualVal() {
+			var val = $('#nombre_input').val();
+			$('#hidenValCriterio').val(val);
+		} // setActualVal
+
+		function updateCountVal(val) {
+			$('#contadorCriterio').text(val);
+		} // updateCountVal
+	</script>			
+	<style>
+		.janal-faltantes-top {
+			margin-top: -6px;
+		}
+		.ui-datatable tr.ui-state-highlight,
+		.ui-datatable tr.ui-state-hover {
+			background-color: #9EB3BB;
+		}
+		.janal-fija-componente{			
+			overflow-y: hidden;
+			position: fixed;
+			width: 100% !important;
+			background: white;
+		}
+	</style>	  	      
+	<div class="ui-grid ui-grid-responsive ui-panel-title janal-fija-componente" style="overflow-y:hidden;height: 44px !important; padding-top: 5px !important;">
+		<div class="ui-grid-row janal-grid-row">
+			<div class="ui-grid-col-2" style="text-align: right !important; padding-top: 7px !important">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12">
+						<p:outputLabel for="nombre" value="Buscar:" styleClass="janal-wid-100-txt alinear-derecha" style="font-weight: bold !important; padding-right: 5px !important"/>
+					</div>
+				</div>	
+			</div>
+			<div id="collapse-content" class="ui-grid-col-12">				
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12">
+						<h:inputHidden id="hidenValCriterio" value="#{atributoPedidoHidden}"/>
+						<p:autoComplete id="nombre" var="custom" placeholder="Ejemplo: Zapatos, Pantalones" itemLabel="#{custom.nombre}" styleClass="key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{atributoPedidoNombre}" completeMethod="#{backingPedido[eventoPedidoAutocompletar]}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" style="width: 100% !important;" onkeyup="setActualVal();">
+							<p:ajax event="itemSelect" process="@this hidenValCriterio" oncomplete="$('#replace').click();"/>							
+						</p:autoComplete>	
+					</div>
+				</div>			
+			</div>
+			<div class="ui-grid-col-2" style="text-align: left !important;">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12">
+						<p:commandButton icon="fa fa-search" process="@this nombre hidenValCriterio" update="tabla" onstart="janal.bloquear();setActualVal();" oncomplete="$('#replace').click();"/>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>	
+	<p:spacer height="40px"/>				
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 janal-fija-componente">    
+		<p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
+		<div id="layout-header" class="Unselectable fontRegular janal-top-menu">
+			<ul id="sm-topmenu" class="layout-header-widgets white Fs12" style="right: 30px !important">					
+				<li class="Fleft BordRadHalf TexAlCenter" title="Ir a carrito de pedidos." style="width: 30px !important;height: 30px !important;">
+					<a href="/MANTIC/Paginas/Mantic/Explorar/detalle.jsf" class="janal-text-white Unselectable">
+						<i class="fa fa-shopping-cart fa-lg"></i>
+						<span id="contadorCriterio" class="alertBubble BordRad5 Fs12">#{atributoPedidoCount}</span>
+						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
+							<li class="Animated05">								
+								<i class="fa fa-gg fa-1x janal-text-one-line"></i>
+							</li>
+						</ul>    	
+						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs12">
+							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+						</ul>
+					</a>
+				</li>
+				<li class="Fleft BordRadHalf TexAlCenter" title="Mis pedidos." style="width: 30px !important;height: 30px !important;">
+					<a href="/MANTIC/Paginas/Mantic/Explorar/listado.jsf" class="janal-text-white Unselectable">
+						<i class="fa fa-file-text-o fa-lg"></i>						
+						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
+							<li class="Animated05">								
+								<i class="fa fa-gg fa-1x janal-text-one-line"></i>
+							</li>
+						</ul>    	
+						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs12">
+							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+						</ul>
+					</a>
+				</li>
+				<li class="Fleft BordRadHalf TexAlCenter" title="Cerrar sesión." style="width: 30px !important;height: 30px !important;">
+					<a href="/MANTIC/Exclusiones/salir.jsf" class="janal-text-white Unselectable">
+						<i class="fa fa-power-off fa-lg"></i>
+						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
+							<li class="Animated05">								
+								<i class="fa fa-gg fa-1x janal-text-one-line"></i>
+							</li>
+						</ul>    	
+						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs12">
+							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+						</ul>
+					</a>
+				</li>
+			</ul>
+		</div>		
+		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header Responsive100" style="display: -webkit-box; margin-right: 10px;">
+			<h:panelGrid id="iktan-slide-menu">
+			</h:panelGrid>  
+			<span class="ui-panel-title Fs18 lg-pantalla">
+				#{titulo} 
+			</span>
+			<span class="ui-panel-title Fs16 xs-pantalla">
+				#{kajoolUtilAplicacion.toTitle(titulo, 35)}
+			</span>
+		</div>
+		<div class="janal-icon-ajax">
+			<p:ajaxStatus style="width:16px; height:16px;">
+				<f:facet name="start">
+					<i class="fa fa-spinner fa-spin fa-lg"/>
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</div>
+	</div>	
+	<p:spacer height="40px"/>				
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{kajoolUsuariosAccion.attrs.titulo}"  />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      //<![CDATA[
+      Janal.Control.fields = {
+        'contenedorGrupos\\:tipoPerfil' : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:persona'    : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:nombres'    : {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:materno'    : {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:paterno'    : {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:contrasenia': {validaciones: 'requerido|igual-a({"cual": "contenedorGrupos:confirmar"})', mascara: 'libre'},
+        'contenedorGrupos\\:confirmar'  : {validaciones: 'requerido|igual-a({"cual": "contenedorGrupos:contrasenia"})', mascara: 'libre'}
+      };
+      //]]>
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">
+          <p:tabView id="contenedorGrupos">
+            <p:tab title="General">
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+                <p:outputLabel for="persona"  value="Persona:"/>
+                <p:selectOneMenu  id="persona" value="#{kajoolUsuariosAccion.criteriosBusqueda.persona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kajoolUsuariosAccion.attrs.nuevo}">
+                  <p:ajax event="change" process="@this" update="@(.information)" listener="#{kajoolUsuariosAccion.doBuscar}"/>
+                  <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+                  <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
+                  <p:column>
+                    <h:outputText value="#{item.nombres}"/>
+                  </p:column>                
+                  <p:column>
+                    <h:outputText value="#{item.paterno}"/>
+                  </p:column>                
+                  <p:column>
+                    <h:outputText value="#{item.materno}"/>
+                  </p:column>                
+                </p:selectOneMenu>
+                <p:outputLabel for="tipoPerfil" value="Perfil:"/>
+                <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="information janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                  <p:column>
+                    <h:outputText value="#{item.descripcion}"/>
+                  </p:column>                
+                </p:selectOneMenu>
+                <p:outputLabel for="nombres" value="Nombres:"/>                   
+                <p:inputText id="nombres" readonly="true" styleClass="information janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.nombres}"/>
+                <p:outputLabel for="paterno" value="Apellido paterno:"/>                   
+                <p:inputText readonly="true" id="paterno"  styleClass="information janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.paterno}"/>
+                <p:outputLabel for="materno" value="Apellido materno:"/>                   
+                <p:inputText id="materno" readonly="true" styleClass="information janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.materno}"/>
+								<p:spacer/><p:separator/>
+                <p:outputLabel for="cuenta" value="Cuenta:"/>
+                <p:inputText  id="cuenta" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.cuenta}" styleClass="information janal-wid-100-txt"/>
+                <p:outputLabel for="contrasenia" value="Contraseña:"/>
+								<p:panelGrid columns="2" styleClass="information janal-wid-100" columnClasses="janal-wid-98, janal-wid-2">								
+                  <p:password id="contrasenia" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true"/>
+									<div class="information" title="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" style="float: right; display: #{kajoolUsuariosAccion.lockField? 'none': ''}"><i class="fa fa-fw fa-eye-slash"/></div>
+								</p:panelGrid>	
+                <p:outputLabel for="confirmar" value="Confirmar:"/>
+                <p:password id="confirmar" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.confirmar}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true"/>
+              </p:panelGrid>              
+            </p:tab>						
+            <p:tab title="Observaciones">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                <p:inputTextarea id="observaciones" styleClass="information janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.observaciones}"/>  
+              </p:panelGrid>
+            </p:tab>
+          </p:tabView>
+        </div>
+      </div>
+    </div>		
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar contenedorGrupos:persona contenedorGrupos:tipoPerfil"/> 
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this @(.information)" update="@(.information)" actionListener="#{kajoolUsuariosAccion.doAceptar}"  oncomplete="janal.desbloquear()" onstart="return janal.execute();"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kajoolUsuariosAccion.doCancelar}" ajax="false"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this @(.information)" update="@(.information)" action="#{kajoolUsuariosAccion.doAceptar}" onstart="return janal.execute();" ajax="false"/>
+      <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{kajoolUsuariosAccion.doCancelar}" ajax="false"/>
+    </div>		
+  </ui:define>
+</ui:composition>

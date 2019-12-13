@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+								template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Bienvenido" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
+    <h:outputScript library="janal" name="highcharts/js/highcharts.js"/>    
+    <script type="text/javascript">
+    </script>
+    <style type="text/css">     
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <!-- SECTION 1 -->
+		<div class="Container100">
+      <div class="ContainerIndent">
+				<div class="Container100 Responsive">					
+					<div class="janal-content-center">						
+						<p:panelGrid columnClasses="janal-column-center">
+							<i class="icon-user-2 Fs100 Wid100 hardblue TexAlCenter janal-content-center" style="float: right"></i>							
+							<div class="Fs24 MarTop10 Wid100 janal-column-center">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
+							<div class="Fs12 Wid100 janal-column-center">Tu tienes <span class="red">#{kajoolBienvenida.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
+							<div class="EmptyBox10"></div>
+							<p:separator styleClass="Wid100"/>
+							<div class="EmptyBox10"></div>
+							<div class="Fs16 janal-column-center">
+								<a href="#{kajoolBienvenida.attrs.pathConfiguracion}" class="DispInlBlock Fs16 MarRight20 janal-colum-left"><i class="icon-cog-alt hardblue"> Configuración</i></a>
+								<a href="#{kajoolBienvenida.attrs.pathCaptura}" class="DispInlBlock Fs16 MarRight20 janal-colum-right"><i class="icon-mail hardblue"> Buzón (0)</i></a>
+								<a href="#{kajoolBienvenida.attrs.pathMensajes}" class="DispInlBlock Fs16 MarRight20 janal-column-center"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolBienvenida.attrs.mensajesNoLeidos})</i></a>								
+							</div>
+							<div class="EmptyBox10"></div>
+							<p:separator styleClass="Wid100"/>
+							<div class="EmptyBox10"></div>
+							<span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
+							<pe:tooltip for="@(.janal-help-1)" showEvent="click">
+								<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
+							</pe:tooltip>
+							<i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
+							<i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
+							<div class="EmptyBox10"></div>              
+						</p:panelGrid>
+					</div>
+				</div>
+			</div>
+		</div>
+    <div class="Container100">
+      <div class="ContainerIndent">
+				<div class="Container100 Responsive">					
+					<div class="janal-content-center">
+						
+					</div>										
+				</div>
+			</div>
+		</div>					
+  </ui:define>
+</ui:composition>

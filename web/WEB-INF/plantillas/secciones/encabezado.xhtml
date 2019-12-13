@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:pe="http://primefaces.org/ui/extensions">	
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryPreciosJs}"/>
+    <h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
+		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
+		<script type="text/javascript">
+    	$(document).ready(function() {
+				if(#{empty janalCleanFlash})
+				  janalCleanFlash();
+			});
+			
+			$(function() {
+				janal.fecha();
+				$('#banner').addClass('ui-panelgrid');
+				$('#banner').addClass('ui-widget');
+				$('#banner tr:eq(0)').addClass('ui-widget-content');
+			});
+		</script>
+		<style>
+			.janal-faltantes-top {
+				margin-top: -6px;
+			}
+			.ui-datatable tr.ui-state-highlight,
+			.ui-datatable tr.ui-state-hover {
+			  background-color: #9EB3BB;
+			}
+		</style>	
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-g ui-grid-row janal-grid-row">
+			<div class="ui-g-1 janal-content-center janal-column-center">
+				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
+					<p:graphicImage library="janal" name="img/sistema/logo.svg" styleClass="janal-logo-mini" width="35"/>
+				</p:commandLink>	
+			</div>	
+			<div class="ui-g-11 janal-content-center">
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-10 janal-content-center">
+  		  		<h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+	  		  	<h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+					</div>
+					<div class="ui-g-2 janal-column-right">
+      		  <span class="version lg-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong>Ayuda</span>
+      		  <span class="version xs-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong></span>
+					</div>  
+				</div>	
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-4 janal-content-center">
+						<span id="reloj" class="fecha lg-pantalla"></span>
+						<span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+					</div>
+					<div class="ui-g-4 janal-content-center margin-desarrollo" style="text-align: center;">
+						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+					</div>
+					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+					</div>
+				</div>	
+			</div>
+		</div>	
+	</div>
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
+    <h:form prependId="false" class="janal-padding-cero">
+      <p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
+		  <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
+		  <ui:include src="/WEB-INF/plantillas/secciones/calculadora.xhtml"/>
+		</h:form>
+		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
+			<h:panelGrid id="iktan-slide-menu">
+				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
+					<i class="fa fa-lg icon-menu-1" style="color: white"/>
+				</a>
+			</h:panelGrid>  
+			<span class="ui-panel-title Fs18 lg-pantalla">
+				#{titulo}
+			</span>
+			<span class="ui-panel-title Fs16 xs-pantalla">
+				#{kajoolUtilAplicacion.toTitle(titulo, 35)}
+			</span>
+		</div>
+		<div class="janal-icon-ajax">
+			<p:ajaxStatus style="width:16px; height:16px;">
+				<f:facet name="start">
+					<i class="fa fa-spinner fa-spin fa-2x"/>
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</div>
+	</div>
+  <p:notificationBar id="lockNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
+      <h:outputText value="Aplicaci&oacute;n MANTIC" styleClass="Fs20"/>
+      <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>
+  <p:notificationBar id="cajaNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="retiroEfectivo" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('retiroEfectivo').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-250, janal-wid-70" style="background-color: transparent !important;">
+      <h:outputText value="&lt;br/&gt;Cajas que excenden el limite de efectivo permitido:" styleClass="Fs20" escape="false"/>
+      <h:outputText value="#{kajoolAccesoAlerta.checkCaja}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>
+	<p:ajaxExceptionHandler type="java.lang.RuntimeException" update="janalGlobalException" onexception="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'janal.forward();': 'PF(\'exceptionGlobalDialog\').show();'}" />
+	<h:form prependId="false">
+		<pe:remoteCommand name="executeGlobalException" actionListener="#{janalBackingPage[janalEventPage]}" process="@all" oncomplete="janal.forward();">
+			<pe:methodSignature parameters="java.lang.Boolean"/>  
+			<pe:methodParam name="isViewException"/>  
+		</pe:remoteCommand>	
+		<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="400px" closeOnEscape="true" closable="true" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();">
+			<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+				<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
+			</div>
+			<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
+			<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
+			<hr class="ui-widget-content" style="display: #{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? '': 'none'}"/>
+			<div class="janal-line-button">						  
+				<p:commandButton type="button" icon="fa fa-refresh" onclick="document.location.href= document.location.href;" value="Recargar!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
+			</div>	
+		</p:dialog>							
+	</h:form>	
+	<p:idleMonitor timeout="#{(session.maxInactiveInterval- 120)* 1000}" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay'); janal.console('El clase ui-widget-overlay fué eliminada del dialogo !');"/>		
+	<p:dialog id="dialogoInactividad" header="Está por expirar la sesión" resizable="false" widgetVar="dialogoInactivo" onShow="janal.globalTimeout= true; janal.monitor(1);" closable="false" width="650px" onHide="janal.console('Salir automático ['+ janal.globalTimeout+ ']'); if(janal.globalTimeout)#{empty(janalBackingPage)? 'janal.forward();': 'executeGlobalException(true);'}">
+		<div class="janal-column-center janal-field-error strong">														
+			<h:outputText id="segundos"/>
+		</div>						
+		<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">
+			<div class="janal-column-center strong">
+			  <i class="fa fa-refresh Fs130 janal-color-orange"/>
+			</div>
+      <h:panelGrid columns="1">					
+				<p:spacer width="2px"/>
+				<h:outputText value="Para continuar es necesario, dar clic en el boton Aceptrar. "/>
+				<h:outputText value="Para no perder sus datos, recuerde guardarlos antes."/>
+				<p:spacer width="1px"/>
+			</h:panelGrid>	
+		</h:panelGrid>
+		<hr class="ui-widget-content"/>
+  	<div class="janal-line-button">
+			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
+		</div>				
+	</p:dialog>
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val('');janal.bloquear();setTimeout($('#verificadorValue').focus(), 300);" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form prependId="false">
+			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
+      <p:remoteCommand name="verificadorKeyEnter" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
+			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="verificadorValue" value="C&oacute;digo o nombre articulo:"/>
+					<p:inputText id="verificadorValue" styleClass="janal-key-verificador janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}" style="text-transform: uppercase"/>   
+				</p:panelGrid>	
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
+					<p:outputLabel value="Buscar por c&oacute;digo:"/>
+					<p:inputSwitch id="verificadorBuscarPor" onLabel="SI" offLabel="NO" value="#{kajoolEncabezado.attrs.buscaPorCodigo}">
+						<p:ajax event="change" process="@this" update="verificadorValue"/>
+					</p:inputSwitch>	
+				</p:panelGrid>	
+			</p:panelGrid>
+			<p:panel id="verificadorPrecio" header="Precios [ #{kajoolEncabezado.attrs.selected.nombre} ]" styleClass="janal-wid-99" style="display:none">
+				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-10">
+							<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+								<p:outputLabel value="Menudeo"/>
+								<p:outputLabel value="Medio mayoreo"/>
+								<p:outputLabel value="Mayoreo"/>
+								<p:outputLabel value="Limite menudeo"/>
+								<p:outputLabel value="Limite medio mayoreo"/>
+								<p:outputLabel value="Limite mayoreo"/>
+								<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="0 - #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
+							</p:panelGrid>
+							<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-99"/>
+							<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-column-right" headerText="Existencias">
+									<h:outputText value="#{item.stock}"/>
+								</p:column>   
+								<p:column headerText="Ubicaci&oacute;n">
+									<h:outputText value="#{item.ubicacion}"/>
+								</p:column>   
+							</p:selectOneMenu>
+						</div>
+						<p:spacer width="5px"/>
+						<div class="ui-grid-col-2 TexAlCenter">
+							<a id="source-gallery" data-magnify="gallery" data-caption="#{kajoolEncabezado.attrs.selected.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+								<p:graphicImage id="icon-gallery" value="#{kajoolEncabezado.image}" styleClass="janal-logo-mini filas" width="120" height="120" stream="false" style="cursor:zoom-in;width:100%;"/>
+							</a>	
+						</div>	
+					</div>
+				</div>
+			</p:panel>
+			<p:spacer height="3px"/>
+			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="row" styleClass="janal-row-verificador janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
+				<p:ajax event="rowSelect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" />
+				<p:ajax event="rowDblselect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" oncomplete="jsPrecios.show();"/>
+				<p:column class="MarAuto Responsive janal-wid-col-30">
+					<f:facet name="header">
+						<h:outputText value="No."/>
+					</f:facet>
+					<h:outputText value="#{index+ 1}.-"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-20">
+					<f:facet name="header">
+						<h:outputText value="C&oacute;digo"/>
+					</f:facet>
+					<h:outputText value="#{row['propio']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Nombre"/>
+					</f:facet>
+					<h:outputText value="#{row['nombre']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Importe"/>
+					</f:facet>
+					<h:outputText value="#{row['menudeo']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Stock"/>
+					</f:facet>
+					<h:outputText value="#{row['stock']}"/>
+				</p:column>		
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{kajoolEncabezado.lazyModel==null?0:kajoolEncabezado.lazyModel.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>  	
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="420px" width="980px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="faltantes" prependId="false">
+			<h:commandLink id="dataPdfFaltantes">
+				<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="faltantesTabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+			</h:commandLink>
+			<h:commandLink id="dataXlsFaltantes">
+				<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="faltantesTabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+			</h:commandLink>						
+			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doStartLoadFaltantes}" process="@this" update="faltantesTabla @(.sucursales) @(.faltantes)" oncomplete="jsPrecios.start();"/>
+			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
+			<p:remoteCommand name="faltantesVerificar" actionListener="#{kajoolEncabezado.doFaltanteArticulo}" process="@this @(.faltantes)" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
+			<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.idTipoEmpresa eq 1}" styleClass="sucursales"/>
+			<p:selectOneMenu id="idSucursal" value="#{kajoolEncabezado.faltante.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" rendered="#{sessionScope.autentifica.empresa.idTipoEmpresa eq 1}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+				<p:ajax event="change" process="@this" update="codigosFaltantes faltantesTabla" listener="#{kajoolEncabezado.doLoadFaltantes()}"/>
+				<f:selectItems value="#{kajoolEncabezado.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+				<p:column headerText="Clave">
+					<h:outputText value="#{item.clave}"/>
+				</p:column>   
+				<p:column headerText="Nombre">
+					<h:outputText value="#{item.nombre}"/>
+				</p:column>   
+			</p:selectOneMenu>
+			<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center janal-faltantes-top">
+				<p:outputLabel value="C&oacute;digo &oacute; articulo:"/>
+				<p:outputLabel for="faltantesIdArticulo" value="C&oacute;digo:"/>
+				<p:outputLabel for="faltantesIdArticulo" value="Nombre:"/>
+				<p:outputLabel for="faltantesCantidad" value="Cantidad:"/>
+				<p:autoComplete id="codigosFaltantes" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100" inputStyleClass="faltantes janal-wid-90 janal-key-faltante" itemValue="#{custom}" value="#{kajoolEncabezado.attrs.articulo}" completeMethod="#{kajoolEncabezado.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
+					<p:ajax event="itemSelect" oncomplete="faltantesReplace();"/>
+					<f:facet name="itemtip">
+						<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+							<f:facet name="header" class="TexAlCenter">
+								<p:graphicImage library="janal" name="img/sistema/logo.svg" styleClass="janal-log-mini" width="30"/>
+							</f:facet>
+							<h:outputText value="C&oacute;digo:" />
+							<h:outputText value="#{custom.propio}" />
+							<h:outputText value="Precio venta:" />
+							<p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
+							<h:outputText value="Nombre:" />
+							<h:outputText value="#{custom.nombre}" />
+							<h:outputText value="IVA:" />
+							<h:outputText value="#{custom.iva}" />
+							<h:outputText value="Código auxiliar:" />
+							<h:outputText value="#{custom.codigo}" />
+						</h:panelGrid>
+					</f:facet>
+				</p:autoComplete>									
+				<p:inputText styleClass="faltantes janal-wid-90 janal-clean-input" value="#{kajoolEncabezado.faltante.codigo}" readonly="true"/>
+				<p:inputText id="faltantesIdArticulo" styleClass="faltantes janal-wid-90 janal-clean-input" value="#{kajoolEncabezado.faltante.nombre}" readonly="true"/>
+  			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-column-right janal-wid-col-50">
+					<p:inputText id="faltantesCantidad" styleClass="faltantes janal-wid-90 janal-column-right janal-key-faltante" value="#{kajoolEncabezado.faltante.cantidad}" alt="agregarFaltantes"/>
+          <p:commandButton id="agregarFaltantes" type="button" update="@(.faltantes)" process="@this @(.faltantes) idSucursal" icon="fa fa-plus" title="Agregar articulo a la lista de faltantes" styleClass="janal-text-white janal-key-faltante" onclick="jsPrecios.execute();" alt="codigosFaltantes"/>
+				</p:panelGrid>	
+			</p:panelGrid>	
+			<p:dataTable id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="250" rowIndexVar="index" reflow="true" scrollRows="150" scrollable="true" virtualScroll="true" scrollHeight="150" style="margin-bottom:0" rowKey="#{row.key}">
+				<f:facet name="header">
+					<div class="lg-pantalla">
+						<p:menuButton value="Opciones">
+							<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						</p:menuButton>
+					</div>  
+					<div class="xs-pantalla">              
+						<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+					</div>  
+				</f:facet>	            
+				<p:column class="MarAuto Responsive janal-wid-col-15">
+					<f:facet name="header">
+						<h:outputText value="No."/>
+					</f:facet>
+					<h:outputText value="#{index+ 1}.-"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-13">
+					<f:facet name="header">
+						<h:outputText value="C&oacute;digo"/>
+					</f:facet>
+					<h:outputText value="#{row['codigo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Nombre"/>
+					</f:facet>
+					<h:outputText value="#{row['nombre']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Cantidad"/>
+					</f:facet>
+					<h:outputText value="#{row['cantidad']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Usuario"/>
+					</f:facet>
+					<h:outputText value="#{row['usuario']}"/>
+				</p:column>		
+				<p:column class="janal-column-center MarAuto Responsive janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Registro"/>
+					</f:facet>
+					<h:outputText value="#{row['registro']}"/>
+				</p:column>		
+				<p:column styleClass="janal-column-icon janal-column-center">
+					<p:commandButton id="faltanteEliminar" process="@this" update="@(.faltantes)" icon="fa fa-minus" title="Eliminar un articulo de la lista de faltantes" action="#{kajoolEncabezado.doEliminarFaltante}" onstart="return jsPrecios.ask('#{kajoolEncabezado.doCleanChars(row.nombre)}')">
+						<f:setPropertyActionListener value="#{row}" target="#{kajoolEncabezado.attrs.eliminado}" />
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{kajoolEncabezado.lazyFaltantes==null ? 0: kajoolEncabezado.lazyFaltantes.size()}] registros"/>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>  	
+	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el c&oacute;digo del m&oacute;dulo ..." onShow="janal.pivot(); $('#kajoolOpcion').val(''); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="teclasEjecutar" prependId="false">
+			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-2">
+						<p:outputLabel value="C&oacute;digo m&oacute;dulo:"/>
+					</div>
+					<div class="ui-grid-col-10">
+						<p:inputText id="kajoolOpcion" value="#{kajoolEncabezado.attrs.opcion}" styleClass="janal-wid-100-txt janal-key-run" onblur="janal.mayusculas('kajoolOpcion');"/>
+					</div>
+				</div>	
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12 janal-column-right">
+						<br/>
+						<p:commandButton id="kajoolEjecutar" icon="fa fa-qq" value="Ejecutar" action="#{kajoolEncabezado.doEjecutar}" process="@this kajoolOpcion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgEjecutar').hide();"/>
+					</div>
+				</div>
+			</div>	
+		</h:form>
+	</p:dialog>	
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or !notIsCaja? '350px': '490px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="teclasAyuda" prependId="false">
+			<div class="ui-datatable ui-widget ui-datatable-reflow">
+				<div class="ui-datatable-tablewrapper">
+					<table>
+						<tbody class="ui-datatable-data ui-widget-content">
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-calculator"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[ALT+C]</strong></td><td>Calculadora</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-list-ol"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F7]</strong></td><td>Detalle articulo</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-edit"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F9]</strong></td><td>Articulos faltantes</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-search-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F10]</strong></td><td>Buscar articulo</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-medium"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+M]</strong></td><td>Lista de precios</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-sellsy"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+K]</strong></td><td>Catalogo de proveedores</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-qq"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+R]</strong></td><td>Ir a un m&oacute;dulo</td>	
+							</tr>							
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-cart-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+A]</strong></td><td>Cuentas de apartados</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-clipboard"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+P]</strong></td><td>Mostrar los ticket abiertos</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-chain"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+U]</strong></td><td>Cerrar un ticket</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+L]</strong></td><td>Terminar la sesi&oacute;n</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-sellsy"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+P]</strong></td><td>Cuentas abiertas</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-desktop"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F7]</strong></td><td>Detalle del articulo</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-truck"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F8]</strong></td><td>Articulo en sucursales</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-thumbs-o-up"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F10]</strong></td><td>Aplicar descuento</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-refresh"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+Z]</strong></td><td>Liberar cuenta abierta</td>	
+							</tr>
+						</tbody>	
+					</table>
+  			</div>
+	  	</div>
+		</h:form>
+	</p:dialog>
+	<p:dialog id="dialogoListaPrecios" widgetVar="dlgListaPrecios" header="Lista de precios" onShow="janal.pivot(); $('#listaPreciosValue').val(''); $('#listaPreciosValue').focus();janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="450px" width="1050px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form prependId="false">
+			<p:remoteCommand name="listaPreciosLookup" actionListener="#{kajoolEncabezado.doChangeListaPrecios}" process="@this listaPreciosBuscarPor listaPreciosValue" update="listaPreciosTabla" oncomplete="if($('#listaPreciosValue').val()==='.*.') $('#listaPreciosValue').val('');"/>
+			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="listaPreciosValue" value="C&oacute;digo o nombre de articulo:"/>
+					<p:inputText id="listaPreciosValue" styleClass="janal-key-lista janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
+						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChangeListaPrecios}" process="@this listaPreciosBuscarPor" update="listaPreciosTabla" onstart="return $('#listaPreciosValue').val().trim().length> 1"/>
+					</p:inputText>
+				</p:panelGrid>	
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
+					<p:outputLabel value="Buscar por c&oacute;digo:"/>
+					<p:inputSwitch id="listaPreciosBuscarPor" onLabel="SI" offLabel="NO" value="#{kajoolEncabezado.attrs.buscaPorCodigo}">
+						<p:ajax event="change" process="@this" update="listaPreciosValue"/>
+					</p:inputSwitch>	
+				</p:panelGrid>	
+			</p:panelGrid>
+			<p:dataTable lazy="true" id="listaPreciosTabla" widgetVar="widgetListaPrecios" var="row" styleClass="janal-row-lista janal-wid-100" value="#{kajoolEncabezado.lazyListaPrecios}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
+				<p:column class="MarAuto Responsive janal-wid-col-30">
+					<f:facet name="header">
+						<h:outputText value="No."/>
+					</f:facet>
+					<h:outputText value="#{index+ 1}.-"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="C&oacute;digo"/>
+					</f:facet>
+					<h:outputText value="#{row['codigo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Auxiliar"/>
+					</f:facet>
+					<h:outputText value="#{row['auxiliar']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Nombre"/>
+					</f:facet>
+					<h:outputText value="#{row['descripcion']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Costo"/>
+					</f:facet>
+					<h:outputText value="#{row['costo']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Precio"/>
+					</f:facet>
+					<h:outputText value="#{row['precio']}"/>
+				</p:column>		
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{kajoolEncabezado.lazyListaPrecios== null? 0: kajoolEncabezado.lazyListaPrecios.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>  
+	<p:dialog id="dialogoCatalogoArticulos" widgetVar="dlgCatalogoArticulos" header="Catálogo de articulos de los proveedores" onShow="janal.pivot(); $('#catalogoArticulosValue').val(''); $('#catalogoArticulosValue').focus();janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="450px" width="1050px" resizable="false" closeOnEscape="true" dynamic="true">		<h:form prependId="false">
+			<p:remoteCommand name="catalogoArticulosLookup" actionListener="#{kajoolEncabezado.doChangeCatalogoArticulos}" process="@this catalogoArticulosValue" update="catalogoArticulosTabla" oncomplete="if($('#catalogoArticulosValue').val()==='.*.') $('#catalogoArticulosValue').val('');"/>
+			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+				<p:outputLabel for="catalogoArticulosValue" value="Clave/nombre del proveedor:"/>
+				<p:inputText id="catalogoArticulosValue" styleClass="janal-key-catalogo janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
+					<p:ajax event="keyup" listener="#{kajoolEncabezado.doChangeCatalogoArticulos}" process="@this" update="catalogoArticulosTabla" onstart="return $('#catalogoArticulosValue').val().trim().length> 1"/>
+				</p:inputText>
+			</p:panelGrid>	
+			<p:dataGrid lazy="true" id="catalogoArticulosTabla" widgetVar="widgetCatalogoArticulos" var="row" styleClass="janal-row-catalogo janal-wid-100" value="#{kajoolEncabezado.lazyCatalogoArticulos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosListaPreciosCatalogos.lazyModel.size() gt Constantes.REGISTROS_POR_PAGINA}" rowIndexVar="index" columns="3" layout="grid" paginatorPosition="top">
+				<p:panel header="#{row.clave}  [#{row.registro}]" style="text-align:center">
+					<h:panelGrid columns="1" style="width:100%">
+						<p:graphicImage library="janal" name="img/proveedores/#{row.logotipo}" styleClass="alinear-centro" width="65" height="65"/>
+							<h:outputText value="#{row.razonSocial}" />
+							<p:commandLink  actionListener="#{kajoolEncabezado.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPdfCatalogoArticulos').show();">
+								<p:commandButton icon="fa fa-eye" title="Ver catálogo de articulos" ajax="false" type="button"/>
+							</p:commandLink>	
+					</h:panelGrid>
+				</p:panel>
+				<f:facet name="footer">
+					<p:panelGrid columns="2" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-50 janal-column-left, janal-wid-50 janal-column-right">
+						<p:spacer/>
+  					<p:outputLabel value="Total [#{kajoolEncabezado.lazyCatalogoArticulos== null? 0: kajoolEncabezado.lazyCatalogoArticulos.size()}] registros"/>
+					</p:panelGrid>	
+				</f:facet>
+			</p:dataGrid>
+		</h:form>
+	</p:dialog>  	
+	<p:dialog widgetVar="dlgPdfCatalogoArticulos" header="Catálogo de articulos del proveedor" onShow="janal.pivot();" onHide="janal.recover(); janal.desbloquear();" height="450px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true" maximizable="true" appendTo="@(body)">
+		<h:form prependId="true">
+			<object type="application/pdf" data="#{kajoolEncabezado.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+				 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+			</object>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{kajoolEncabezado.doCerrar}" oncomplete="PF('dlgPdfCatalogoArticulos').hide();"/>
+			</div>
+		</h:form>
+	</p:dialog>  	
+</html>

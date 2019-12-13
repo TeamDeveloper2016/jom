@@ -1,0 +1,5360 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las tablas de MANTIC
+-->
+<process>
+  <model>    
+  </model>
+
+  <dml>
+		<unit id="TrManticArticuloPresentacionDto">
+			<delete id="rows">
+				delete from tr_mantic_articulo_presentacion where id_articulo= {idArticulo}
+			</delete>
+		</unit>
+   <unit id="TcManticControlRespaldosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_control_respaldos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_control_respaldos
+        where      
+          id_usuario = {idUsuario} and id_respaldo = {idRespaldo} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+      <select id="ultimo">
+        select      
+          *
+        from      
+          tc_mantic_control_respaldos
+        order by
+				  registro desc
+      </select>
+   </unit>		
+   <unit id="TcManticPedidosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos
+        where      
+          id_usuario = {idUsuario} and id_empresa = {idEmpresa} and orden = {orden} and ejercicio = {ejercicio}
+      </select>
+      <select id="abierto">
+        select      
+          *
+        from      
+          tc_mantic_pedidos
+        where      
+          id_usuario = {idUsuario} and id_empresa = {idEmpresa} and (id_pedido_estatus= 1 or id_pedido_estatus= 4 or id_pedido_estatus= 2)
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_pedidos
+				where				  
+				  id_usuario = {idUsuario} and id_empresa = {idEmpresa}	and ejercicio = {ejercicio}			
+			</select>			
+    </unit>		
+    <unit id="TcManticPedidosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_detalles
+        where      
+          id_articulo = {idArticulo} and id_pedido = {idPedido}
+      </select>
+			<delete id="rows">
+				delete from
+				  tc_mantic_pedidos
+				where
+				  id_pedido= {idPedido}
+			</delete>
+			<select id="totalArticulos">
+				select 
+					count(*) total
+				from 
+					tc_mantic_pedidos_detalles
+				where
+					id_pedido= {idPedido}
+			</select>
+    </unit>		
+    <unit id="TcManticPedidosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_bitacora
+        where      
+          id_pedido_bitacora = {idPedidoBitacora} and id_pedido_estatus = {idPedidoEstatus} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
+		<unit id="TcManticPedidosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticControlDescargasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_control_descargas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_control_descargas
+        where      
+          id_usuario= {idUsuario} and id_respaldo = {idRespaldo} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticTiposColoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_colores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_colores
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticTiposTallasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_tallas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_tallas
+        where      
+          clave = '{clave}' and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticMovimientosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_movimientos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_movimientos
+        where      
+          id_movimiento = {idMovimiento}
+      </select>
+    </unit>	
+    <unit id="TcManticTiposMovimientosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_movimientos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_movimientos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>			
+    <unit id="TcManticArticulosTiposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_tipos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_tipos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosNotasDto">
+      <select id="row">
+        select      
+          tc_mantic_egresos_notas.id_egreso_nota as id_key,
+					tc_mantic_egresos_notas.*
+        from      
+          tc_mantic_egresos_notas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_notas
+        where      
+          id_egreso = {idEgreso} and comentario = '{comentario}'
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_egresos_estatus.id_egreso_estatus as id_key,
+					tc_mantic_egresos_estatus.*
+        from      
+          tc_mantic_egresos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_bitacora
+        where      
+          id_egreso_bitacora = {idEgresoBitacora}
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_archivos
+        where      
+          id_egreso = {idEgreso} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_egresos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<update id="rows">
+				update tc_mantic_egresos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_egreso = {idEgreso}
+			</update>
+			<delete id="rows">
+				delete from tc_mantic_egresos_archivos where id_egreso = {idEgreso}
+			</delete>
+    </unit>		
+	  <unit id="TcManticEgresosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos
+        where      
+          descripcion = '{descripcion}' and date_format(fecha, '%Y%m%d')= '{fecha}' and importe = {importe}
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_egresos
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}
+				  and orden{operador} 900000				
+			</select>		
+    </unit>
+		<unit id="TcManticConfrontasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_confrontas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_confrontas
+        where      
+          id_transferencia = {idTransferencia}
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_confrontas
+        where 
+          id_confronta= {idConfronta}
+				  or id_transferencia= {idTransferencia}
+      </select>
+		</unit>			
+    <unit id="TcManticConfrontasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_detalles
+        where      
+          id_confronta = {idConfronta} and id_articulo = {idArticulo}
+      </select>
+    </unit>		
+	  <unit id="TcManticTransferenciasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_detalles
+        where      
+          id_articulo = {idArticulo} and id_transferencia = {idTransferencia}
+      </select>
+    </unit>
+    <unit id="TcManticMasivasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_bitacora
+        where      
+          id_masiva_archivo = {idMasivaArchivo} and id_masiva_estatus = {idMasivaEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticMasivasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_detalles
+        where      
+          codigo = '{codigo}' and id_masiva_archivo = {idMasivaArchivo} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticMasivasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticTiposMasivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_masivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_masivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticMasivasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_archivos
+        where      
+          id_empresa = {idEmpresa} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_tipo_masivo = {idTipoMasivo} and nombre = '{nombre}' and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_masivas_archivos
+        where      
+				  id_empresa= {idEmpresa} 
+				  and id_tipo_masivo= {idTipoMasivo}
+          and id_masiva_archivo!= {idMasivaArchivo}
+      </select>
+      <update id="rows">
+        update
+          tc_mantic_masivas_archivos
+				set 
+				  id_principal= 2
+        where      
+				  id_empresa= {idEmpresa} 
+				  and id_tipo_masivo= {idTipoMasivo}
+      </update>
+    </unit>		
+	  <unit id="TcManticDevolucionesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_archivos
+        where      
+          id_devolucion = {idDevolucion} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticBancosDto">
+      <select id="row">
+        select      
+					tc_mantic_bancos.id_banco as id_key,
+          tc_mantic_bancos.*
+        from      
+          tc_mantic_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_bancos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcManticEstadosCivilesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_estados_civiles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_estados_civiles
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="all">
+        select      
+				  tc_mantic_estados_civiles.id_estado_civil as id_key,
+          tc_mantic_estados_civiles.*
+        from      
+          tc_mantic_estados_civiles
+        where 
+          {condicion} 
+      </select>
+    </unit>		
+    <unit id="TcManticFacturasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where      
+          id_factura = {idFactura} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
+      </select>
+      <select id="total">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_facturas_archivos
+        where 
+          id_factura = {idFactura}
+      </select>
+    </unit>		
+		<unit id="TrManticGarantiaMedioPagoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_garantia_medio_pago
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_garantia_medio_pago
+        where      
+          id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_banco = {idBanco}
+      </select>
+    </unit>
+    <unit id="TcManticAlertasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_alertas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_alertas
+        where      
+          id_alerta = {idAlerta}
+      </select>
+    </unit>		
+		<unit id="TcManticGrantiasEstatusDto">
+			<select id="row">
+				select 
+					tc_mantic_garantias_estatus.id_garantia_estatus as id_key,
+					tc_mantic_garantias_estatus.*
+				from 
+					tc_mantic_garantias_estatus
+				where 
+					{condicion}
+				order by 
+					id_garantia_estatus
+			</select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+		</unit>
+		<unit id="TcManticFicticiasEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento= 1 and 
+          {condicion} 
+				order by 
+				  id_venta_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_estatus
+        where      
+          nombre = '{nombre}' and id_venta_estatus = {idFicticiaEstatus}
+      </select>
+    </unit>		
+		<unit id="TcManticFicticiasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta = {idFicticia} and id_articulo = {idArticulo} and id_venta_detalle = {idFicticiaDetalle}
+      </select>
+			<select id="detalle">
+        select      
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_ventas_detalles.*
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_detalles.registro
+      </select>
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ventas_detalles.importe), 1) as total
+				from 
+					tc_mantic_ventas_detalles 
+				where  
+					id_venta = {idFicticia}
+			</select>
+			<delete id="rows">
+				delete from tc_mantic_ventas_detalles where id_venta= {idFicticia}
+			</delete>
+    </unit>
+		<unit id="TcManticFicticiasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_bitacora
+        where      
+          id_venta_estatus = {idFicticiaEstatus} and id_venta = {idFicticia} and id_venta_bitacora = {idFicticiaBitacora}
+      </select>
+			<select id="siguiente">
+        select
+					max(consecutivo)+ 1 as siguiente
+				from 
+					tc_mantic_ventas_bitacora
+				where				  
+				  id_venta= {idFicticia}				
+			</select>			
+    </unit>
+		<unit id="TcManticFicticiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where      
+          consecutivo = '{consecutivo}' and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d') = '{dia}'
+      </select>
+			<select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_ventas
+        where 
+          id_venta = {idFicticia} 
+      </select>
+			<select id="siguiente">
+        select
+					max(cticket)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  id_empresa= {idEmpresa}
+				  and ejercicio= {ejercicio} 
+				  and orden{operador} 900000
+			</select>			
+			<select id="cuenta">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  id_empresa= {idEmpresa}
+				  and ejercicio= {ejercicio} 
+				  and date_format(dia, '%Y%m%d')= '{dia}'
+				  and orden{operador} 900000
+			</select>			
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ventas.total), 1) as total
+				from 
+					tc_mantic_ventas
+				where  
+					id_venta = {idFicticia}
+			</select>
+    </unit>
+    <unit id="TcManticCierresMonedasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_monedas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_monedas
+        where      
+          id_cierre = {idCierre} and id_moneda = {idMoneda} and id_efectivo = {idEfectivo}
+      </select>
+    </unit>		
+    <unit id="TcManticMonedasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_monedas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_monedas
+        where      
+          denominacion = {denominacion}
+      </select>
+			<select id="denominacion">
+				select
+					id_moneda,
+					nombre,
+					denominacion,
+					{idEfectivo} as id_efectivo,
+					0 as cantidad,
+					0 as importe,
+					{idCierre} as id_cierre 
+				from
+					tc_mantic_monedas
+				order by  
+					orden				
+			</select>
+			<select id="denominacionActual">
+				select
+					tc_mantic_monedas.id_moneda,
+					tc_mantic_monedas.nombre,
+					tc_mantic_monedas.denominacion,
+          tc_mantic_cierres_monedas.id_cierre_moneda,
+					tc_mantic_cierres_monedas.id_efectivo,
+					tc_mantic_cierres_monedas.cantidad,
+					tc_mantic_cierres_monedas.importe,
+					tc_mantic_cierres_monedas.id_cierre 
+				from
+					tc_mantic_monedas
+				inner join 
+					tc_mantic_cierres_monedas on tc_mantic_monedas.id_moneda =	tc_mantic_cierres_monedas.id_moneda
+				where 
+          tc_mantic_cierres_monedas.id_cierre = {idCierre}
+				order by  
+					orden			
+			</select>
+    </unit>
+		<unit id="TcManticApartadosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados
+        where      
+          id_apartado = {idApartado}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_apartados
+				where
+				  ejercicio= {ejercicio} 
+				  and orden{operador} 900000
+			</select>		
+			<select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_apartados
+        where 
+          id_venta= {idVenta}
+      </select>
+    </unit>		
+    <unit id="TcManticApartadosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados_bitacora
+        where 
+          {condicion} 
+        order by registro desc
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados_bitacora
+        where      
+          id_apartado_estatus = {idApartadoEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_apartados_bitacora
+        where      
+          id_apartado = {idApartado}
+				order by
+				  tc_mantic_apartados_bitacora.registro
+      </select>
+    </unit>
+    <unit id="TcManticApartadosEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_apartados_estatus.id_apartado_estatus as id_key,
+          tc_mantic_apartados_estatus.*
+        from      
+          tc_mantic_apartados_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcManticApartadosPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados_pagos
+        where      
+          id_apartado = {idApartado} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_apartados_pagos
+        where      
+          id_apartado = {idApartado}
+				order by
+				  tc_mantic_apartados_pagos.registro
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias
+        where      
+          consecutivo = '{consecutivo}' and id_venta = {idVenta}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_garantias
+				where
+				  ejercicio= {ejercicio} 	
+				  and orden{operador} 900000			  				  
+			</select>		
+			<select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_garantias
+        where 
+          id_garantia = {idGarantia} 
+      </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_garantias.id_garantia as id_key
+        from      
+          tc_mantic_garantias
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="venta">
+        select      
+				  tc_mantic_garantias.id_venta as id_key
+        from      
+          tc_mantic_garantias
+        where      
+          id_garantia = '{consecutivo}'
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_bitacora
+        where      
+          id_garantia = {idGarantia} and id_garantia_estatus = {idGarantiaEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_detalles
+        where      
+          id_garantia = {idGarantia} and id_venta_detalle = {idVentaDetalle}
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticCajasDto">
+      <select id="row">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
+        from      
+          tc_mantic_cajas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cajas
+        where      
+          clave = '{clave}' and id_empresa = {idEmpresa}
+      </select>
+      <select id="cuantas">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_cajas
+        where      
+          id_empresa in ({idEmpresa}) and id_activa = 1
+      </select>
+      <select id="cajas">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
+        from      
+          tc_mantic_cajas
+        where      
+          id_empresa in ({idEmpresa})
+      </select>
+      <select id="unica">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
+        from      
+          tc_mantic_cajas
+        where      
+				  id_caja= {idCaja}
+      </select>
+    </unit>		
+    <unit id="TcManticListasPreciosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios
+        where      
+          id_lista_precio = {idListaPrecio}
+      </select>
+    </unit>
+    <unit id="TcManticListasPreciosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          id_lista_precio = {idListaPrecio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          id_lista_precio = {idListaPrecio}
+      </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_lista_precio = {idListaPrecio}
+				order by
+				  registro desc
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<update id="rows">
+				update 
+				  tc_mantic_listas_precios_archivos 
+				inner join
+				  tc_mantic_listas_precios on tc_mantic_listas_precios_archivos.id_lista_precio= tc_mantic_listas_precios.id_lista_precio
+				set 
+				  id_principal= 2 
+			  where 
+				  tc_mantic_listas_precios.id_empresa in ({sucursales})
+				  and tc_mantic_listas_precios_archivos.id_tipo_archivo = {idTipoArchivo}
+  				and tc_mantic_listas_precios.id_proveedor = {idProveedor}
+			</update>
+			<delete id="rows">
+				delete from 
+				  tc_mantic_listas_precios_archivos 
+				where 
+				  id_lista_precio = {idListaPrecio}
+			</delete>
+    </unit>		
+    <unit id="TcManticListasPreciosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_detalles
+        where      
+          id_lista_precio_detalle = {idListaPrecioDetalle}
+      </select>
+      <delete id="rows">
+				delete from 
+				  tc_mantic_listas_precios_detalles 
+				where 
+				  id_lista_precio = {idListaPrecio}
+			</delete>
+    </unit>				
+    <unit id="TcManticCierresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres
+        where      
+          orden = {orden} and ejercicio = {ejercicio}
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_cierres
+				where
+				  ejercicio= {ejercicio} 
+				  and orden{operador} 900000
+			</select>		
+    </unit>
+		<unit id="TcManticCierresAlertasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_alertas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_alertas
+        where      
+          id_cierre_alerta = {idCierreAlerta}
+      </select>
+			<update id="rows">
+        update 
+				  tc_mantic_cierres_alertas 
+				set 
+				  id_notifica= 2
+				where 
+				  id_cierre= {idCierre}
+				  and id_notifica= 1
+			</update>
+    </unit>
+		<unit id="TcManticCierresBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_bitacora
+        where      
+          id_cierre = {idCierre} and id_cierre_estatus = {idCierreEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticCierresCajasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre_caja = {idCierreCaja}
+      </select>
+      <select id="caja">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre= {idCierre}
+				  and id_tipo_medio_pago= 1
+      </select>
+      <select id="cajaMedioPago">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre= {idCierre}
+				  and id_tipo_medio_pago= {medioPago}
+      </select>
+      <select id="cierreCajaEfectivo">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_caja = {idCaja}
+          and id_cierre= {idCierre}
+				  and id_tipo_medio_pago= 1
+      </select>
+      <select id="cajasConCierre">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_caja = {idCaja}
+      </select>
+    </unit>
+    <unit id="TcManticCierresRetirosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_retiros
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_retiros
+        where      
+          id_cierre_retiro = {idCierreRetiro}
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_cierres_retiros
+				where
+				  ejercicio= {ejercicio} 
+				  and orden{operador} 900000
+			</select>		
+    </unit>				
+    <unit id="TcManticCierresEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_cierres_estatus.id_cierre_estatus as id_key,
+				  tc_mantic_cierres_estatus.*
+        from      
+          tc_mantic_cierres_estatus
+        where 
+          {condicion} 
+				order by
+				  id_cierre_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_estatus
+        where      
+          id_cierre_estatus = {idCierreEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>		
+		<unit id="TcManticRequisicionesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_bitacora
+        where      
+          id_requisicion_estatus = {idRequisicionEstatus} and id_requisicion = {idRequisicion} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+		<unit id="TcManticRequisicionesProveedoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_proveedores
+        where      
+          id_proveedor = {idProveedor} and id_requisicion = {idRequisicion}
+      </select>
+       <select id="proveedores">
+        select      
+          id_proveedor as id_key
+        from      
+          tc_mantic_requisiciones_proveedores
+        where      
+          id_requisicion = {idRequisicion}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_requisicion_proveedor) maximo
+        from      
+          tc_mantic_requisiciones_proveedores
+      </select>
+    </unit>
+		<unit id="TcManticRequisicionesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_detalles
+        where      
+          id_articulo = {idArticulo} and id_requisicion = {idRequisicion}
+      </select>
+			<select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_requisiciones_detalles
+        where 
+          id_requisicion = {idRequisicion}
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_requisiciones_detalles where id_requisicion= {idRequisicion}
+			</delete>
+    </unit>
+		<unit id="TcManticRequisicionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones
+        where      
+          id_empresa = {idEmpresa} and orden = {orden} and ejercicio = {ejercicio}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_requisiciones
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 900000			
+			</select>	
+			<select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_requisiciones
+        where 
+          id_requisicion = {idRequisicion}
+      </select>
+    </unit>
+		<unit id="TcManticRespaldosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_respaldos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_respaldos
+        where      
+          nombre = '{nombre}'
+      </select>
+			<select id="ultimo">
+        select      
+          *
+        from      
+          tc_mantic_respaldos
+        order by 
+					registro desc
+      </select>
+			<select id="historial">
+        select 
+          tc_mantic_respaldos.id_respaldo as id_key,
+          tc_mantic_respaldos.*
+        from 
+          tc_mantic_respaldos 
+				where 
+					activo=1
+        order by 
+					tc_mantic_respaldos.registro desc
+      </select>
+    </unit>
+		<unit id="TcManticDescargasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_descargas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_descargas
+        where      
+          nombre = '{nombre}'
+      </select>			
+      <select id="historial">
+        select      
+					tc_mantic_descargas.id_descarga as id_key,
+          tc_mantic_descargas.*
+        from      
+          tc_mantic_descargas
+				where 
+					activo=1
+        order by 
+					registro desc
+      </select>			
+    </unit>
+		<unit id="TcManticTiposCreditosNotasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_creditos_notas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_creditos_notas
+        where      
+          nombre = {nombre}
+      </select>
+      <select id="todos">
+        select      
+				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota as id_key,
+          tc_mantic_tipos_creditos_notas.*
+        from      
+          tc_mantic_tipos_creditos_notas
+        order by
+          tc_mantic_tipos_creditos_notas.id_tipo_credito_nota
+      </select>
+    </unit>
+    <unit id="TcManticFaltantesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where      
+          id_faltante = {idFaltante} and cantidad = {cantidad} and id_articulo = {idArticulo} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="existe">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where      
+          id_articulo= {idArticulo} 
+				  and id_empresa= {idEmpresa} 
+				  and id_vigente= 1
+      </select>
+			<update id="rows">
+				update 
+				  tc_mantic_faltantes 
+				set 
+				  id_vigente= 2, actualizado= current_timestamp, observaciones= '{observaciones}'
+				where 
+				  id_articulo= {idArticulo} 
+				  and id_vigente= 1
+				  and id_empresa= {idEmpresa} 
+			</update>
+    </unit>
+		<unit id="TcManticNotasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada} and nombre = '{nombre}'
+				order by
+				  registro desc
+      </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
+				order by
+				  registro desc
+      </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio) as id_key
+        from      
+          tc_mantic_notas_archivos
+ 				order by
+				  ejercicio
+			</select>
+			<update id="rows">
+				update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
+			</update>
+			<delete id="rows">
+				delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
+			</delete>
+   </unit>		
+   <unit id="TcManticCreditosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota} and nombre = '{nombre}'
+      </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota}
+				order by
+				  registro desc
+      </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where      
+          id_credito_nota = {idCreditoNota}
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio) as id_key
+        from      
+          tc_mantic_creditos_archivos
+ 				order by
+				  ejercicio
+			</select>
+			<update id="rows">
+				update tc_mantic_creditos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota}
+			</update>
+			<delete id="rows">
+				delete from tc_mantic_creditos_archivos where id_credito_nota = {idCreditoNota}
+			</delete>
+   </unit>
+   <unit id="TcManticTiposArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_archivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+   <unit id="TcManticEmpresasDeudasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_deudas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_deudas
+        where      
+          id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticEmpresasPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and id_empresa_deuda = {idEmpresaDeuda} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticEmpresasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticCreditosNotasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_creditos_notas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_notas
+        where      
+          id_proveedor = {idProveedor} and id_devolucion = {idDevolucion} and folio = '{folio}' and id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="detalle">
+        select      
+          tc_mantic_creditos_notas.id_credito_nota as id_key,
+				  tc_mantic_creditos_notas.*
+        from      
+          tc_mantic_creditos_notas
+        where      
+          id_credito_nota = {idCreditoNota}
+				order by
+				  registro
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_creditos_notas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}		
+				  and orden{operador} 900000		
+			</select>		
+			<select id="folio">
+				select
+				  consecutivo, registro
+				from
+				  tc_mantic_creditos_notas
+				where
+				  folio = '{folio}'
+				  and id_proveedor= {idProveedor}
+				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
+					and id_credito_nota&lt;&gt; {idCreditoNota}
+				order by
+				  registro desc				
+			</select>
+    </unit>		
+    <unit id="TcManticCreditosEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_creditos_estatus.id_credito_estatus as id_key,
+				  tc_mantic_creditos_estatus.*
+				from      
+          tc_mantic_creditos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_estatus
+        where      
+          id_credito_estatus = {idCreditoEstatus} and nombre = '{nombre}'
+      </select>
+   </unit>	 
+    <unit id="TcManticCreditosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_creditos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_bitacora
+        where      
+          id_credito_estatus = {idCreditoEstatus} and id_credito_bitacora = {idCreditoBitacora} and id_credito_nota = {idCreditoNota}
+      </select>
+   </unit>	 
+   <unit id="TcManticDevolucionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones
+        where      
+          id_empresa = {idEmpresa} and orden = {orden} and id_nota_entrada = {idNotaEntrada} and ejercicio = {ejercicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_devoluciones
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}		
+				  and orden{operador} 900000		
+			</select>		
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones
+        where 
+          id_devolucion = {idDevolucion}
+      </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_devoluciones.id_devolucion as id_key
+        from      
+          tc_mantic_devoluciones
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="nota">
+        select      
+				  tc_mantic_devoluciones.id_nota_entrada as id_key
+        from      
+          tc_mantic_devoluciones
+        where      
+          id_devolucion = '{consecutivo}'
+      </select>
+    </unit>		
+    <unit id="TcManticDevolucionesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_bitacora
+        where      
+          id_devolucion_estatus = {idDevolucionEstatus} and id_devolucion = {idDevolucion} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticDevolucionesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_detalles
+        where      
+         id_devolucion = {idDevolucion} and id_nota_detalle = {idNotaDetalle} and cantidad = {cantidad} and id_devolucion_detalle = {idDevolucionDetalle} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_devoluciones_detalles.id_devolucion as id_comodin,
+          tc_mantic_devoluciones_detalles.id_nota_detalle as id_orden_detalle,
+          tc_mantic_devoluciones_detalles.*
+        from      
+          tc_mantic_devoluciones_detalles
+        where      
+          id_devolucion = {idDevolucion}
+				order by
+				  registro
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_devoluciones_detalles where id_devolucion= {idDevolucion}
+			</delete>
+    </unit>		
+    <unit id="TcManticDevolucionesEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_devoluciones_estatus.id_devolucion_estatus as id_key,
+          tc_mantic_devoluciones_estatus.*
+        from      
+          tc_mantic_devoluciones_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticServiciosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios
+        where      
+          consecutivo = '{consecutivo}' and id_cliente = {idCliente} and id_empresa = {idEmpresa}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_servicios
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 900000			
+			</select>	
+      <select id="detalle">
+        select      
+				  tc_mantic_servicios.id_servicio as id_key,
+          tc_mantic_servicios.*
+        from      
+          tc_mantic_servicios
+        where 
+          id_servicio = {idServicio} 
+      </select>
+      <select id="venta">
+        select      
+				  tc_mantic_servicios.id_servicio as id_key,
+          tc_mantic_servicios.*
+        from      
+          tc_mantic_servicios
+        where 
+          id_venta = {idVenta} 
+      </select>
+    </unit>		
+    <unit id="TcManticServiciosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios_bitacora
+        where      
+          id_servicio_estatus = {idServicioEstatus} and id_servicio = {idServicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_servicios_bitacora where id_servicio= {idServicio} 
+      </delete>
+			<select id="siguiente">
+        select
+					max(consecutivo)+ 1 as siguiente
+				from 
+					tc_mantic_servicios_bitacora
+				where				  
+				  id_servicio= {idServicio}				
+			</select>			
+    </unit>		
+    <unit id="TcManticServiciosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios_detalles
+        where      
+          concepto = '{concepto}'
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_servicios_detalles.id_servicio_detalle as id_comodin,
+          tc_mantic_servicios_detalles.*
+        from      
+          tc_mantic_servicios_detalles
+        where      
+          id_servicio = {idServicio}
+				order by
+				  tc_mantic_servicios_detalles.registro
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_servicios_detalles where id_servicio= {idServicio} 
+      </delete>
+    </unit>		
+    <unit id="TcManticServiciosEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_servicios_estatus.id_servicio_estatus as id_key,
+					tc_mantic_servicios_estatus.*
+        from      
+          tc_mantic_servicios_estatus
+        where 
+          {condicion} 
+				order by 
+					id_servicio_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticInventariosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_inventarios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_inventarios
+        where      
+          id_almacen = {idAlmacen} and id_articulo = {idArticulo} and ejercicio = {ejercicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="stock">
+        select      
+          stock
+        from      
+          tc_mantic_inventarios
+        where      
+          id_almacen = {idAlmacen} 
+				  and id_articulo = {idArticulo}
+				order by
+				 registro desc
+      </select>
+			<select id="inventario">
+				select
+				  tc_mantic_inventarios.id_inventario as id_key,
+				  tc_mantic_inventarios.*
+				from 
+				  tc_mantic_inventarios
+				where
+				  id_almacen= {idAlmacen}
+				  and id_articulo= {idArticulo}
+				order by
+				  registro desc
+			</select>
+			<select id="maximo">
+        select      
+          max(id_inventario) maximo
+        from      
+          tc_mantic_inventarios
+      </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio),
+          ejercicio as id_key
+        from      
+          tc_mantic_inventarios
+				order by
+				  ejercicio desc
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_inventarios where id_inventario = {idInventario}
+      </delete>
+    </unit>		
+    <unit id="TcManticArticulosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_bitacora
+        where      
+          id_articulo = {idArticulo} and id_nota_entrada = {idNotaEntrada} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+      <select id="ultimo">
+        select      
+          *
+        from      
+          tc_mantic_articulos_bitacora
+        where      
+          id_articulo = {idArticulo} and id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="ultimo">
+        select      
+          registro
+        from      
+          tc_mantic_articulos_bitacora
+        where      
+          id_articulo = {idArticulo}
+				order by
+				 registro desc
+      </select>
+			<select id="existe">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_articulos_bitacora
+        where 
+          id_nota_entrada = {idNotaEntrada}
+			</select>
+    </unit>		
+    <unit id="TcManticPersonasDto">
+      <select id="row">
+        select 
+				  tc_mantic_personas.id_persona as id_key,
+          tc_mantic_personas.*
+        from
+          tc_mantic_personas
+        where 
+          {condicion}
+        order by
+          nombres, paterno, materno
+      </select>
+      <select id="identically">
+        select 
+          *
+        from
+          tc_mantic_personas
+        where
+          1=2
+      </select>
+      <select id="curp">
+        select
+          *
+        from
+          tc_mantic_personas
+        where
+          curp='{curp}'
+      </select>
+      <select id="findUsuario">
+        select
+          *
+        from
+          tc_mantic_personas
+        where
+          cuenta = '{cuenta}'
+      </select>
+      <select id="nombre">
+        select
+          *
+        from
+          tc_mantic_personas
+        where
+          lower(nombres)= lower('{nombres}')
+          and lower(paterno)= lower('{paterno}')
+          and lower(materno)= lower('{materno}')
+      </select>
+    </unit>    
+		<unit id="TcManticCategoriasDto">
+      <select id="row">
+        select 
+          tc_mantic_categorias.id_categoria as id_key,
+          tc_mantic_categorias.*
+        from
+          tc_mantic_categorias
+        where 
+          {condicion}
+				order by 
+					clave, nivel
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_categorias
+        where      
+          clave = '{clave}'
+				order by
+					clave, nivel
+      </select>			
+			<select id="find">
+				select 
+				  tc_mantic_categorias.id_categoria as id_key,
+					tc_mantic_categorias.*
+				from
+					tc_mantic_categorias
+				where 
+					upper(nombre) like upper('%{nombre}%')
+				and 
+					upper(descripcion) like upper('%{descripcion}%')
+				{sortOrder}				
+			</select>
+		</unit>	
+    <unit id="TrManticArticuloPrecioSugeridoDto">					     
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where      
+          id_proveedor = {idProveedor} and precio = {precio} and descuento = {descuento} and id_articulo = {idArticulo} and id_articulo_precio_sugerido = {idArticuloPrecioSugerido}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_precio_sugerido) maximo
+        from      
+          tr_mantic_articulo_precio_sugerido
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where      
+          id_articulo = {idArticulo}
+				orden by
+				  registro
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
+      </delete>
+    </unit>    
+     <unit id="TrManticAlmacenDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_almacen_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_almacen_domicilio
+        where      
+          id_almacen_domicilio = {idAlmacenDomicilio} and id_almacen = {idAlmacen} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_domicilio) maximo
+        from      
+          tr_mantic_almacen_domicilio
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_almacen_domicilio where id_almacen = {idAlmacen}
+      </delete>
+    </unit>    
+    <unit id="TrManticAlmacenTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_almacen_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_almacen_tipo_contacto
+        where      
+          id_almacen = {idAlmacen} and id_almacen_tipo_contacto = {idAlmacenTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_tipo_contacto) maximo
+        from      
+          tr_mantic_almacen_tipo_contacto
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_almacen_tipo_contacto where id_almacen = {idAlmacen}
+      </delete>
+    </unit>
+    <unit id="TrManticArticuloCodigoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_codigo
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_codigo
+        where      
+          codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
+      </select>      
+    </unit>
+    <unit id="TrManticArticuloProveedorDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_proveedor
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_proveedor
+        where      
+          id_proveedor = {idProveedor} and id_articulo_proveedor = {idArticuloProveedor} and id_articulo = {idArticulo} and registro = '{registro}'
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_proveedor) maximo
+        from      
+          tr_mantic_articulo_proveedor
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_articulo_proveedor where id_articulo={idArticulo} 
+      </delete>
+    </unit>
+    <unit id="TrManticArticuloTipoVentaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_tipo_venta
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_tipo_venta
+        where      
+          id_articulo_tipo_venta = {idArticuloTipoVenta} and id_articulo = {idArticulo} and id_tipo_venta = {idTipoVenta}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_tipo_venta) maximo
+        from      
+          tr_mantic_articulo_tipo_venta
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_articulo_tipo_venta where id_articulo={idArticulo} 
+      </delete>
+    </unit>
+    <unit id="TrManticClienteRepresentanteDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_cliente_representante
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_cliente_representante
+        where      
+          id_cliente = {idCliente} and id_cliente_representante = {idClienteRepresentante} and id_representante = {idRepresentante} and id_principal = {idPrincipal}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_cliente_representante) maximo
+        from      
+          tr_mantic_cliente_representante
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_cliente_representante where id_cliente={idCliente}
+      </delete>
+    </unit>
+    
+    <unit id="TrManticEmpaqueUnidadMedidaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_empaque_unidad_medida
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empaque_unidad_medida
+        where      
+          id_unidad_medida = {idUnidadMedida} and id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empaque = {idEmpaque}
+      </select>
+    </unit>    
+     <unit id="TrManticEmpresaDomicilioDto">
+      <select id="row">
+        select      
+					tr_mantic_empresa_domicilio.id_empresa_domicilio as id_key,
+          tr_mantic_empresa_domicilio.*
+        from      
+          tr_mantic_empresa_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empresa_domicilio
+        where      
+          id_usuario = {idUsuario} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal} and id_empresa_domicilio = {idEmpresaDomicilio} and id_empresa = {idEmpresa}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_empresa_domicilio) maximo
+        from      
+          tr_mantic_empresa_domicilio
+      </select>
+			<delete id="rows">
+         delete from tr_mantic_empresa_domicilio where id_empresa = {idEmpresa}
+      </delete>
+    </unit>
+    <unit id="TrManticEmpresaPersonalDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_empresa_personal
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empresa_personal
+        where      
+          id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
+      </select>
+			<delete id="rows">
+				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
+			</delete>
+    </unit>    
+    <unit id="TrManticEmpresaTipoContactoDto">
+      <select id="row">
+        select      
+          tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto as id_key,
+					tr_mantic_empresa_tipo_contacto.*
+        from      
+          tr_mantic_empresa_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empresa_tipo_contacto
+        where      
+          id_empresa_tipo_contacto = {idEmpresaTipoContacto} and id_empresa = {idEmpresa} and id_tipo_contacto = {idTipoContacto}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_empresa_tipo_contacto) maximo
+        from      
+          tr_mantic_empresa_tipo_contacto
+      </select>
+			<delete id="rows">
+         delete from tr_mantic_empresa_tipo_contacto where id_empresa = {idEmpresa}
+      </delete> 
+    </unit>    
+     <unit id="TrManticOrdenCompraCargoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_orden_compra_cargo
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_orden_compra_cargo
+        where      
+          id_orden_compra = {idOrdenCompra} and id_orden_compra_cargo = {idOrdenCompraCargo} and porcentaje = {porcentaje} and importe = {importe} and id_cargo_compra = {idCargoCompra}
+      </select>
+    </unit>
+    
+     <unit id="TrManticPersonaDomicilioDto">
+      <select id="row">				
+        select      
+					tr_mantic_persona_domicilio.id_persona_domicilio as id_key,
+					tr_mantic_persona_domicilio.*
+        from      
+          tr_mantic_persona_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_persona_domicilio
+        where      
+          id_persona = {idPersona} and id_persona_domicilio = {idPersonaDomicilio} and id_usuario = {idUsuario} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_persona_domicilio) maximo
+        from      
+          tr_mantic_persona_domicilio
+      </select>
+			<delete id="rows">
+         delete from tr_mantic_persona_domicilio where id_persona = {idPersona}
+      </delete>  
+    </unit>
+    
+    <unit id="TrManticPersonaTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_persona_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_persona_tipo_contacto
+        where      
+          id_persona = {idPersona} and id_persona_tipo_contacto = {idPersonaTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_persona_tipo_contacto) maximo
+        from      
+          tr_mantic_persona_tipo_contacto
+      </select>
+			<delete id="rows">
+         delete from tr_mantic_persona_tipo_contacto where id_persona = {idPersona}
+      </delete>
+    </unit>
+    
+     <unit id="TrManticProveedorDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_domicilio
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_domicilio = {idProveedorDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_domicilio) maximo
+        from      
+          tr_mantic_proveedor_domicilio
+      </select>	
+      <delete id="rows">
+         delete from tr_mantic_proveedor_domicilio where id_proveedor = {idProveedor}
+      </delete>  
+    </unit>
+    <unit id="TrManticProveedorPagoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_pago
+        where 
+          {condicion} 
+        order  by 
+          id_tipo_pago
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_pago
+        where      
+          id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_tipo_pago = {idTipoPago}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_pago) maximo
+        from      
+          tr_mantic_proveedor_pago
+      </select>			
+      <delete id="rows">
+        delete from tr_mantic_proveedor_pago where id_proveedor= {idProveedor}
+      </delete>  
+    </unit>
+    <unit id="TrManticProveedorPersonaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_persona
+        where 
+          {condicion}       
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_persona
+        where      
+          id_proveedor = {idProveedor} and id_persona = {idPersona} and id_proveedor_persona = {idProveedorPersona} and id_responsable = {idResponsable}
+      </select>
+      <delete id="rows">
+        delete from tr_mantic_proveedor_persona  where id_proveedor = {idProveedor}
+      </delete>  
+    </unit>
+    
+    <unit id="TrManticProveedorTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_tipo_contacto) maximo
+        from      
+          tr_mantic_proveedor_tipo_contacto
+      </select>
+      <delete id="rows">
+        delete from tr_mantic_proveedor_tipo_contacto  where  id_proveedor = {idProveedor}
+      </delete>  
+    </unit>
+    
+    <unit id="TrManticProveedorAgenteDto">
+      <select id="row">
+        select      
+					tr_mantic_proveedor_agente.id_proveedor_agente as id_key,
+          tr_mantic_proveedor_agente.*
+        from      
+          tr_mantic_proveedor_agente
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_agente
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_agente) maximo
+        from      
+          tr_mantic_proveedor_agente
+      </select>	
+      <delete id="rows">
+        delete from tr_mantic_proveedor_agente where id_proveedor = {idProveedor}
+      </delete>  
+    </unit>		
+		<unit id="TcManticArticulosDto">
+      <select id="row">
+        select   
+					tc_mantic_articulos.id_articulo as id_key,
+          tc_mantic_articulos.*
+        from      
+          tc_mantic_articulos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos
+        where      
+          id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empresa = {idEmpresa} and nombre = '{nombre}'
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_articulos
+        where      
+          id_articulo = {idArticulo}
+      </select>
+			<select id="inventario">
+				select
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos.minimo,
+					tc_mantic_articulos.maximo,
+					tc_mantic_articulos.stock
+				from 
+					tc_mantic_articulos
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}			
+			</select>
+			<select id="existe">
+				 select 
+				   count(*) as total 
+				 from
+				   tc_mantic_articulos
+				 where
+				  id_imagen= {idImagen}
+				  and id_articulo!= {idArticulo}
+			</select>	
+			<update id="rows">
+				update 
+				  tc_mantic_articulos
+				set
+				  iva= {iva}
+				where
+				  id_empresa in ({sucursales}) and id_iva= 1
+			</update>
+			<select id="findImage">
+				select 
+					tc_mantic_articulos.id_articulo as id_key,
+          tc_mantic_articulos.*
+				from 
+					tc_mantic_articulos
+				where 
+					id_imagen= {idImagen}
+			</select>
+			<update id="cleanImage">
+				update tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
+			</update>
+    </unit>
+		<unit id="TcManticArticulosCodigosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where 
+          {condicion} 
+      </select>
+			<select id="principal">
+        select      
+					tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+					tc_mantic_articulos_codigos.*
+        from      
+          tc_mantic_articulos_codigos
+        where 
+          {condicion} 
+				order by 
+					id_principal
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          codigo = '{codigo}' and id_articulo = {idArticulo} and id_proveedor = {idProveedor} and id_principal = {idPrincipal}
+      </select>
+      <select id="propio">
+        select      
+          codigo
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          id_articulo = {idArticulo} 
+          and id_principal= 1
+      </select>
+      <select id="existe">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          codigo = '{codigo}' 
+          and id_proveedor is null
+				  and {condicion}
+      </select>
+      <select id="duplicado">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          codigo = '{codigo}' 
+          and id_proveedor!= {idProveedor}
+      </select>
+      <select id="codigo">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          id_articulo = {idArticulo}
+			    and id_proveedor= {idProveedor}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_codigo) maximo
+        from      
+          tc_mantic_articulos_codigos
+      </select>
+			<select id="siguiente">
+        select      
+         max(orden)+ 1 as siguiente
+        from      
+          tc_mantic_articulos_codigos
+				where
+          id_articulo = {idArticulo}
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_articulos_codigos where id_articulo= {idArticulo} 
+      </delete>
+    </unit>
+		<unit id="TcManticArticulosDescuentosDto">
+      <select id="row">
+        select      
+					tc_mantic_articulos_descuentos.id_articulo_descuento as id_key,
+          tc_mantic_articulos_descuentos.*
+        from      
+          tc_mantic_articulos_descuentos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_descuentos
+        where      
+          vigencia_final = '{vigenciaFinal}' and vigencia_inicial = '{vigenciaInicial}' and porcentaje = {porcentaje}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_descuento) maximo
+        from      
+          tc_mantic_articulos_descuentos
+      </select>
+			 <delete id="rows">
+        delete from tc_mantic_articulos_descuentos where id_articulo= {idArticulo} 
+      </delete>
+    </unit>
+		<unit id="TcManticArticulosDiseniosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_disenios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_disenios
+        where      
+          id_articulo = {idArticulo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticArticulosEspecificacionesDto">
+      <select id="row">
+        select      
+          tc_mantic_articulos_especificaciones.id_articulo_especificacion as id_key,
+					tc_mantic_articulos_especificaciones.*
+        from      
+          tc_mantic_articulos_especificaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_especificaciones
+        where      
+          id_articulo = {idArticulo} and nombre = '{nombre}'
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_especificacion) maximo
+        from      
+          tc_mantic_articulos_especificaciones
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_articulos_especificaciones where id_articulo={idArticulo} 
+      </delete>
+    </unit>
+		<unit id="TcManticArticulosDimencionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_dimenciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_dimenciones
+        where      
+          id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_dimencion) maximo
+        from      
+          tc_mantic_articulos_dimenciones
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_articulos_dimenciones where id_articulo={idArticulo} 
+      </delete>
+    </unit>
+		<unit id="TcManticProveedoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where      
+          rfc = '{rfc}' and id_empresa= {idEmpresa}
+      </select>
+			<select id="porCodigo">			
+        select      
+					tc_mantic_proveedores.id_proveedor as id_key,
+          tc_mantic_proveedores.*
+        from      
+          tc_mantic_proveedores
+        where 
+          id_empresa in ({sucursales})
+          and upper(clave) regexp '.*{codigo}.*'
+				order by
+				  clave
+			</select>
+			<select id="porNombre">			
+        select      
+					tc_mantic_proveedores.id_proveedor as id_key,
+          tc_mantic_proveedores.*
+        from      
+          tc_mantic_proveedores
+        where 
+          id_empresa in ({sucursales})
+          and (
+				    upper(razon_social) regexp '.*{codigo}.*'
+				    or
+				    upper(rfc) regexp '.*{codigo}.*'
+				  )
+				order by
+				  razon_social
+			</select>
+			<select id="sucursales">
+        select      
+					tc_mantic_proveedores.id_proveedor as id_key,
+          tc_mantic_proveedores.*
+        from      
+          tc_mantic_proveedores
+        where 
+          tc_mantic_proveedores.id_empresa in ({sucursales})
+				order by
+				  tc_mantic_proveedores.clave
+      </select>      
+      <select id="duplicados">
+        select      
+          id_proveedor as id_key,
+				  rfc,
+				  razon_social
+        from      
+          tc_mantic_proveedores
+        where      
+          rfc = '{rfc}' and id_proveedor!= {idProveedor}
+      </select>
+      <select id="proveedor">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where      
+          rfc = '{rfc}' and id_empresa in ({sucursales})
+      </select>
+    </unit>
+		<unit id="TcManticClientesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes
+        where      
+          rfc = '{rfc}' and id_empresa = {idEmpresa}
+      </select>    
+			<select id="sucursales">
+        select      
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        where 
+          id_empresa in ({sucursales})
+				order by
+				  clave
+      </select>
+			<select id="clienteDefault">
+        select      
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        where 
+          id_empresa in ({sucursales})
+				  and clave='{clave}'				
+      </select>
+			<select id="rfc">
+        select      
+          id_cliente
+        from      
+          tc_mantic_clientes
+        where 
+          rfc= '{rfc}'
+      </select>
+			<select id="porCodigo">			
+        select      
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        where 
+          id_empresa in ({sucursales})
+          and upper(clave) regexp '.*{codigo}.*'
+				order by
+				  clave
+			</select>
+			<select id="porNombre">			
+        select      
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        where 
+          id_empresa in ({sucursales})
+          and (
+				    upper(razon_social) regexp '.*{codigo}.*'
+				    or
+				    upper(rfc) regexp '.*{codigo}.*'
+				  )
+				order by
+				  razon_social
+			</select>
+			<select id="clientes">
+        select      
+      		id_cliente as id_key,
+          id_cliente
+        from      
+          tc_mantic_clientes
+        where      
+          id_empresa in ({sucursales})
+				  and razon_social like '%{razonSocial}%'
+			</select>
+		</unit>		
+		<unit id="TcManticImagenesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_imagenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_imagenes
+        where      
+          id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_imagenes where id_articulo={idArticulo} 
+      </delete>
+    </unit>				
+		<unit id="TrManticClienteDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_cliente_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_cliente_domicilio
+        where      
+          id_cliente = {idCliente} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_cliente_domicilio) maximo
+        from      
+          tr_mantic_cliente_domicilio
+      </select>
+			<select id="principalCliente">
+        select      
+          tr_mantic_cliente_domicilio.id_cliente_domicilio as id_key,
+					tr_mantic_cliente_domicilio.*
+        from      
+          tr_mantic_cliente_domicilio
+				where 
+					tr_mantic_cliente_domicilio.id_cliente={idCliente} and tr_mantic_cliente_domicilio.id_principal=1
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_cliente_domicilio where id_cliente={idCliente}
+      </delete>
+			<update id="principal">
+        update tr_mantic_cliente_domicilio set id_principal=2 where id_cliente={idCliente}
+      </update>
+    </unit>	
+		<unit id="TrManticClienteTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where      
+          id_cliente = {idCliente} and id_tipo_contacto = {idTipoContacto} and valor = '{valor}'
+      </select>      
+			<select id="maximo">
+        select      
+          max(id_cliente_tipo_contacto) maximo
+        from      
+          tr_mantic_cliente_tipo_contacto
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
+      </delete>
+    </unit>		
+		<unit id="TcManticDomiciliosDto">
+      <select id="row">
+        select      
+					tc_mantic_domicilios.*,
+          tc_mantic_domicilios.id_domicilio as id_key 
+        from      
+          tc_mantic_domicilios
+        where 
+          {condicion} 
+        order by
+          calle
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_domicilios
+        where      
+          id_domicilio = {idDomicilio}
+      </select>
+			<select id="comboDomicilios">
+				select 
+					id_domicilio as id_key, descripcion
+				from 
+					tc_mantic_domicilios
+			</select>
+			<select id="codigosPostales">
+				select   
+					id_domicilio as id_key,
+					codigo_postal
+				from 
+				  tc_mantic_domicilios
+				where 
+					id_localidad = {idLocalidad}
+				group by 
+					codigo_postal
+			</select>
+			<select id="domicilios">
+				select   
+					id_domicilio as id_key,
+					concat(calle,' ',numero_exterior,' ',asentamiento) as domicilio,
+					tc_mantic_domicilios.*
+				from 
+					tc_mantic_domicilios
+				where 
+					id_localidad = {idLocalidad}
+				and 
+				  codigo_postal= '{codigoPostal}'
+			</select>
+			<select id="domicilioExiste">
+				select      
+					tc_mantic_domicilios.id_domicilio as id_key, 
+					tc_mantic_domicilios.*
+        from      
+          tc_mantic_domicilios
+        where 
+          id_localidad={idLocalidad}
+        and
+          codigo_postal='{codigoPostal}'
+        and
+          calle='{calle}'
+        and
+          numero_exterior= '{numeroExterior}'
+        and
+          numero_interior='{numeroInterior}'
+        and
+					asentamiento='{asentamiento}'
+        and
+					entre_calle='{entreCalle}'
+        and
+					y_calle='{yCalle}'
+			</select>
+    </unit>	        
+    <unit id="TcManticHistorialIvaDto">
+			<select id="row">
+				select      
+					*
+				from      
+					tc_mantic_historial_iva
+				where 
+					{condicion} 
+			</select>
+			<select id="identically">
+				select      
+					*
+				from      
+					tc_mantic_historial_iva
+				where      
+					id_empresa = {idEmpresa} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+			</select>
+		</unit> 				
+		<unit id="TcManticAlmacenesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_almacenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_almacenes
+        where      
+          id_empresa = {idEmpresa} and nombre = '{nombre}'
+      </select>
+      <select id="almacenes">
+        select      
+				  tc_mantic_almacenes.id_almacen as id_key,
+          tc_mantic_almacenes.*
+        from      
+          tc_mantic_almacenes
+        where      
+          tc_mantic_almacenes.id_empresa in ({sucursales})
+				order by
+				 tc_mantic_almacenes.clave
+      </select>
+      <select id="almacen">
+        select      
+				  tc_mantic_almacenes.id_almacen
+        from      
+          tc_mantic_almacenes
+        where      
+          tc_mantic_almacenes.id_empresa= {idEmpresa}
+				  and id_principal= 1
+				order by
+				 tc_mantic_almacenes.id_almacen
+      </select>
+			<select id="almacenPrincipal">
+        select      
+				  tc_mantic_almacenes.id_almacen as id_key,
+          tc_mantic_almacenes.*
+        from      
+          tc_mantic_almacenes
+        where      
+          tc_mantic_almacenes.id_empresa in ({sucursales}) and id_principal= 1
+				order by
+				 tc_mantic_almacenes.clave
+      </select>
+    </unit>
+	  <unit id="TcManticAlmacenesArticulosDto">
+      <select id="row">
+        select      
+					tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+          tc_mantic_almacenes_articulos.*
+        from      
+          tc_mantic_almacenes_articulos
+        where 
+          {condicion} 
+      </select>
+      <select id="almacenArticulo">
+        select      
+					tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+          tc_mantic_almacenes_articulos.*
+        from      
+          tc_mantic_almacenes_articulos
+        where 
+          id_articulo={idArticulo} and id_almacen = {idAlmacen}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_articulos
+        where      
+          id_almacen = {idAlmacen} and id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_articulo) maximo
+        from      
+          tc_mantic_almacenes_articulos
+      </select>
+			<select id="ubicacion">
+				select
+					*
+				from 
+					tc_mantic_almacenes_articulos
+				where
+					id_almacen= {idAlmacen}
+					and id_articulo= {idArticulo}
+			</select>
+      <select id="umbral">
+        select      
+          maximo
+        from      
+          tc_mantic_almacenes_articulos
+        where 
+          id_articulo={idArticulo} and id_almacen = {idAlmacen}
+      </select>			
+			<delete id="rows">
+        delete from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
+      </delete>
+    </unit>
+		<unit id="TcManticProveedoresBancosDto">
+      <select id="row">
+        select     
+					tc_mantic_proveedores_bancos.id_proveedor_banca as id_key,
+					tc_mantic_proveedores_bancos.*
+        from      
+          tc_mantic_proveedores_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_proveedores_bancos
+        where      
+          id_proveedor = {idProveedor} and convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and clabe_referencia = '{clabeReferencia}'
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_banca) maximo
+        from      
+          tc_mantic_proveedores_bancos
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_proveedores_bancos where id_proveedor={idProveedor} 
+      </delete>
+    </unit>
+		<unit id="TcManticProveedoresPortalesDto">
+      <select id="row">
+        select      
+					tc_mantic_proveedores_portales.id_proveedor_portal as id_key,
+          tc_mantic_proveedores_portales.*
+        from      
+          tc_mantic_proveedores_portales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_proveedores_portales
+        where      
+          pagina = '{pagina}' and id_proveedor = {idProveedor} and cuenta = '{cuenta}'
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_portal) maximo
+        from      
+          tc_mantic_proveedores_portales
+      </select>
+			<delete id="rows">
+        delete from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
+      </delete>
+    </unit>
+	  <unit id="TcManticAlmacenesUbicacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_ubicaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_ubicaciones
+        where      
+          piso = '{piso}' and id_almacen = {idAlmacen}
+      </select>
+      <select id="default">
+        select      
+          tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes_ubicaciones.*
+        from      
+          tc_mantic_almacenes_ubicaciones
+        where      
+          piso = '1' and id_almacen = {idAlmacen} and cuarto is null and anaquel is null and charola is null
+      </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_ubicacion) maximo
+        from      
+          tc_mantic_almacenes_ubicaciones
+      </select>
+			<select id="general">
+				select
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes_ubicaciones.*
+				from 
+					tc_mantic_almacenes_ubicaciones
+				where
+					id_almacen= {idAlmacen}
+				  and piso= 'GENERAL'
+			</select>
+			<select id="dependencia">
+				select
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes_ubicaciones.*
+				from 
+					tc_mantic_almacenes_ubicaciones
+				where
+					id_almacen= {idAlmacen}
+				  {condicion}
+					and nivel &gt;= {nivel}
+			</select>
+			<delete id="rows">
+        delete from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
+      </delete>
+    </unit>	    
+	  <unit id="TcManticCargosComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cargos_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cargos_compras
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticCodigosPostalesDto">
+      <select id="row">
+        select 
+					tc_mantic_codigos_postales.id_codigo_postal as id_key, 
+					tc_mantic_codigos_postales.*
+				from 
+					tc_mantic_codigos_postales
+				where 
+					{condicion} 
+				order by 
+					codigo
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_codigos_postales
+        where      
+          id_entidad= {idEntidad} and codigo= '{codigo}'
+      </select>
+			<select id="entidadCodigo">
+				select 
+					tc_mantic_codigos_postales.id_codigo_postal as id_key, 
+					tc_mantic_codigos_postales.*
+				from 
+					tc_mantic_codigos_postales
+				where 
+					id_entidad= {idEntidad}
+				and 
+					codigo= '{codigo}'
+			</select>
+    </unit>
+	    <unit id="TcManticDetallesComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_detalles_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_detalles_compras
+        where      
+          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+	  <unit id="TcManticEmpaquesDto">
+      <select id="row">
+        select 
+					tc_mantic_empaques.id_empaque as id_key,
+					tc_mantic_empaques.*
+				from
+					tc_mantic_empaques
+				where 
+					{condicion}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empaques
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticEmpresasDto">
+      <select id="row">
+        select      
+					tc_mantic_empresas.id_empresa as id_key,
+          tc_mantic_empresas.*
+        from      
+          tc_mantic_empresas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas
+        where      
+          id_tipo_empresa = {idTipoEmpresa} and nombre = '{nombre}'
+      </select>
+      <select id="sucursales">
+        select      
+				  tc_mantic_empresas.id_empresa as id_key,
+          tc_mantic_empresas.*
+        from      
+          tc_mantic_empresas
+        where 
+          id_empresa_depende= {idEmpresa}
+				order by
+				  clave
+      </select>
+      <select id="empresas">
+        select      
+				  tc_mantic_empresas.id_empresa as id_key,
+          tc_mantic_empresas.*
+        from      
+          tc_mantic_empresas
+        where 
+          id_empresa in ({sucursales})
+				order by
+				  clave
+      </select>
+    </unit>
+	    <unit id="TcManticManufacturasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_manufacturas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_manufacturas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticOrdenesComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_compras
+        where      
+          ejercicio = {ejercicio} and orden = {orden} and id_empresa = {idEmpresa}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ordenes_compras
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 900000			
+			</select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_compras
+        where 
+          id_orden_compra = {idOrdenCompra} 
+      </select>
+    </unit>
+	  <unit id="TcManticPersonaDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_persona_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_persona_domicilio
+        where      
+          id_persona = {idPersona} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+    </unit>
+	    <unit id="TcManticPersonasTitulosDto">
+      <select id="row">
+        select  
+				  tc_mantic_personas_titulos.id_persona_titulo as id_key,
+					tc_mantic_personas_titulos.*
+				from 
+					tc_mantic_personas_titulos 
+				where 
+					{condicion}
+				order by 
+					orden
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_personas_titulos
+        where      
+          id_persona_titulo = {idPersonaTitulo}
+      </select>
+    </unit>
+	    <unit id="TcManticPresentacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_presentaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_presentaciones
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticPuestosDto">
+      <select id="row">
+       select 
+					tc_mantic_puestos.id_puesto as id_key,
+					tc_mantic_puestos.*
+				from 
+					tc_mantic_puestos
+				where 
+					{condicion} 
+				order by
+				  orden
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_puestos
+        where      
+          id_puesto = {idPuesto}
+      </select>
+    </unit>
+	    <unit id="TcManticSinoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_sino
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_sino
+        where      
+          clave = '{clave}'
+      </select>
+    </unit>
+    <unit id="TcManticTiposContactosDto">
+      <select id="row">
+        select
+          tc_mantic_tipos_contactos.*,
+          tc_mantic_tipos_contactos.id_tipo_contacto as id_key
+        from
+          tc_mantic_tipos_contactos
+        where 
+          {condicion}
+        order by
+          id_tipo_medio,orden 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_contactos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticTiposDiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_dias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_dias
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposDomiciliosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_domicilios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_domicilios
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposEmpresasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_empresas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_empresas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcManticTiposImagenesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_imagenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_imagenes
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposMediosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticTiposMediosPagosDto">
+      <select id="row">
+        select      
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,
+          tc_mantic_tipos_medios_pagos.*
+        from      
+          tc_mantic_tipos_medios_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios_pagos
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="caja">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios_pagos
+        where      
+          id_cobro_caja= 1 or id_tipo_medio_pago= {intermediario}
+				order by
+				  clave
+      </select>
+    </unit>
+	  <unit id="TcManticTiposMonedasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_monedas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_monedas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposPagosDto">
+      <select id="row">
+        select      
+					tc_mantic_tipos_pagos.id_tipo_pago as id_key,
+          tc_mantic_tipos_pagos.*
+        from      
+          tc_mantic_tipos_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_pagos
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposPersonasDto">
+      <select id="row">
+        select 
+					tc_mantic_tipos_personas.id_tipo_persona as id_key,
+					tc_mantic_tipos_personas.*
+				from 
+					tc_mantic_tipos_personas
+				where 
+					{condicion}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_personas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticTiposProveedoresDto">
+      <select id="row">
+        select
+					tc_mantic_tipos_proveedores.*,
+					tc_mantic_tipos_proveedores.id_tipo_proveedor as id_key
+				from
+				 tc_mantic_tipos_proveedores
+				where
+					{condicion}
+				order by
+					id_tipo_proveedor
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_proveedores
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticTiposSexosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_sexos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_sexos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticTiposVentasDto">
+      <select id="row">
+        select 
+					tc_mantic_tipos_ventas.id_tipo_venta as id_key,
+					tc_mantic_tipos_ventas.*
+				from 
+					tc_mantic_tipos_ventas
+				where 
+					{condicion}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_ventas
+        where      
+          nombre = '{nombre}' and id_tipo_venta = {idTipoVenta}
+      </select>
+    </unit>
+	  <unit id="TcManticUnidadesMedidasDto">
+      <select id="row">
+        select      
+					tc_mantic_unidades_medidas.id_unidad_medida as id_key,
+          tc_mantic_unidades_medidas.*
+        from      
+          tc_mantic_unidades_medidas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_unidades_medidas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	  <unit id="TcManticUsosCfdiDto">
+      <select id="row">
+        select      
+					tc_mantic_usos_cfdi.id_uso_cfdi as id_key,
+          tc_mantic_usos_cfdi.*
+        from      
+          tc_mantic_usos_cfdi
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_usos_cfdi
+        where      
+          clave = '{clave}'
+      </select>
+    </unit>
+		<unit id="TcManticNotasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_detalles
+        where      
+          id_nota_entrada = {idNotaEntrada} and id_articulo= {idArticulo}
+      </select>
+			<select id="errores">
+				select
+					count(*) as total
+				from
+					tc_mantic_notas_detalles
+				where      
+					id_nota_entrada= {idNotaEntrada}
+					and cantidades&lt;&gt; 0
+			</select>
+			<select id="iguales">
+				select
+					count(*) as total
+				from
+					tc_mantic_notas_detalles
+				where      
+					id_nota_entrada= {idNotaEntrada}
+					and cantidades&gt; 0
+			</select>
+			<delete id="rows">
+				delete from tc_mantic_notas_detalles where id_nota_entrada= {idNotaEntrada}
+			</delete>
+    </unit>
+    <unit id="TcManticNotasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_bitacora
+        where      
+          id_nota_entrada = {idNotaEntrada} 
+				  and id_nota_estatus = {idNotaEstatus}
+				  and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+			<select id="ultimo">
+				select
+				  *
+				from
+				  tc_mantic_notas_bitacora
+				where
+				  id_nota_entrada= {idNotaEntrada}
+				order by
+				  registro desc
+			</select>
+    </unit>		
+	  <unit id="TcManticVentasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where      
+          consecutivo = '{consecutivo}' and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d')= '{dia}'
+      </select>
+      <select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_ventas
+        where 
+          id_venta = {idVenta} 
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 
+				  and date_format(dia, '%Y%m%d') = '{dia}'
+				  and id_empresa= {idEmpresa}				
+				  and orden {operador} 900000
+			</select>			
+      <select id="siguienteCotizacion">
+        select
+					max(ccotizacion)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 				  
+				  and id_empresa= {idEmpresa}		
+				  and ccotizacion{operador} 900000		
+			</select>			
+      <select id="siguienteTicket">
+        select
+					max(cticket)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 				  
+				  and id_empresa= {idEmpresa}	
+				  and cticket{operador} 900000
+			</select>			
+      <select id="consecutivo">
+        select      
+				  tc_mantic_ventas.id_venta as id_key
+        from      
+          tc_mantic_ventas
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="ticket">
+        select      
+				  tc_mantic_ventas.id_venta as id_key
+        from      
+          tc_mantic_ventas
+        where      
+          ticket = '{consecutivo}'
+      </select>
+      <select id="cliente">
+        select      
+				  tc_mantic_notas_entradas.id_cliente as id_key
+        from      
+          tc_mantic_ventas
+        where      
+          id_venta = '{consecutivo}'
+      </select>			
+			<update id="rows">
+				update 
+				  tc_mantic_ventas 
+				inner join
+				  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta
+				set 
+				  tc_mantic_ventas.id_venta_estatus= 5 
+				where 
+				  tc_mantic_ventas.id_empresa= {idEmpresa} 
+				  and tr_mantic_venta_medio_pago.id_caja= {idCaja}
+			</update>
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ventas.total), 1) as total
+				from 
+					tc_mantic_ventas
+				where  
+					id_venta = {idVenta}
+			</select>
+			<select id="findByIdfactura">
+				select      
+				  tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.*
+        from      
+          tc_mantic_ventas
+        where 
+          id_factura = {idFactura} 
+			</select>
+    </unit>
+    <unit id="TcManticVentasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_articulo = {idArticulo} and id_venta = {idVenta}
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_ventas_detalles.*
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_detalles.registro
+      </select>
+      <select id="detalleVenta">
+        select      
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_key,
+          tc_mantic_ventas_detalles.*
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_detalles.registro
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_ventas_detalles where id_venta= {idVenta}
+			</delete>
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ventas_detalles.importe), 1) as total
+				from 
+					tc_mantic_ventas_detalles 
+				where  
+					id_venta = {idVenta}
+			</select>
+    </unit>
+	  <unit id="TcManticVentasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_bitacora
+        where      
+          id_venta_bitacora = {idVentaBitacora}
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_ventas_bitacora.id_venta_bitacora as id_key,
+          tc_mantic_ventas_bitacora.*
+        from      
+          tc_mantic_ventas_bitacora
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_bitacora.registro
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_ventas_bitacora where id_venta= {idVenta}
+			</delete>
+    </unit>				    
+    <unit id="TcManticNotasEntradasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where      
+          consecutivo = '{consecutivo}' and id_proveedor = {idProveedor} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where 
+          id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_notas_entradas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 900000			
+			</select>		
+			<select id="existe">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_notas_entradas
+        where 
+          id_orden_compra = {idOrdenCompra}
+			</select>
+			<select id="consulta">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where 
+          id_orden_compra = {idOrdenCompra}
+			</select>
+			<select id="folio">
+				select
+				  consecutivo, registro
+				from
+				  tc_mantic_notas_entradas
+				where
+				  factura = '{factura}'
+				  and id_proveedor= {idProveedor}
+				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
+					and id_nota_entrada&lt;&gt; {idNotaEntrada}
+				order by
+				  registro desc				
+			</select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_notas_entradas.id_nota_entrada as id_key
+        from      
+          tc_mantic_notas_entradas
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="orden">
+        select      
+				  tc_mantic_notas_entradas.id_orden_compra as id_key
+        from      
+          tc_mantic_notas_entradas
+        where      
+          id_nota_entrada = '{consecutivo}'
+      </select>
+    </unit>
+    <unit id="TcManticOrdenesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_detalles
+        where      
+          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
+      </select>
+			<select id="incompleto">
+				select
+					count(*) as total
+				from 
+					tc_mantic_ordenes_detalles
+				where
+					id_orden_compra= {idOrdenCompra}
+					and (
+						cantidades &lt;&gt; 0
+						or precios &lt;&gt; 0
+						or importes &lt;&gt; 0
+					)				
+			</select>
+			<select id="diferencia">
+				select
+					sum(cantidades) as unidades, 
+				  sum(importes) as total
+				from
+					tc_mantic_ordenes_detalles
+				where      
+					tc_mantic_ordenes_detalles.id_orden_compra = {idOrdenCompra}				
+			</select>
+			<delete id="rows">
+				delete from tc_mantic_ordenes_detalles where id_orden_compra= {idOrdenCompra}
+			</delete>
+    </unit>						
+    <unit id="TcManticNotasEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_notas_estatus.id_nota_estatus as id_key,
+          tc_mantic_notas_estatus.*
+        from      
+          tc_mantic_notas_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_nota_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticOrdenesEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ordenes_estatus.id_orden_estatus as id_key,
+          tc_mantic_ordenes_estatus.*
+        from      
+          tc_mantic_ordenes_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_orden_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcManticVentasEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento= 2
+  				and {condicion} 
+				order by 
+				  id_venta_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_estatus
+        where      
+          nombre = '{nombre}' and id_tipo_documento= {idTipoDocumento}
+      </select>
+      <select id="rows">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento in ({idTipoDocumento})
+				  and {condicion} 
+				order by 
+				  id_tipo_documento, id_venta_estatus
+      </select>
+      <select id="estatus">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento in ({idTipoDocumento})
+				  and id_venta_estatus in ({estatusAsociados})
+				order by 
+				  id_tipo_documento, id_venta_estatus
+      </select>
+    </unit>		
+    <unit id="TcManticCotizacionesEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento= 3 and 
+          {condicion} 
+				order by 
+				  id_venta_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_estatus
+        where      
+          nombre = '{nombre}' and id_tipo_documento= {idTipoDocumento}
+      </select>
+    </unit>		
+		<unit id="TcManticGruposDto">
+      <select id="row">
+        select      
+          tc_mantic_grupos.id_grupo as id_key,
+				  tc_mantic_grupos.*
+        from      
+          tc_mantic_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_grupos
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="nombre">
+        select      
+          *
+        from      
+          tc_mantic_grupos
+        where      
+          nombre like '%{nombre}%'
+      </select>
+    </unit>
+		<unit id="TcManticGruposClientesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_grupos_clientes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_grupos_clientes
+        where      
+          id_grupo = {idGrupo} and id_cliente = {idCliente}
+      </select>
+      <select id="clientes">
+        select      
+          *
+        from      
+          tc_mantic_grupos_clientes
+        where      
+          id_grupo = {idGrupo}
+      </select>
+    </unit>
+		<unit id="TrManticArticuloGrupoDescuentoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_grupo_descuento
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_grupo_descuento
+        where      
+          id_grupo = {idGrupo} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_grupo_descuento) maximo
+        from      
+          tr_mantic_articulo_grupo_descuento
+      </select>
+			<delete id="rows">
+        delete from tr_mantic_articulo_grupo_descuento where id_articulo={idArticulo} 
+      </delete>
+    </unit>    		
+    <unit id="TcManticOrdenesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_bitacora
+        where      
+          id_orden_compra = {idOrdenCompra} 
+				  and id_orden_estatus = {idComprasEstatus}
+			    and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+			<select id="ultimo">
+				select
+				  *
+				from
+				  tc_mantic_ordenes_bitacora
+				where
+				  id_orden_compra= {idOrdenCompra}
+				order by
+				  registro desc
+			</select>
+    </unit>		
+		<unit id="TrManticVentaMedioPagoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_venta_medio_pago
+        where 
+          {condicion} 
+      </select>
+      <select id="garantia">
+        select      
+          *
+        from      
+          tr_mantic_venta_medio_pago
+        where 
+          id_venta= {idVenta} and id_cierre= {idCierre} and id_tipo_medio_pago={idTipoMedioPago}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_venta_medio_pago
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and id_venta = {idVenta} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
+      </select>
+      <select id="depurar">
+        select
+					count(*) as total
+				from
+				  tr_mantic_venta_medio_pago
+				inner join
+					tc_mantic_cierres_cajas on tr_mantic_venta_medio_pago.id_caja= tc_mantic_cierres_cajas.id_caja
+				where 
+				  tc_mantic_cierres_cajas.id_caja={idCaja}				
+			</select>	
+			<select id="ticket">
+				select      
+					tr_mantic_venta_medio_pago.id_venta_medio_pago as id_key,
+          tr_mantic_venta_medio_pago.*
+        from      
+          tr_mantic_venta_medio_pago
+        where      
+          id_venta = {idVenta}
+			</select>
+      <select id="detalle">
+        select      
+				  tr_mantic_venta_medio_pago.id_venta_medio_pago as id_key,
+          tr_mantic_venta_medio_pago.*
+        from      
+          tr_mantic_venta_medio_pago
+        where      
+          id_venta = {idVenta}
+				order by
+				  tr_mantic_venta_medio_pago.registro
+      </select>
+    </unit>
+		<unit id="TcManticClientesDeudasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_deudas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_deudas
+        where      
+          id_cliente = {idCliente} and id_venta = {idVenta} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="saldoCliente">
+				select 
+					case when sum(saldo) is null then 0 else sum(saldo) end as saldo 
+				from 
+					tc_mantic_clientes_deudas 
+				where 
+					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
+			</select>
+      <select id="saldoClienteExcluirVenta">
+				select 
+					case when sum(saldo) is null then 0 else sum(saldo) end as saldo 
+				from 
+					tc_mantic_clientes_deudas 
+				where 
+					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
+				  and id_venta not in ({idVenta})
+			</select>
+			<select id="deudaVenta">
+				select      
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.*
+        from      
+          tc_mantic_clientes_deudas
+        where 
+          id_venta= {idVenta} 
+				  and id_cliente= {idCliente}
+			</select>
+      <select id="detalle">
+        select      
+				  tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.*
+        from      
+          tc_mantic_clientes_deudas
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_clientes_deudas.registro
+      </select>
+    </unit>
+    <unit id="TcManticClientesPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos
+        where      
+          id_cliente_deuda = {idClienteDeuda} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+          tc_mantic_clientes_pagos.*
+        from      
+          tc_mantic_clientes_pagos
+        where      
+          id_venta = {idClienteDeuda}
+				order by
+				  tc_mantic_clientes_pagos.registro
+      </select>
+    </unit>
+    <unit id="TcManticClientesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticFacturasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas
+        where      
+          id_factura = {idFactura}
+      </select>
+			<select id="detalle">
+				select      
+					tc_mantic_facturas.id_factura as id_key,
+          tc_mantic_facturas.*
+        from      
+          tc_mantic_facturas
+        where      
+          id_factura = {idFactura}
+			</select>
+			<select id="facturama">
+				select      
+					tc_mantic_facturas.id_factura
+        from      
+          tc_mantic_facturas
+        where      
+          id_facturama = '{idFacturama}'
+			</select>
+    </unit>
+		<unit id="TcManticTrabajosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_trabajos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_trabajos
+        where      
+          codigo = '{codigo}' and id_empresa = {idEmpresa}
+      </select>
+    </unit>
+		<unit id="TcManticClientesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_archivos
+        where      
+          id_cliente_representante = {idClienteRepresentante} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_clientes_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+    </unit>
+		<unit id="TcManticEmpresasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and id_empresa_archivo = {idEmpresaArchivo} and nombre = '{nombre}'
+      </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<update id="rows">
+				update tc_mantic_empresas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago}
+			</update>
+    </unit>
+    <unit id="TcManticTransferenciasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias
+        where      
+          id_empresa= {idEmpresa}
+          and consecutivo= '{consecutivo}'
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_transferencias
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}			
+				  and orden{operador} 900000	
+			</select>		
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_transferencias
+        where 
+          id_transferencia= {idTransferencia}
+      </select>
+      <select id="todos">
+        select      
+          tc_mantic_transferencias.id_transferencia as id_key,
+          tc_mantic_transferencias.*
+        from      
+          tc_mantic_transferencias
+        order by
+          tc_mantic_transferencias.registro
+      </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_transferencias.id_transferencia as id_key
+        from      
+          tc_mantic_transferencias
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>
+    <unit id="TcManticTransferenciasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_bitacora
+        where      
+          id_usuario= {idUsuario} 
+          and id_transferencia_estatus= {idTransferenciaEstatus} 
+          and id_transferencia= {idTransferencia}
+				  and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="todos">
+        select      
+          tc_mantic_transferencias_bitacora.id_transferencia_bitacora as id_key,
+          tc_mantic_transferencias_bitacora.*
+        from      
+          tc_mantic_transferencias_bitacora
+        order by
+          tc_mantic_transferencias_bitacora.id_transferencia_bitacora,  tc_mantic_transferencias_bitacora.id_transferencia_estatus
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_transferencias_bitacora where id_transferencia= {idTransferencia}
+			</delete>
+    </unit>
+    <unit id="TcManticTransferenciasEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_transferencias_estatus.id_transferencia_estatus as id_key,
+					tc_mantic_transferencias_estatus.*
+        from      
+          tc_mantic_transferencias_estatus
+        where 
+          {condicion} 
+				order by 
+					id_transferencia_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>	
+		<unit id="TcManticClientesPagosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_archivos
+        where      
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticRequisicionesEstatusDto">
+      <select id="row">
+        select     
+					tc_mantic_requisiciones_estatus.id_requisicion_estatus as id_key,
+          tc_mantic_requisiciones_estatus.*
+        from      
+          tc_mantic_requisiciones_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_estatus
+        where      
+          id_requisicion_estatus = {idRequisicionEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticFacturamaBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturama_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturama_bitacora
+        where      
+          id_facturama_bitacora = {idFacturamaBitacora}
+      </select>
+    </unit>
+    <unit id="TcManticPersonasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_personas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_personas_archivos
+        where      
+          id_persona_archivo = {idPersonaArchivo} and id_persona = {idPersona} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}' and registro = {registro}
+      </select>
+    </unit>
+		<unit id="TcManticFacturasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas_bitacora
+        where      
+          id_factura_bitacora = {idFacturaBitacora}
+      </select>
+		</unit>
+  </dml>    
+</process>

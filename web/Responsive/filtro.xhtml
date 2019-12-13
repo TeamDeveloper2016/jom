@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtroResponsive.xhtml">
+    <ui:param name="titulo" value="Filtro" />
+    <ui:define name="librerias">
+        <style type="text/css">            
+        </style>
+    </ui:define>
+    <ui:define name="contenido">        
+			<div class="janal-align-right xs-pantalla janal-wid-100">
+				<p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+						
+			</div>			
+			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+				<div class="ui-grid-row janal-grid-row">
+					<div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel for="nombreSentinel" value="Nombre:"/>
+                <p:inputText id="nombreSentinel" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="colorSentinel" value="Color:"/>
+                <p:inputText id="colorSentinel" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="añoSentinel" value="Año:"/>
+                <p:inputText id="añoSentinel" styleClass="janal-wid-100-txt"/>   
+                <p:outputLabel for="calculadoraSentinel" value="Calculadora:"/>
+                <p:inputText id="calculadoraSentinel" styleClass="janal-wid-100-txt">  
+                    <pe:calculator/>  
+                </p:inputText>   
+								<p:separator/>
+								<div class="janal-align-right">
+									<p:commandButton id="buscarSentinel" styleClass="lg-pantalla" value="Buscar" icon="fa fa-filter"  oncomplete="janal.execute()"/>
+									<p:commandButton id="buscarSentinelIcon" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter"  oncomplete="janal.execute()"/>
+								</div>
+              </h:panelGrid>
+						</p:panel>
+					</div>
+					<div id="collapse-content" class="ui-grid-col-9">
+						<p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
+              <f:facet name="header">         
+								<div class="lg-pantalla">
+									<p:menuButton value="Opciones">
+										<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
+									</p:menuButton>
+								</div>
+								<div class="xs-pantalla">
+									<p:commandButton id="agregarIcon" icon="fa fa-plus" action="accion" process="@this" ajax="false" immediate="true"/>
+								</div>                       
+              </f:facet>
+                <p:column headerText="Id" sortBy="#{car.id}">
+                   <h:outputText value="#{car.id}" />
+                </p:column>
+                <p:column headerText="Año" sortBy="#{car.year}">
+                   <h:outputText value="#{car.year}" />
+                </p:column>
+                <p:column headerText="Nombre" sortBy="#{car.brand}">
+                   <h:outputText value="#{car.brand}" />
+                </p:column>
+                <p:column headerText="Color" sortBy="#{car.color}">
+                   <h:outputText value="#{car.color}" />
+                </p:column>
+              <f:facet name="footer">DataTable Footer</f:facet>
+            </p:dataTable>
+					</div>
+				</div>
+			</div>			
+    </ui:define>    
+</ui:composition>

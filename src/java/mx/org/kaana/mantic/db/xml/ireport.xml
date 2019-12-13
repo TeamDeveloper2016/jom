@@ -1,0 +1,1393 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para la generacion de reportes para MANTIC
+-->
+<process>
+  <model>
+  </model>
+  <dml>
+		<unit id="VistaReportesOrdenesComprasDto">
+			<select id="reporteOrden">
+				select
+					tc_mantic_ordenes_compras.id_orden_compra as id_key,
+					tc_mantic_ordenes_compras.id_empresa,  
+				  tc_mantic_empresas.clave as clave_empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,
+				  tc_mantic_empresas.titulo as titulo_empresa,				        
+				  tc_mantic_personas.rfc rfc_contacto,
+					tc_mantic_ordenes_compras.consecutivo,  
+					tc_mantic_proveedores.id_proveedor,  
+					tc_mantic_proveedores.razon_social as proveedor,
+					tc_mantic_ordenes_compras.total,
+				  tc_mantic_ordenes_estatus.nombre as estatus,
+					tc_mantic_ordenes_compras.id_orden_estatus,
+					tc_mantic_ordenes_compras.registro as registro_orden_compra,
+					tc_mantic_ordenes_compras.entrega_estimada,
+					tc_mantic_ordenes_compras.impuestos,					
+					tc_mantic_ordenes_compras.sub_total,
+					tc_mantic_ordenes_compras.descuentos,					
+					tc_mantic_ordenes_compras.observaciones,
+					telefono.valor as contacto_telefono,
+					correo.valor as contacto_email,					
+					tc_mantic_ordenes_detalles.*,
+					concat(tc_mantic_personas.nombres, ' ' , tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as contacto,
+				  concat(agentes.nombres, ' ' , agentes.paterno, ' ', agentes.materno) as agente,	
+				  tc_mantic_domicilios.calle as proveedor_calle,
+					tc_mantic_domicilios.asentamiento as proveedor_colonia,
+					upper(tc_janal_localidades.descripcion) as localidad,
+					telefono_proveedor.valor as proveedor_telefono,
+					correo_proveedor.valor as proveedor_email,									
+					domicilio_almacen.asentamiento as almacen_colonia,
+					domicilio_almacen.calle as almacen_calle,
+					upper(localidad_almacen.descripcion) almacen_localidad,
+					telefono_almacen.valor as almacen_telefono,
+					correo_almacen.valor as almacen_email,
+					tc_mantic_articulos.nombre as articulo,
+					tc_mantic_articulos.precio								
+				from 
+					tc_mantic_ordenes_compras
+				inner join 
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+				inner join 
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tr_mantic_proveedor_domicilio on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_domicilio.id_proveedor and tr_mantic_proveedor_domicilio.id_principal=1
+				inner join 
+					tc_mantic_domicilios on tr_mantic_proveedor_domicilio.id_domicilio = tc_mantic_domicilios.id_domicilio
+				inner join 
+					tc_janal_localidades on tc_mantic_domicilios.id_localidad = tc_janal_localidades.id_localidad
+				left join 
+					tr_mantic_proveedor_tipo_contacto telefono_proveedor on tc_mantic_proveedores.id_proveedor = telefono_proveedor.id_proveedor and telefono_proveedor.id_tipo_contacto=1
+				left join 
+					tr_mantic_proveedor_tipo_contacto correo_proveedor on tc_mantic_proveedores.id_proveedor = correo_proveedor.id_proveedor and correo_proveedor.id_tipo_contacto=9
+				left join 
+					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
+				left join 
+					tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen = tc_mantic_almacenes.id_almacen
+				left join 
+					tr_mantic_almacen_domicilio on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_domicilio.id_almacen and tr_mantic_almacen_domicilio.id_principal=1
+				left join 
+					tc_mantic_domicilios domicilio_almacen on tr_mantic_almacen_domicilio.id_domicilio = domicilio_almacen.id_domicilio
+				left join 
+					tc_janal_localidades localidad_almacen on domicilio_almacen.id_localidad = localidad_almacen.id_localidad
+				left join 
+					tr_mantic_almacen_tipo_contacto telefono_almacen on tc_mantic_almacenes.id_almacen = telefono_almacen.id_almacen and telefono_almacen.id_tipo_contacto=1
+				left join 
+					tr_mantic_almacen_tipo_contacto correo_almacen on tc_mantic_almacenes.id_almacen = correo_almacen.id_almacen and correo_almacen.id_tipo_contacto=9
+				inner join 
+					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+				inner join 
+					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+				left join 
+					tc_mantic_personas on tc_mantic_empresas.id_responsable = tc_mantic_personas.id_persona
+				left join 
+					tr_mantic_persona_tipo_contacto telefono on tc_mantic_personas.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
+				left join 
+					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+				inner join 
+					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+				where
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
+			</select>
+      <select id="ordenDetalle">
+        select
+          tc_mantic_ordenes_compras.id_orden_compra as id_key,
+          tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_empresas.clave as clave_empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
+          tc_mantic_empresas.titulo as titulo_empresa,
+          tc_mantic_ordenes_compras.consecutivo,
+          tc_mantic_proveedores.id_proveedor,
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_proveedores.rfc as proveedor_rfc,
+          tc_mantic_ordenes_compras.total total_orden,
+          tc_mantic_ordenes_estatus.nombre as estatus,
+          tc_mantic_ordenes_compras.id_orden_estatus,
+          tc_mantic_ordenes_compras.registro as registro_orden_compra,
+          tc_mantic_ordenes_compras.entrega_estimada,
+          tc_mantic_ordenes_compras.impuestos impuestos_orden,
+          tc_mantic_ordenes_compras.sub_total sub_total_orden,
+          tc_mantic_ordenes_compras.descuentos descuentos_orden,
+          tc_mantic_ordenes_compras.observaciones,
+          tc_mantic_ordenes_detalles.*,
+          concat('(',
+            ifnull((select
+              tc_mantic_articulos_codigos.codigo 
+            from
+              tc_mantic_articulos_codigos 
+            where
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= tc_mantic_proveedores.id_proveedor),
+            ''),
+            ' ) ',
+            tc_mantic_articulos.nombre) as articulo,
+          tc_mantic_articulos.precio,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+				from 
+					tc_mantic_ordenes_compras
+				inner join 
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+				inner join 
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+				inner join 
+					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
+      </select>
+      <select id="diferenciasOrdenCompra">
+         select
+          tc_mantic_ordenes_compras.id_orden_compra as id_key,
+          tc_mantic_ordenes_compras.id_empresa,  
+				  tc_mantic_empresas.clave as clave_empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,
+          tc_mantic_ordenes_compras.consecutivo,
+          tc_mantic_ordenes_compras.total total_orden,
+          tc_mantic_ordenes_estatus.nombre as estatus,
+          tc_mantic_ordenes_compras.id_orden_estatus,
+          tc_mantic_ordenes_compras.registro as registro_orden_compra,
+          tc_mantic_ordenes_compras.entrega_estimada,
+          tc_mantic_ordenes_compras.impuestos impuestos_orden,
+          tc_mantic_ordenes_compras.sub_total sub_total_orden,
+          tc_mantic_ordenes_compras.descuentos descuentos_orden,
+          tc_mantic_ordenes_compras.observaciones,
+          tc_mantic_ordenes_detalles.*,
+          concat('(',
+            ifnull((select distinct
+              tc_mantic_articulos_codigos.codigo 
+            from
+              tc_mantic_articulos_codigos 
+            where
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor=tc_mantic_ordenes_compras.id_proveedor),
+            ''),
+            ' ) ',
+            tc_mantic_articulos.nombre) as articulo,
+          tc_mantic_articulos.precio,
+          (select group_concat(tc_mantic_notas_entradas.factura separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) factura,
+			    (select group_concat(tc_mantic_notas_entradas.consecutivo separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) consecutivo_nota_entrada,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+         from 
+           tc_mantic_ordenes_compras
+         inner join 
+           tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+         inner join 
+           tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+         inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+         inner join 
+           tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+         where 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} 
+          and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.importes &lt;&gt; 0)
+      </select>
+      <select id="ordenesCompra">
+        select
+					tc_mantic_ordenes_compras.id_orden_compra as id_key,
+					tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
+				  tc_mantic_empresas.clave as empresa,  
+					tc_mantic_ordenes_compras.consecutivo,  
+					tc_mantic_proveedores.id_proveedor,  
+					tc_mantic_proveedores.razon_social as proveedor,
+					tc_mantic_ordenes_compras.total,
+				  tc_mantic_ordenes_estatus.nombre as estatus,
+					tc_mantic_ordenes_compras.id_orden_estatus,
+					tc_mantic_ordenes_compras.registro,
+					tc_mantic_ordenes_estatus.estatus_asociados,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+				from 
+					tc_mantic_ordenes_compras
+				inner join 
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+				inner join 
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
+					and {condicion}
+				{sortOrder}
+      </select>
+      <select id="detalleCompletoOrdenCompra">
+        select
+          tc_mantic_ordenes_compras.id_orden_compra,
+          tc_mantic_ordenes_compras.id_empresa,  
+          tc_mantic_empresas.clave as clave_empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
+          tc_mantic_empresas.titulo as titulo_empresa,
+          tc_mantic_ordenes_compras.id_almacen,
+          tc_mantic_ordenes_compras.consecutivo consecutivo,  
+          tc_mantic_proveedores.id_proveedor,  
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_ordenes_compras.total importe_orden_compra,
+          tc_mantic_ordenes_estatus.nombre estatus_orden_compra,
+          tc_mantic_ordenes_compras.registro registro_orden_compra,
+          tc_mantic_ordenes_compras.observaciones,
+          tc_mantic_notas_entradas.id_nota_entrada,
+          tc_mantic_notas_entradas.consecutivo consecutivo_nota_entrada,
+          tc_mantic_notas_entradas.registro registro_nota_entrada,
+          tc_mantic_notas_entradas.total importe_nota_entrada,
+          tc_mantic_notas_estatus.nombre estatus_nota_entrada,
+          tc_mantic_devoluciones.id_devolucion,
+          tc_mantic_devoluciones.consecutivo consecutivo_devolucion,
+          tc_mantic_devoluciones.registro registro_devolucion,
+          tc_mantic_devoluciones.total importe_devolucion,
+          tc_mantic_devoluciones_estatus.nombre estatus_devolucion,
+          tc_mantic_creditos_notas.id_credito_nota,
+          tc_mantic_creditos_notas.consecutivo consecutivo_credito_nota,
+          tc_mantic_creditos_notas.registro registro_credito_nota,
+          tc_mantic_creditos_notas.importe importe_credito_nota,
+          tc_mantic_creditos_estatus.nombre estatus_credito_nota,
+				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+        from 
+          tc_mantic_ordenes_compras
+        inner join 
+          tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+        inner join 
+          tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join 
+          tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+        inner join 
+          tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        left join 
+          tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
+        left join 
+          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus
+        left join
+          tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
+        left join 
+          tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus
+        left join
+          tc_mantic_creditos_notas on tc_mantic_devoluciones.id_devolucion = tc_mantic_creditos_notas.id_devolucion 
+        left join 
+          tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
+        where 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
+      </select>
+		</unit> 
+    <unit id="VistaTicketVentaDto">
+      <select id="ticket">
+        select 
+          tc_mantic_ventas.id_venta id_key,
+          tc_mantic_ventas.consecutivo consecutivo_venta,
+          tc_mantic_ventas.descuento descuento_venta,
+          tc_mantic_ventas.extras extras_venta,
+          tc_mantic_ventas.descuentos descuentos_venta,
+          tc_mantic_ventas.impuestos impuestos_venta,
+          tc_mantic_ventas.sub_total subtotal_venta,
+          tc_mantic_ventas.total total_venta,
+          tc_mantic_ventas.registro,
+          tc_mantic_ventas.observaciones,
+          tc_mantic_ventas_detalles.*,
+        	tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
+         from 
+          tc_mantic_ventas 
+         inner join 
+          tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+         inner join 
+          tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus = tc_mantic_ventas_estatus.id_venta_estatus
+        inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+         where
+          tc_mantic_ventas.id_venta = {idVenta}   
+         order by 
+          tc_mantic_ventas.id_venta,tc_mantic_ventas_detalles.id_venta_detalle asc     
+      </select>
+      <select id="ventas">
+        select 
+          tc_mantic_ventas.id_venta id_key,
+          concat('{letra}',tc_mantic_ventas.{campoConsecutivo}) as consecutivo,
+          tc_mantic_ventas.descuento descuento_venta,
+          tc_mantic_ventas.extras extras_venta,
+          tc_mantic_ventas.descuentos descuentos_venta,
+          tc_mantic_ventas.impuestos venta_impuestos,
+          tc_mantic_ventas.sub_total subtotal_venta,
+          tc_mantic_ventas.total total_venta,
+          tc_mantic_ventas.total total_final,
+          tc_mantic_ventas.registro registro_venta,
+          tc_mantic_ventas.vigencia,
+          tc_mantic_ventas.observaciones,
+          tc_mantic_ventas_detalles.id_venta_detalle,          
+					tc_mantic_ventas_detalles.id_venta,          
+					tc_mantic_ventas_detalles.id_articulo,          
+					tc_mantic_ventas_detalles.codigo,          
+					tc_mantic_ventas_detalles.sat,          
+					tc_mantic_ventas_detalles.nombre as nombre_articulo,          
+          tc_mantic_ventas_detalles.cantidad,          
+					tc_mantic_ventas_detalles.precio,          
+					tc_mantic_ventas_detalles.costo,          
+					tc_mantic_ventas_detalles.descuento,          
+					tc_mantic_ventas_detalles.extras,          
+					tc_mantic_ventas_detalles.descuentos,          
+					tc_mantic_ventas_detalles.iva,          
+					tc_mantic_ventas_detalles.impuestos,          
+					tc_mantic_ventas_detalles.sub_total,          
+					tc_mantic_ventas_detalles.importe,          
+					tc_mantic_ventas_detalles.unidad_medida,          
+					tc_mantic_ventas_detalles.utilidad,          
+					tc_mantic_ventas_detalles.unitario_sin_iva,          
+					tc_mantic_ventas_detalles.registro,          			
+					tc_mantic_articulos.nombre,
+        	tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_alta
+        from 
+          tc_mantic_ventas 
+        inner join 
+          tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+        inner join 
+          tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus = tc_mantic_ventas_estatus.id_venta_estatus
+        inner join 
+          tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+        inner join				
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+        inner join
+          tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where
+          tc_mantic_ventas.id_venta = {idVenta}   
+        order by 
+          tc_mantic_ventas.id_venta,tc_mantic_ventas_detalles.id_venta_detalle asc     
+      </select>
+    </unit>
+    <unit id="VistaReporteNotaEntrada">
+      <select id= "detalleNotaEntrada">
+        select      
+          tc_mantic_notas_entradas.id_sin_iva as sin_iva, 
+          tc_mantic_notas_entradas.registro registro_nota_entrada,
+					tc_mantic_notas_entradas.tipo_de_cambio tipo_de_cambio_nota, 
+					tc_mantic_notas_entradas.observaciones observaciones_nota_entrada,
+					tc_mantic_notas_entradas.sub_total sub_total_nota,
+					tc_mantic_notas_entradas.total total_final,
+					tc_mantic_notas_entradas.impuestos impuestos_nota,
+					tc_mantic_notas_entradas.descuentos descuentos_nota,
+					tc_mantic_notas_entradas.descuento descuento_nota,
+					tc_mantic_notas_entradas.extras extras_nota,
+					tc_mantic_notas_entradas.factura factura_nota,
+					tc_mantic_notas_entradas.fecha_factura,
+					tc_mantic_notas_entradas.fecha_recepcion,
+					tc_mantic_notas_entradas.consecutivo, 
+					tc_mantic_notas_entradas.registro registro_nota,
+          concat('(',
+            ifnull((select
+              tc_mantic_articulos_codigos.codigo 
+            from
+              tc_mantic_articulos_codigos 
+            where
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor=tc_mantic_notas_entradas.id_proveedor),
+            ''),
+            ' ) ',
+          tc_mantic_articulos.nombre) as nombre,
+					tc_mantic_notas_detalles.sat, 
+					tc_mantic_notas_detalles.codigo, 
+					tc_mantic_notas_detalles.costo, 
+					(tc_mantic_notas_detalles.costo- (tc_mantic_notas_detalles.descuentos/ tc_mantic_notas_detalles.cantidad)) as valor, 
+					tc_mantic_notas_detalles.descuento, 
+					tc_mantic_notas_detalles.id_nota_entrada, 
+					tc_mantic_notas_detalles.extras, 
+					tc_mantic_notas_detalles.importe, 
+					tc_mantic_notas_entradas.total, 
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_notas_detalles.iva, 
+					tc_mantic_notas_detalles.impuestos as calculo, 
+					tc_mantic_notas_detalles.sub_total, 
+					tc_mantic_notas_detalles.cantidad as solicitados, 
+					tc_mantic_notas_detalles.id_nota_detalle, 
+					tc_mantic_notas_detalles.id_articulo, 
+					tc_mantic_notas_detalles.descuentos, 
+					tc_mantic_notas_entradas.id_proveedor, 
+				  tc_mantic_notas_detalles.excedentes
+        from      
+          tc_mantic_notas_entradas
+        inner join      
+          tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+        inner join
+          tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_notas_entradas.id_nota_entrada = {idNotaEntrada}
+				order by
+				  tc_mantic_notas_detalles.registro		
+      </select>
+      <select id= "detalleNotaEntradaDif">
+        select      
+          tc_mantic_notas_entradas.id_sin_iva as sin_iva, 
+          tc_mantic_notas_entradas.registro registro_nota_entrada,
+					tc_mantic_notas_entradas.tipo_de_cambio tipo_de_cambio_nota, 
+					tc_mantic_notas_entradas.observaciones observaciones_nota_entrada,
+					tc_mantic_notas_entradas.sub_total sub_total_nota,
+					tc_mantic_notas_entradas.total total_final,
+					tc_mantic_notas_entradas.impuestos impuestos_nota,
+					tc_mantic_notas_entradas.descuentos descuentos_nota,
+					tc_mantic_notas_entradas.descuento descuento_nota,
+					tc_mantic_notas_entradas.extras extras_nota,
+					tc_mantic_notas_entradas.factura factura_nota,
+					tc_mantic_notas_entradas.fecha_factura,
+					tc_mantic_notas_entradas.fecha_recepcion,
+					tc_mantic_notas_entradas.consecutivo, 
+					tc_mantic_notas_entradas.registro registro_nota,
+					concat('(',
+            ifnull((select
+              tc_mantic_articulos_codigos.codigo 
+            from
+              tc_mantic_articulos_codigos 
+            where
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor=tc_mantic_notas_entradas.id_proveedor),
+            ''),
+            ' ) ',
+          tc_mantic_articulos.nombre) as nombre,
+					tc_mantic_notas_detalles.sat, 
+					tc_mantic_notas_detalles.codigo, 
+					tc_mantic_notas_detalles.costo, 
+					(tc_mantic_notas_detalles.costo- (tc_mantic_notas_detalles.descuentos/ tc_mantic_notas_detalles.cantidad)) as valor, 
+					tc_mantic_notas_detalles.descuento, 
+					tc_mantic_notas_detalles.id_nota_entrada, 
+					tc_mantic_notas_detalles.extras, 
+					tc_mantic_notas_detalles.importe, 
+					tc_mantic_notas_entradas.total, 
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_notas_detalles.iva, 
+					tc_mantic_notas_detalles.impuestos, 
+					tc_mantic_notas_detalles.sub_total, 
+					tc_mantic_notas_detalles.cantidades as solicitados, 
+					tc_mantic_notas_detalles.id_nota_detalle, 
+					tc_mantic_notas_detalles.id_articulo, 
+					tc_mantic_notas_detalles.descuentos, 
+					tc_mantic_notas_entradas.id_proveedor, 
+				  tc_mantic_notas_detalles.excedentes
+        from      
+          tc_mantic_notas_entradas
+        inner join      
+          tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+        inner join
+          tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_notas_entradas.id_nota_entrada = {idNotaEntrada}
+				  and tc_mantic_notas_detalles.cantidades&lt;&gt; 0
+				order by
+				  tc_mantic_notas_detalles.registro		
+      </select>
+    </unit>
+    <unit id="VistaReporteDevoluciones">
+      <select id= "detalleDevolucion">
+        select
+					tc_mantic_notas_detalles.id_nota_detalle,
+					tc_mantic_devoluciones.id_devolucion,
+					tc_mantic_devoluciones.consecutivo,
+					tc_mantic_devoluciones.observaciones observaciones_dev,
+					tc_mantic_devoluciones.sub_total sub_total_dev,
+					tc_mantic_devoluciones.total total_final,
+					tc_mantic_devoluciones.impuestos impuestos_dev,
+					tc_mantic_devoluciones.descuentos descuentos_dev,
+					tc_mantic_devoluciones.descuento descuento_dev,
+					tc_mantic_devoluciones.extras extras_dev,
+					tc_mantic_devoluciones.registro registro_dev,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_notas_detalles.sat,
+					tc_mantic_notas_detalles.codigo,
+          concat('(',
+            ifnull((select
+              tc_mantic_articulos_codigos.codigo 
+            from
+              tc_mantic_articulos_codigos 
+            where
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo  and tc_mantic_articulos_codigos.id_proveedor=(select id_proveedor from tc_mantic_notas_entradas where tc_mantic_devoluciones.id_nota_entradatc_mantic_devoluciones)),
+            ''),
+            ' ) ',
+            tc_mantic_articulos.nombre) as nombre,
+					tc_mantic_devoluciones_detalles.cantidad,
+					tc_mantic_devoluciones_detalles.registro,
+					tc_mantic_notas_detalles.costo,
+					(tc_mantic_notas_detalles.costo- (tc_mantic_notas_detalles.descuentos/ tc_mantic_notas_detalles.cantidad)) as valor, 
+					tc_mantic_notas_detalles.descuento,
+					tc_mantic_notas_detalles.extras,
+					tc_mantic_notas_detalles.importe,
+					tc_mantic_notas_detalles.iva, 
+					tc_mantic_notas_detalles.impuestos, 
+					tc_mantic_notas_detalles.descuentos, 
+					tc_mantic_notas_detalles.sub_total, 
+				  tc_mantic_devoluciones_estatus.nombre as estatus,
+				  tc_mantic_devoluciones.id_nota_entrada
+				from
+					tc_mantic_devoluciones
+				inner join
+					tc_mantic_devoluciones_detalles on tc_mantic_devoluciones.id_devolucion= tc_mantic_devoluciones_detalles.id_devolucion
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_devoluciones_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+				inner join
+				  tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus= tc_mantic_devoluciones_estatus.id_devolucion_estatus
+        inner join
+          tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_devoluciones.id_devolucion = {idDevolucion}
+				order by
+				  tc_mantic_notas_detalles.registro,tc_mantic_devoluciones.registro	
+      </select>
+    </unit>
+    <unit id="VistaReporteNotasCredito">
+      <select id= "detalleNostasCredito">
+        select notas_credito.* , ifnull(sum(importe), 0) as total_final from(select
+          tc_mantic_creditos_notas.id_credito_nota as id_key,
+          tc_mantic_creditos_notas.id_credito_nota,
+          tc_mantic_creditos_notas.id_devolucion,
+          tc_mantic_creditos_notas.observaciones,
+          tc_mantic_devoluciones.consecutivo,
+          tc_mantic_devoluciones.registro registro_dev,
+          tc_mantic_notas_entradas.id_nota_entrada,
+          tc_mantic_notas_entradas.consecutivo as nota_entrada,
+          tc_mantic_proveedores.id_proveedor,
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_creditos_notas.consecutivo consecutivo_credito,
+          tc_mantic_empresas.clave as empresa,
+          tc_mantic_creditos_notas.folio,
+          tc_mantic_creditos_notas.importe,
+          tc_mantic_creditos_estatus.nombre as estatus,
+          tc_mantic_creditos_estatus.id_credito_estatus,
+          tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
+          tc_mantic_tipos_creditos_notas.nombre tipo,
+          tc_mantic_creditos_notas.registro      
+        from
+          tc_mantic_creditos_notas         
+        inner join
+          tc_mantic_tipos_creditos_notas on tc_mantic_creditos_notas.id_tipo_credito_nota=tc_mantic_tipos_creditos_notas.id_tipo_credito_nota      
+        inner join
+          tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus      
+        inner join
+          tc_mantic_empresas on tc_mantic_creditos_notas.id_empresa= tc_mantic_empresas.id_empresa         
+        left join
+          tc_mantic_devoluciones on tc_mantic_creditos_notas.id_devolucion= tc_mantic_devoluciones.id_devolucion
+        left join
+          tc_mantic_notas_entradas on tc_mantic_creditos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        left join
+          tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where
+          tc_mantic_creditos_notas.id_credito_nota in ({idCreditoNota})) as notas_credito	
+      </select>
+    </unit>
+    <unit id="VistaReporteCuentaPorPagarDetalle">
+      <select id="pagosDeuda">
+				select
+					tc_mantic_empresas_pagos.id_empresa_pago as id_key,
+            tc_mantic_notas_entradas.consecutivo,
+            tc_mantic_empresas_deudas.importe,
+            tc_mantic_empresas_deudas.saldo,
+            ifnull(tc_mantic_empresas_pagos.pago,
+            '0.00') pago,
+            ifnull(concat(tc_mantic_personas.nombres,
+            ' ',
+            tc_mantic_personas.paterno,
+            ' ',
+            tc_mantic_personas.materno),' ') as persona,
+            tc_mantic_empresas_pagos.registro,
+            tc_mantic_empresas_deudas.registro registro_deuda,
+            tc_mantic_empresas_deudas.limite,
+            tc_mantic_empresas_deudas.saldo total_final,
+            tc_mantic_empresas_deudas.importe importe_deuda,
+            tc_mantic_empresas_deudas.observaciones observaciones_deuda,
+            tc_mantic_tipos_medios_pagos.nombre tipo_medio_pago,
+            ifnull(tc_mantic_empresas_pagos.observaciones, ' ') observaciones  
+				from
+					tc_mantic_empresas_deudas
+				left join
+					tc_mantic_empresas_pagos on tc_mantic_empresas_deudas.id_empresa_deuda = tc_mantic_empresas_pagos.id_empresa_deuda
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_empresas_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+        left join
+					tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				left join
+					tc_janal_usuarios on tc_mantic_empresas_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				left join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
+				order by
+					tc_mantic_notas_entradas.consecutivo, 
+					tc_mantic_empresas_deudas.registro desc						
+			</select>
+    </unit>
+    <unit id="VistaReporteCuentaPorCobrarDetalle">
+      <select id="cobroDeuda">
+				select
+					tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_clientes_deudas.importe importe_deuda,
+					tc_mantic_clientes_deudas.saldo total_final,
+					tc_mantic_clientes_deudas.saldo,
+          tc_mantic_clientes_deudas.limite,
+					tc_mantic_clientes_pagos.pago,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_clientes_pagos.registro,
+					tc_mantic_clientes_deudas.registro registro_deuda,
+					tc_mantic_clientes_pagos.observaciones,
+          tc_mantic_tipos_medios_pagos.nombre tipo_medio_pago,
+					tc_mantic_clientes_deudas.observaciones observaciones_deuda,tc_mantic_clientes_deudas.id_venta
+				from
+					tc_mantic_clientes_pagos
+				inner join
+					tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_clientes_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+        inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}						
+				order by
+					tc_mantic_ventas.consecutivo, 
+					tc_mantic_clientes_deudas.registro desc					
+			</select>
+      <select id="detalleGarantias">
+        	select 
+					tc_mantic_garantias_detalles.id_garantia_detalle as id_key,
+          tc_mantic_garantias.id_venta,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_ventas_detalles.codigo,
+					tc_mantic_ventas_detalles.nombre,
+					tc_mantic_garantias_detalles.cantidad,
+					tc_mantic_garantias_detalles.importe,
+					tc_mantic_garantias_detalles.id_reparacion,
+					tc_janal_booleanos.descripcion reparacion,
+			  	tc_mantic_garantias_detalles.registro,
+			  	tc_mantic_garantias_estatus.nombre as estatus
+				from 
+					tc_mantic_garantias
+				inner join 
+				  tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
+				inner join 
+					tc_mantic_garantias_estatus on tc_mantic_garantias.id_garantia_estatus = tc_mantic_garantias_estatus.id_garantia_estatus
+				inner join 
+				  tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
+				inner join
+				  tc_janal_booleanos on tc_mantic_garantias_detalles.id_reparacion= tc_janal_booleanos.id_booleano
+				where 
+					tc_mantic_garantias.id_venta= {idVenta}
+				   and tc_mantic_garantias.id_garantia_estatus in (3,4,6)
+					and tc_mantic_garantias_detalles.cantidad> 0				
+			  order by
+				  tc_mantic_garantias.consecutivo, tc_mantic_ventas_detalles.codigo
+      </select>
+    </unit>
+    <unit id="VistaReporteRequisiciones">
+      <select id="requisiciones">
+				select
+          tc_mantic_requisiciones.id_requisicion as id_key,
+          tc_mantic_requisiciones.id_requisicion,
+          tc_mantic_requisiciones.consecutivo,
+          tc_mantic_requisiciones.id_solicita,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicita,
+          tc_mantic_requisiciones.id_empresa,
+          tc_mantic_empresas.clave as empresa,
+          tc_mantic_requisiciones.orden,
+          tc_mantic_requisiciones.observaciones,
+          tc_mantic_requisiciones.registro,
+          tc_mantic_requisiciones.fecha_pedido,
+          tc_mantic_requisiciones.fecha_entregada,
+          tc_mantic_requisiciones_estatus.id_requisicion_estatus,
+          tc_mantic_requisiciones_estatus.nombre estatus,
+         '' total_final
+        from
+          tc_mantic_requisiciones         
+        inner join
+          tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa     
+        inner join
+          tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus= tc_mantic_requisiciones_estatus.id_requisicion_estatus   
+        inner join
+          tc_mantic_personas on tc_mantic_requisiciones.id_solicita= tc_mantic_personas.id_persona
+        where
+					tc_mantic_requisiciones.id_empresa in ({idEmpresa})
+					and {condicion}
+				{sortOrder}	
+			</select>
+      <select id="requisicionDetalle">
+        select
+          tc_mantic_requisiciones.id_requisicion as id_key,
+          tc_mantic_requisiciones.id_requisicion,
+          tc_mantic_requisiciones.consecutivo,
+          tc_mantic_requisiciones.id_solicita,
+          concat(solicito.nombres, ' ', solicito.paterno, ' ', solicito.materno) as solicita,
+          concat(elaboro.nombres, ' ', elaboro.paterno, ' ', elaboro.materno) as elaboro,
+          tc_mantic_requisiciones.id_empresa,
+          tc_mantic_requisiciones.orden,
+          tc_mantic_requisiciones.observaciones,
+          tc_mantic_requisiciones.registro,
+          tc_mantic_requisiciones.fecha_pedido,
+          tc_mantic_requisiciones.fecha_entregada,
+          tc_mantic_requisiciones_detalles.propio, 
+          tc_mantic_articulos.nombre,
+          tc_mantic_requisiciones_detalles.cantidad,
+          tc_mantic_requisiciones_detalles.unidad_medida,
+          0.0 total_final
+        from
+          tc_mantic_requisiciones         
+        inner join
+          tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa         
+        inner join
+          tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion         
+        inner join
+          tc_mantic_articulos on tc_mantic_requisiciones_detalles.id_articulo= tc_mantic_articulos.id_articulo 
+        inner join
+          tc_mantic_personas solicito on tc_mantic_requisiciones.id_solicita= solicito.id_persona
+        inner join
+          tc_mantic_personas elaboro on tc_mantic_requisiciones.id_usuario= elaboro.id_persona
+        where     
+          tc_mantic_requisiciones.id_requisicion = {idRequisicion}
+        order by
+          tc_mantic_requisiciones.registro,tc_mantic_requisiciones_detalles.registro	
+			</select>
+    </unit>
+    <unit id="VistaReporteTransferenciasDto">
+      <select id="row">
+        select 
+            tc_mantic_transferencias.id_transferencia as id_key,
+            tc_mantic_transferencias.id_transferencia,
+            tc_mantic_transferencias.consecutivo,
+            tc_mantic_transferencias.id_almacen,
+            origen.nombre  nombre_origen,
+            origen.clave clave_origen,
+            tc_mantic_transferencias.id_destino,
+            destino.nombre nombre_destino,
+            destino.clave clave_destino,
+            tc_mantic_transferencias_detalles.id_articulo,
+            tc_mantic_articulos.nombre,
+            tc_mantic_articulos.nombre as nombre_articulo,
+            tc_mantic_articulos_codigos.codigo,
+            tc_mantic_transferencias.id_solicito,
+            concat(tc_mantic_personas.nombres,
+            ' ',
+            tc_mantic_personas.paterno,
+            ' ',
+            tc_mantic_personas.materno) as solicito,
+            tc_mantic_transferencias.id_usuario,
+            tc_mantic_transferencias_detalles.cantidad,
+            tc_mantic_transferencias.registro,
+            tc_mantic_transferencias.observaciones,
+            tc_mantic_transferencias.id_transferencia_estatus estatus,
+            tc_mantic_transferencias_estatus.nombre nombre_estatus,
+            tc_mantic_transferencias_estatus.estatus_asociados,
+            '' total_final         
+        from
+            tc_mantic_transferencias         
+        inner join
+            tc_mantic_transferencias_estatus 
+                on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus     
+			 inner join 
+		  		tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia = tc_mantic_transferencias_detalles.id_transferencia    
+        inner join
+            tc_mantic_articulos 
+                on tc_mantic_transferencias_detalles.id_articulo = tc_mantic_articulos.id_articulo        
+        inner join
+            tc_mantic_empresas 
+                on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa         
+        inner join
+            tc_mantic_articulos_codigos 
+                on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal=1          
+        left join
+            tc_mantic_personas  
+                on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona         
+        inner join
+            tc_mantic_almacenes origen 
+                on tc_mantic_transferencias.id_almacen = origen.id_almacen         
+        inner join
+            tc_mantic_almacenes destino 
+                on tc_mantic_transferencias.id_almacen = destino.id_almacen         
+        where
+            tc_mantic_transferencias.id_transferencia  = {idKeyTransferencia}
+      </select>  
+     </unit>
+     <unit id="VistaReporteVentasDetalle">
+      <select id="detalleVenta">
+        select
+					tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+					tc_mantic_ventas.consecutivo,
+          tc_mantic_ventas.id_venta,
+					tc_mantic_clientes_deudas.importe importe_deuda,
+					tc_mantic_clientes_deudas.saldo total_final,
+					tc_mantic_clientes_deudas.saldo,
+          tc_mantic_clientes_deudas.limite,
+					tc_mantic_clientes_pagos.pago,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_clientes_pagos.registro,
+					tc_mantic_clientes_deudas.registro registro_deuda,
+					tc_mantic_clientes_pagos.observaciones,
+          tc_mantic_tipos_medios_pagos.nombre tipo_medio_pago,
+					tc_mantic_clientes_deudas.observaciones observaciones_deuda
+				from
+					tc_mantic_clientes_pagos
+				inner join
+					tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_clientes_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+        inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_ventas.id_venta= {idVenta}						
+				order by
+					tc_mantic_ventas.consecutivo, 
+					tc_mantic_clientes_deudas.registro desc	
+      </select>  
+     </unit>
+     <unit id="reporteFacturaDetalle">
+       <select id="ficticiaDetalle">
+        select
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_ventas.ticket,
+					tc_mantic_ventas.total as total_final,
+					tc_mantic_ventas.impuestos as impuestos_final,
+					tc_mantic_ventas.sub_total as sub_total_final,
+					if(tc_mantic_ventas.descuento='',0.00,tc_mantic_ventas.descuento) as descuento_final,
+          tc_mantic_ventas.observaciones,
+					concat(tc_mantic_usos_cfdi.clave, ' - ',tc_mantic_usos_cfdi.nombre) as uso_cfdi,
+					concat(tc_mantic_tipos_medios_pagos.clave, ' - ',tc_mantic_tipos_medios_pagos.nombre) as tipo_medio_pago,
+          tc_mantic_ventas_detalles.*,
+          tc_mantic_ventas_detalles.impuestos as articulo_iva,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  tc_mantic_facturas.folio,
+				  tc_mantic_facturas.timbrado,
+				  tc_mantic_facturas.cadena_original,
+				  tc_mantic_facturas.sello_sat,
+				  tc_mantic_facturas.sello_cfdi,
+				  tc_mantic_facturas.certificado_sat,
+				  tc_mantic_facturas.certificado_digital,
+				  tc_mantic_facturas.folio_fiscal,
+				  tc_mantic_facturas.certificacion,
+					concat(tc_mantic_tipos_pagos.clave, '-', tc_mantic_tipos_pagos.nombre) metodo_pago
+				from 
+					tc_mantic_ventas
+				inner join
+					tc_mantic_tipos_pagos on tc_mantic_tipos_pagos.id_tipo_pago = tc_mantic_ventas.id_tipo_pago
+				inner join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura
+				left join
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_ventas.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				inner join 
+					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
+				left join
+					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				where  
+					tc_mantic_ventas.id_venta = {idFicticia}
+				order by
+					tc_mantic_ventas_detalles.registro
+       </select>
+     </unit>
+     <unit id="VistaReporteJuntaFacturas">
+      <select id="facturas">
+        select
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.id_empresa,  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_ventas.consecutivo,  													
+					tc_mantic_ventas.ticket,  													
+					tc_mantic_ventas.total,
+					tc_mantic_ventas.sub_total,
+					tc_mantic_ventas.impuestos as iva,
+					tc_mantic_ventas.total as precio_total,
+				  tc_mantic_ventas_estatus.nombre as estatus,
+					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas.registro,
+					tc_mantic_ventas_estatus.estatus_asociados, 					
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_facturas.id_factura,
+					tc_mantic_facturas.id_facturama,
+					tc_mantic_facturas.timbrado,
+					tc_mantic_facturas.folio,
+					tc_mantic_clientes.razon_social cliente,
+					tc_mantic_clientes.id_cliente,
+					tc_mantic_facturas_archivos.alias,
+					tc_mantic_facturas_archivos.nombre as nombre_archivo,
+					tc_mantic_facturas_archivos.ruta
+				from 
+					tc_mantic_ventas						
+				left join 
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona			
+				inner join 
+					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				left join 
+					tc_mantic_facturas_archivos on tc_mantic_facturas.id_factura = tc_mantic_facturas_archivos.id_factura and tc_mantic_facturas_archivos.id_tipo_archivo = 2
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa}) and {condicion}
+				group by 
+					tc_mantic_ventas.id_venta,
+					tc_mantic_ventas.id_empresa,  
+				  tc_mantic_empresas.clave ,  
+				  tc_mantic_empresas.nombre,  
+					tc_mantic_ventas.consecutivo,  													
+					tc_mantic_ventas.ticket,  													
+					tc_mantic_ventas.total,	
+					tc_mantic_ventas.sub_total,
+					tc_mantic_ventas.impuestos,				
+				  tc_mantic_ventas_estatus.nombre,
+					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas.registro,
+					tc_mantic_ventas_estatus.estatus_asociados, 					
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) ,
+					tc_mantic_facturas.timbrado,
+					tc_mantic_facturas.folio,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_clientes.id_cliente 
+				{sortOrder}
+      </select>  
+     </unit>
+     <unit id="VistaConfrontasReporteDto">
+			<select id="consulta">
+				select
+					tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
+					tc_mantic_confrontas.consecutivo,
+					tc_mantic_transferencias.consecutivo as transferencia,
+					tc_mantic_confrontas_detalles.codigo,
+					tc_mantic_confrontas_detalles.codigo as propio,
+					tc_mantic_confrontas_detalles.nombre,
+					tc_mantic_confrontas_detalles.cantidad,
+					tc_mantic_confrontas_detalles.cantidades,
+				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as nuevo,
+  				tc_mantic_confrontas_detalles.declarados,
+  				tc_mantic_confrontas_detalles.diferencia,
+				  tc_mantic_transferencias_estatus.nombre as estatus,
+				  tc_mantic_transferencias_estatus.id_transferencia_estatus,
+				  tc_mantic_confrontas.id_confronta,
+				  tc_mantic_confrontas.id_transferencia,
+				  'janal-color-blue' as color,
+				  0 as porcentaje,
+					tc_mantic_confrontas_detalles.id_articulo,
+					tc_mantic_transferencias.registro,
+					tc_mantic_transferencias.observaciones
+				from
+					tc_mantic_confrontas
+				inner join 
+				  tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia
+				inner join
+					tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta
+				inner join
+				  tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus= tc_mantic_transferencias_estatus.id_transferencia_estatus
+				left join
+				  tc_mantic_transferencias_detalles on tc_mantic_confrontas_detalles.id_transferencia_detalle= tc_mantic_transferencias_detalles.id_transferencia_detalle
+				where  
+					tc_mantic_confrontas.id_transferencia= {idKeyTransferencia}	
+				  and {condicion}
+				{sortOrder}
+			</select>	
+     </unit>
+     <unit id="VistaDeudasClienteDto">
+			<select id="row">
+				select deudas_cliente.*, tc_mantic_clientes.limite_credito from (select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_ventas.ticket consecutivo,
+					tc_mantic_ventas.ticket,
+					tc_mantic_facturas.folio factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'1' grupo_c,
+					tc_mantic_clientes_deudas.importe monto,
+					'[V]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe ,
+					tc_mantic_clientes_deudas.saldo,
+					'0.00' abono,
+					'0.00' total_garantia,
+					tc_mantic_clientes_deudas.registro,
+					datediff(tc_mantic_clientes_deudas.limite, now()) as dias_restantes,
+					tc_mantic_clientes_estatus.nombre estatus_deuda,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago,
+          datediff('{fechaFin}','{fechaInicio}') as plazo
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and (tc_mantic_clientes_deudas.registro between '{fechaInicio}' and '{fechaFin}') ) deudas
+				union all
+				select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_clientes_pagos.consecutivo consecutivo,
+					tc_mantic_ventas.ticket,
+					null as factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'2' grupo_c,
+					tc_mantic_clientes_pagos.pago monto,
+					'[A]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe,
+					null saldo,
+					tc_mantic_clientes_pagos.pago abono,
+					'0.00' total_garantia,
+					tc_mantic_clientes_pagos.registro ,
+					null as dias_restantes,
+          null estatus_deuda,
+					concat(persona_pago.nombres, ' ', persona_pago.paterno, ' ', persona_pago.materno) as persona,
+					tc_mantic_clientes_pagos.registro as ultimo_pago,
+          datediff('{fechaFin}','{fechaInicio}') as plazo
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				left join
+					tc_janal_usuarios usuarios_pago on tc_mantic_clientes_pagos.id_usuario= usuarios_pago.id_usuario
+				left join
+					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_clientes_pagos.id_cliente_pago is not null
+          and (tc_mantic_clientes_deudas.registro between '{fechaInicio}' and '{fechaFin}') ) abonos
+				union all
+				select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_ventas.ticket,
+					null as factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'3' grupo_c,
+					tc_mantic_garantias.total monto,
+					'[D]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe,
+					null saldo,
+					'0.00' abono,
+					tc_mantic_garantias.total total_garantia,
+					tc_mantic_garantias.registro ,
+					null as dias_restantes,
+          null estatus_deuda,
+					concat(persona_garantia.nombres, ' ', persona_garantia.paterno, ' ', persona_garantia.materno) as persona,
+					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago,
+          datediff('{fechaFin}','{fechaInicio}') as plazo
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				left join 
+					tc_mantic_garantias on tc_mantic_ventas.id_venta = tc_mantic_garantias.id_venta and tc_mantic_garantias.id_garantia_estatus=6
+				left join
+					tc_janal_usuarios usuarios_garantia on tc_mantic_garantias.id_usuario= usuarios_garantia.id_usuario
+				left join
+					tc_mantic_personas persona_garantia on usuarios_garantia.id_persona= persona_garantia.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_garantias.consecutivo is not null
+          and (tc_mantic_clientes_deudas.registro between '{fechaInicio}' and '{fechaFin}')) garantias
+        ) deudas_cliente
+				inner join 
+					tc_mantic_clientes on tc_mantic_clientes.id_cliente = deudas_cliente.id_cliente
+				order by grupo_a,grupo_b,grupo_c, registro
+			</select>	
+      <select id="individual">
+				select deudas_cliente.*, tc_mantic_clientes.limite_credito from (select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_ventas.ticket consecutivo,
+					tc_mantic_ventas.ticket,
+					tc_mantic_facturas.folio factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'1' grupo_c,
+					tc_mantic_clientes_deudas.importe monto,
+					'[V]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe ,
+					tc_mantic_clientes_deudas.saldo,
+					'0.00' abono,
+					'0.00' total_garantia,
+					tc_mantic_clientes_deudas.registro,
+					datediff(tc_mantic_clientes_deudas.limite, now()) as dias_restantes,
+					tc_mantic_clientes_estatus.nombre estatus_deuda,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}  ) deudas
+				union all
+				select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_clientes_pagos.consecutivo consecutivo,
+					tc_mantic_ventas.ticket,
+					null as factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'2' grupo_c,
+					tc_mantic_clientes_pagos.pago monto,
+					'[A]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe,
+					null saldo,
+					tc_mantic_clientes_pagos.pago abono,
+					'0.00' total_garantia,
+					tc_mantic_clientes_pagos.registro ,
+					null as dias_restantes,
+          null estatus_deuda,
+					concat(persona_pago.nombres, ' ', persona_pago.paterno, ' ', persona_pago.materno) as persona,
+					tc_mantic_clientes_pagos.registro as ultimo_pago
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				left join
+					tc_janal_usuarios usuarios_pago on tc_mantic_clientes_pagos.id_usuario= usuarios_pago.id_usuario
+				left join
+					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}  
+          and tc_mantic_clientes_pagos.id_cliente_pago is not null ) abonos
+				union all
+				select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_ventas.ticket,
+					null as factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'3' grupo_c,
+					tc_mantic_garantias.total monto,
+					'[D]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe,
+					null saldo,
+					'0.00' abono,
+					tc_mantic_garantias.total total_garantia,
+					tc_mantic_garantias.registro ,
+					null as dias_restantes,
+          null estatus_deuda,
+					concat(persona_garantia.nombres, ' ', persona_garantia.paterno, ' ', persona_garantia.materno) as persona,
+					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				left join 
+					tc_mantic_garantias on tc_mantic_ventas.id_venta = tc_mantic_garantias.id_venta and tc_mantic_garantias.id_garantia_estatus=6
+				left join
+					tc_janal_usuarios usuarios_garantia on tc_mantic_garantias.id_usuario= usuarios_garantia.id_usuario
+				left join
+					tc_mantic_personas persona_garantia on usuarios_garantia.id_persona= persona_garantia.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda} 
+          and tc_mantic_garantias.consecutivo is not null) garantias
+        ) deudas_cliente
+				inner join 
+					tc_mantic_clientes on tc_mantic_clientes.id_cliente = deudas_cliente.id_cliente
+				order by grupo_a,grupo_b,grupo_c, registro
+			</select>	
+      <select id="pendientes">
+				select deudas_cliente.*, tc_mantic_clientes.limite_credito from (select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_ventas.ticket consecutivo,
+					tc_mantic_ventas.ticket,
+					tc_mantic_facturas.folio factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'1' grupo_c,
+					tc_mantic_clientes_deudas.importe monto,
+					'[V]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe ,
+					tc_mantic_clientes_deudas.saldo,
+					'0.00' abono,
+					'0.00' total_garantia,
+					tc_mantic_clientes_deudas.registro,
+					datediff(tc_mantic_clientes_deudas.limite, now()) as dias_restantes,
+					tc_mantic_clientes_estatus.nombre estatus_deuda,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago,
+          'N/A' as plazo
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4)) deudas
+				union all
+				select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_clientes_pagos.consecutivo consecutivo,
+					tc_mantic_ventas.ticket,
+					null as factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'2' grupo_c,
+					tc_mantic_clientes_pagos.pago monto,
+					'[A]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe,
+					null saldo,
+					tc_mantic_clientes_pagos.pago abono,
+					'0.00' total_garantia,
+					tc_mantic_clientes_pagos.registro ,
+					null as dias_restantes,
+          null estatus_deuda,
+					concat(persona_pago.nombres, ' ', persona_pago.paterno, ' ', persona_pago.materno) as persona,
+					tc_mantic_clientes_pagos.registro as ultimo_pago,
+          'N/A' as plazo
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				left join
+					tc_janal_usuarios usuarios_pago on tc_mantic_clientes_pagos.id_usuario= usuarios_pago.id_usuario
+				left join
+					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_clientes_pagos.id_cliente_pago is not null ) abonos
+				union all
+				select * from (select distinct
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_ventas.ticket,
+					null as factura,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
+					'3' grupo_c,
+					tc_mantic_garantias.total monto,
+					'[D]' as tipo_movimiento,
+					tc_mantic_clientes_deudas.importe,
+					null saldo,
+					'0.00' abono,
+					tc_mantic_garantias.total total_garantia,
+					tc_mantic_garantias.registro ,
+					null as dias_restantes,
+          null estatus_deuda,
+					concat(persona_garantia.nombres, ' ', persona_garantia.paterno, ' ', persona_garantia.materno) as persona,
+					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago,
+          'N/A' as plazo
+				from
+					tc_mantic_clientes_deudas
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+				left join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				left join 
+					tc_mantic_garantias on tc_mantic_ventas.id_venta = tc_mantic_garantias.id_venta and tc_mantic_garantias.id_garantia_estatus=6
+				left join
+					tc_janal_usuarios usuarios_garantia on tc_mantic_garantias.id_usuario= usuarios_garantia.id_usuario
+				left join
+					tc_mantic_personas persona_garantia on usuarios_garantia.id_persona= persona_garantia.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_garantias.consecutivo is not null) garantias
+        ) deudas_cliente
+				inner join 
+					tc_mantic_clientes on tc_mantic_clientes.id_cliente = deudas_cliente.id_cliente
+				order by grupo_a,grupo_b,grupo_c, registro
+			</select>	
+     </unit>
+  </dml>
+</process>

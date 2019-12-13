@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Importar la lista de precios, el formato de los archivos son XLS/PDF"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:xls'        : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:pdf'        : {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idProveedor': {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:comentarios': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+			};	
+			
+			fields = {				 				
+				'contenedorGrupos\\:xls'        : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:pdf'        : {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:comentarios': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+			};	
+			
+			function refresh() {
+				janal.console('refresh: '+ $('#opcion').val());
+				var start= $('#opcion').val();
+				if(start=== '0')
+			    janal.restore();
+				else
+					janal.update(fields);
+			}
+			
+			function execute() {
+				var name= $('#contenedorGrupos\\:nombre').val().trim().replace(/[^a-zA-Z0-9]/g,'_');
+				$('#contenedorGrupos\\:nombre').val(name);
+				janal.console('execute: '+ name);
+				notificar();
+				var ok= true;
+			  if($('#opcion').val()=== '1' &amp;&amp; name.length&lt;= 0) {
+					janal.show([{summary: 'Error:', detail: 'Se tiene que espeficar un nombre de catálogo, antes de seleccionar el archivo.'}]);
+					ok= false;
+				} // if
+				else 
+					janal.bloquear();
+			  return ok;
+			}
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+      function cancel() {
+        clearInterval(window['progress']);
+        PF('progressBar').setValue(0);
+      }
+      
+      function startTask() {
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        PF('progressBar').start(parseInt($('#contenedorGrupos\\:registros').html(), 10));
+      }
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosListaPreciosImportar.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosListaPreciosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
+		<p:remoteCommand name="notificar" process="@this contenedorGrupos:nombre contenedorGrupos:comentarios"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:inputText id="opcion" value="#{manticCatalogosListaPreciosImportar.attrs.tipo}" styleClass="involucrados" style="display:none"/>
+          <p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticCatalogosListaPreciosImportar.doTabChange}" process="@this" update="@(.importado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
+            <p:tab title="Generales">
+							<p:panel header="Selecciona el tipo de catálogo a importar">
+								<p:selectOneRadio id="tipo" value="#{manticCatalogosListaPreciosImportar.attrs.tipo}" columns="2" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" >
+									<p:ajax event="change" process="@this" listener="#{manticCatalogosListaPreciosImportar.doChangeTipo}" update="@(.involucrados) @(.janal-upload-frame)" oncomplete="refresh();"/>
+									<f:selectItem itemLabel="CATALOGO Y LISTA DE PRECIOS" itemValue="0"/>
+									<f:selectItem itemLabel="SOLO CATALOGO PROVEEDOR" itemValue="1"/>
+								</p:selectOneRadio>
+							</p:panel>
+              <h:panelGrid columns="1" styleClass="janal-wid-100">
+								<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, jana-wid-20">
+									<h:panelGrid columns="1" styleClass="janal-wid-100">
+										<p:outputLabel for="nombre" value="Nombre:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"/>
+										<p:inputText id="nombre" value="#{manticCatalogosListaPreciosImportar.lista.nombre}" styleClass="janal-wid-100-txt involucrados" placeholder="Ej. COFLEX.PDF" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}"/>
+										<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doImageUpload}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"
+											mode="advanced" process="@form" update="@(.logotipo)" label="Selecciona logotipo" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+											multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.logotipos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 involucrados janal-upload-frame"
+											invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.logotipos}" onstart="return janal.bloquear()" oncomplete="$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));janal.desbloquear();"/>
+									</h:panelGrid>
+									<p:panel header="Logotipo" styleClass="TexAlCenter janal-wid-100-txt involucrados logotipo" style="height:100%;display:#{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}">
+										<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosListaPreciosImportar.lista.logotipo}" data-group="icon-gallery" title="Click para ver más grande la imagen">
+											<p:graphicImage id="icon-image" library="janal" name="img/proveedores/#{manticCatalogosListaPreciosImportar.lista.logotipo}" styleClass="TexAlCenter logotipo" width="50" height="40" style="cursor:zoom-in;"/>
+										</a>	
+										<br/>
+										<p:outputLabel value="#{manticCatalogosListaPreciosImportar.lista.logotipo}" styleClass="logotipo"/>
+									</p:panel>
+								</h:panelGrid>
+                <p:outputLabel for="idProveedor" value="Proveedor:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}"/>
+                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
+                  <f:selectItems value="#{manticCatalogosListaPreciosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+                  <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarProveedor}" process="@this" update="idProveedor @(.importado)" oncomplete="janal.reset();"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Razón social">
+                    <h:outputText value="#{item.razonSocial}"/>
+                  </p:column>     
+                </p:selectOneMenu>
+								<p:outputLabel for="observacion" value="Observaciones:"/>
+								<p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosImportar.lista.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
+              </h:panelGrid>
+            </p:tab>
+            <p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{manticCatalogosListaPreciosImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+										<p:fileDownload value="#{manticCatalogosListaPreciosImportar.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2 and row.idPrincipal.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento PDF" ajax="false" type="button"/>
+									</p:commandLink>	
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" update= "dialogoXLS" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idTipoArchivo.toLong() eq 8 and row.idPrincipal.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XLS" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+							</p:dataTable>
+						</p:tab>								
+						<p:tab title="Importar">
+							<p:outputLabel for="comentarios" value="Comentarios al archivo:"/><br/>
+							<p:inputTextarea id="comentarios" value="#{manticCatalogosListaPreciosImportar.attrs.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
+							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
+							  mode="advanced" process="@form" update="@(.importado)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+							<p:inputText id="xls" value="#{manticCatalogosListaPreciosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
+							<p:commandLink value="XLS importado: #{manticCatalogosListaPreciosImportar.xls.ruta}#{manticCatalogosListaPreciosImportar.xls.name}" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty manticCatalogosListaPreciosImportar.xls)? 'display: none': ''}"/>
+							<br/>
+							<p:inputText id="pdf" value="#{manticCatalogosListaPreciosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
+							<p:commandLink value="PDF importado: #{manticCatalogosListaPreciosImportar.pdf.ruta}#{manticCatalogosListaPreciosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticCatalogosListaPreciosImportar.pdf)? 'display: none': ''}"/>
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:outputLabel value="Total de artículos a importar: #{manticCatalogosListaPreciosImportar.articulos.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
+							</p:panelGrid>
+              <p:panel styleClass="tabla-filtro" id="barra" >
+                Proceso:
+                <p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+                  <p:ajax event="complete" listener="#{manticCatalogosListaPreciosImportar.doCompleto}" />  
+                </p:progressBar>  			
+              </p:panel>
+							<p:outputLabel id="registros" value="#{manticCatalogosListaPreciosImportar.attrs.registros}" styleClass="importado" style="display: none"/>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{manticCatalogosListaPreciosImportar.doAceptar}"  onstart="startTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();" disabled="#{empty manticCatalogosListaPreciosImportar.xls and empty manticCatalogosListaPreciosImportar.pdf}" styleClass="importado"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" action="#{manticCatalogosListaPreciosImportar.doAceptar}" onstart="startTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();" disabled="#{empty manticCatalogosListaPreciosImportar.xls and empty manticCatalogosListaPreciosImportar.pdf}" styleClass="importado"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="650px" resizable="false" closeOnEscape="true" closable="true" dynamic="true" maximizable="true" appendTo="@(body)">
+				<object type="application/pdf" data="#{manticCatalogosListaPreciosImportar.attrs.temporal}" height="90%" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosListaPreciosImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" styleClass="viewXLS" header="Listado de productos en formato XLS" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXls" class="brush: xls;" style="width: 925px; height: 370px;">
+					<h:outputText value="#{manticCatalogosListaPreciosImportar.attrs.temporal}" escape="true"/>
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXLS').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

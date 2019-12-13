@@ -1,0 +1,1334 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las vistas de KAJOOL
+-->
+<process>
+  <dml>
+    <unit id="TcJanalPerfilesDto">
+      <select id="row">
+        select
+        tc_janal_perfiles.id_perfil as id_key,
+        tc_janal_perfiles.*
+        from
+        tc_janal_perfiles
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tc_janal_perfiles
+        where
+        descripcion = '{descripcion}' and id_grupo = {idGrupo}
+      </select>
+      <select id="porGrupo">
+        select
+        tc_janal_perfiles.id_perfil as id_key,
+        tc_janal_perfiles.descripcion
+        from
+        tc_janal_perfiles
+        where
+        tc_janal_perfiles.id_grupo = {idGrupo}
+      </select>
+    </unit>
+    <unit id="TcJanalMenusDto">
+      <select id="row">
+        select
+        *
+        from
+        tc_janal_menus
+        where
+        {condicion}
+        order by
+        clave
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tc_janal_menus
+        where
+        clave = '{clave}'
+        order by
+        clave
+      </select>
+    </unit>
+    <unit id="TrJanalMenusPerfilesDto">
+      <select id="row">
+        select
+        *
+        from
+        tr_janal_menus_perfiles
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tr_janal_menus_perfiles
+        where
+        id_perfil = {idPerfil} and id_menu_grupo = {idMenuGrupo}
+      </select>
+      <select id="sizePerfilMenu">
+        select
+        count(*) total
+        from
+        tr_janal_menus_perfiles
+        inner join tr_janal_menus_grupos on tr_janal_menus_grupos.id_menu_grupo = tr_janal_menus_perfiles.id_menu_grupo
+        inner join tc_janal_menus on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+        where
+        tc_janal_menus.id_menu = {idMenu}
+      </select>
+      <delete id="rows">
+        delete
+        from
+        tr_janal_menus_perfiles
+        where
+        {condicion}
+      </delete>
+    </unit>
+    <unit id="TrJanalMenusGruposDto">
+      <select id="row">
+        select
+        *
+        from
+        tr_janal_menus_grupos
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_janal_menus_grupos
+        where
+          id_menu = {idMenu} and id_grupo = {idGrupo}
+      </select>
+      <delete id="rows">
+        delete
+        from
+        tr_janal_menus_grupos
+        where
+        {condicion}
+      </delete>
+    </unit>
+    <unit id="TcJanalUsuariosDto">
+      <select id="row">
+        select
+					*
+        from
+					tc_janal_usuarios
+        where
+					{condicion}
+      </select>
+      <select id="identically">
+        select
+					*
+        from
+					tc_janal_usuarios
+        where
+					id_perfil = {idPerfil} and id_persona = {idPersona}
+      </select>			
+			<select id="findIds">
+        select
+          id_usuario
+        from
+          tc_janal_usuarios
+        where
+          id_perfil = {idPerfil}
+      </select>
+    </unit>
+    <unit id="TcJanalTiposDatosDto">
+      <select id="row">
+        select
+         id_tipo_dato as id_key,
+         tc_janal_tipos_datos.*
+        from
+         tc_janal_tipos_datos
+        where
+         {condicion}
+      </select>
+      <select id="identically">
+        select
+         *
+        from
+         tc_janal_tipos_datos
+        where
+         cadena = '{cadena}'
+      </select>
+      <select id="mto">
+        select
+         id_tipo_dato as id_key,
+         tc_janal_tipos_datos.*
+        from
+         tc_janal_tipos_datos
+        where
+         {condicion}
+        {sortOrder}
+      </select>
+    </unit>
+    <unit id="TcJanalSesionesDto">
+      <select id="row">
+        select
+        *
+        from
+        tc_janal_sesiones
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tc_janal_sesiones
+        where
+        id_sesion = {idSesion}
+      </select>
+      <update id="updateRegistroFin">
+        update
+        tc_janal_sesiones
+        set
+        registro_fin=now()
+        where
+        path = '{path}' and sesion = '{sesion}'
+      </update>
+      <select id="ultimoAcceso">
+        select
+          registro_inicio
+        from
+          tc_janal_sesiones
+        where
+          id_usuario = {idUsuario}
+        order by 
+          registro_inicio desc
+      </select>
+    </unit>
+    <unit id="TcJanalMensajesDto">
+      <select id="row">
+        select
+        *
+        from
+        tc_janal_mensajes
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tc_janal_mensajes
+        where
+        id_mensaje ={idMensaje}
+      </select>
+    </unit>
+    <unit id="TrJanalMensajesGruposDto">
+      <select id="row">
+        select
+        *
+        from
+        tr_janal_mensajes_grupos
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tr_janal_mensajes_grupos
+        where
+        id_grupo={idGrupo} and id_mensaje={idMensaje}
+      </select>
+      <select id="idMensajeGrupo">
+        select
+        id_mensaje_grupo as id_key_mensaje
+        from
+        tr_janal_mensajes_grupos
+        where
+        {condicion}
+      </select>
+    </unit>
+    <unit id="TrJanalMensajesPerfilesDto">
+      <select id="row">
+        select
+        *
+        from
+        tr_janal_mensajes_perfiles
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        *
+        from
+        tr_janal_mensajes_perfiles
+        where
+        id_perfil={idPerfil} and id_mensaje={idMensaje}
+      </select>
+      <select id="idMensajePerfil">
+        select
+        id_mensaje_perfil as id_key_mensaje
+        from
+        tr_janal_mensajes_perfiles
+        where
+        {condicion}
+      </select>
+    </unit>
+    <unit id="TcJanalGruposDto">
+      <select id="row">
+        select
+        tc_janal_grupos.id_grupo as id_key,
+        tc_janal_grupos.*
+        from
+        tc_janal_grupos
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+        clave,
+        descripcion
+        from
+        tc_janal_grupos
+        where
+        descripcion = '{descripcion}'
+        and
+        clave= '{clave}'
+      </select>
+      <select id="selectGrupos">
+        select
+        id_grupo as id_key_grupo,
+        clave,
+        descripcion
+        from
+        tc_janal_grupos
+      </select>
+    </unit>
+    <unit id="TcJanalTiposMensajesDto">
+      <select id="row">
+        select
+          tc_janal_tipos_mensajes.id_tipo_mensaje as id_key,
+          tc_janal_tipos_mensajes.*
+        from
+          tc_janal_tipos_mensajes
+        where
+        {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_janal_tipos_mensajes
+        where
+          tc_janal_tipos_mensajes.id_tipo_mensaje = '{idTipoMensaje}'
+      </select>
+    </unit>
+    <unit id="TcJanalPrioridadesDto">
+      <select id="row">
+        select
+          tc_janal_prioridades.id_prioridad as id_key, tc_janal_prioridades.*
+        from
+          tc_janal_prioridades
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_janal_prioridades
+        where
+          tc_janal_prioridades.id_prioridad = '{idPrioridad}'
+      </select>
+    </unit>
+    <unit id="TrJanalMensajesPerfilesDto">
+      <select id="row">
+        select
+          *
+        from
+          tr_janal_mensajes_perfiles
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_janal_mensajes_perfiles
+        where
+          id_perfil = {idPerfil} and id_mensaje = {idMensaje}
+      </select>
+    </unit>
+		<unit id="TcJanalPaisesDto">
+			<select id="row">
+				select
+          *
+        from
+          tc_janal_paises
+				where
+          {condicion}
+				order by
+				  id_pais
+			</select>
+			<select id="comboPais">
+				select
+          id_pais id_key, descripcion
+        from
+          tc_janal_paises
+				where
+          {condicion}
+				order by
+				  id_pais
+			</select>
+		</unit>
+		<unit id="TcJanalEntidadesDto">
+			<select id="row">
+				select
+          *
+        from
+          tc_janal_entidades
+				where
+          {condicion}
+			</select>
+			<select id="comboEntidades">
+				select
+          id_entidad id_key, descripcion, clave
+        from
+          tc_janal_entidades
+				where
+          id_pais= if(1={idPais},1,230) and
+				  {condicion}
+				order by
+				  id_entidad
+			</select>
+      <select id="mto">
+				select
+          tc_janal_entidades.id_entidad as id_key,
+          tc_janal_entidades.*
+        from
+          tc_janal_entidades
+				where
+          {condicion}
+          {sortOrder}
+			</select>			
+			<select id="entidad">
+				select
+					*
+        from
+          tc_janal_entidades
+				where
+          upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
+				order by
+				  clave
+			</select>
+			<select id="primero">
+				select
+					*
+        from
+          tc_janal_entidades
+				where
+          clave>= '01'
+				order by
+				  clave
+			</select>
+		</unit>
+		<unit id="TcJanalMunicipiosDto">
+			<select id="row">
+		select
+          tc_janal_municipios.*,
+          tc_janal_municipios.id_municipio as id_key
+        from
+          tc_janal_municipios
+		 where
+          {condicion}
+         order by
+            clave
+			</select>
+			<select id="comboMunicipios">
+				select
+          id_municipio id_key, 
+					tc_janal_municipios.*
+        from
+          tc_janal_municipios
+				where
+          id_entidad= {idEntidad}
+				order by
+				  clave
+			</select>
+			<select id="municipio">
+				select
+					*
+        from
+          tc_janal_municipios
+				where
+				  id_entidad= {idEntidad}
+          and upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
+				order by
+				  descripcion
+			</select>
+			<select id="primero">
+				select
+					*
+        from
+          tc_janal_municipios
+				where
+				  id_entidad= {idEntidad}
+          and clave>= '001'
+				order by
+				  clave
+			</select>
+		</unit>
+		<unit id="TcJanalLocalidadesDto">
+			<select id="row">
+				select
+                  tc_janal_localidades.*,
+                  tc_janal_localidades.id_localidad as id_key  
+                from
+                   tc_janal_localidades
+				where
+                  {condicion}
+                order by
+                 clave
+			</select>
+			<select id="comboLocalidades">
+				select
+          id_localidad id_key, 
+					tc_janal_localidades.*
+        from
+          tc_janal_localidades
+				where
+          id_municipio= {idMunicipio}
+				order by
+				  clave
+			</select>
+			<select id="localidad">
+				select
+					*
+        from
+          tc_janal_localidades
+				where
+				  id_municipio= {idMunicipio}
+          and upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
+				order by
+				  descripcion
+			</select>
+			<select id="primero">
+				select
+					*
+        from
+          tc_janal_localidades
+				where
+				  id_municipio= {idMunicipio}
+          and clave>= '0001'
+				order by
+				  clave
+			</select>
+		</unit>
+    <unit id="TrJanalUsuariosDelegaDto">
+      <select id="row">
+        select
+           *
+        from
+          tr_janal_usuarios_delega
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+           *
+        from
+          tr_janal_usuarios_delega
+        where
+          id_empleado = {idEmpleado} and id_usuario = {idUsuario}
+      </select>
+      <select  id="vigente">
+        select
+           *
+        from
+          tr_janal_usuarios_delega
+        where
+          activo = 1
+        and
+          id_empleado={idEmpleado}
+        and
+          (now() &gt;=tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+      </select>  						
+			<select id="findLoginActivo">
+				select
+					*
+				from
+					tr_janal_usuarios_delega
+				where
+					tr_janal_usuarios_delega.login = '{cuenta}'
+				and
+					tr_janal_usuarios_delega.activo= 1
+				and
+					(now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+			</select>
+			<select id="totalPerfilesDelega">
+				select
+					count(*) total
+				from
+					tr_janal_usuarios_delega
+				where
+					activo=1
+				and
+					(now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+				and
+					login = '{login}'
+			</select>
+			<update id="desactivar">
+				update
+					tr_janal_usuarios_delega
+				set
+					activo= 0
+				where
+					id_usuario_delega = {idUsuarioDelega}
+			</update>	
+			<select id="login">
+				select
+					*
+				from
+					tr_janal_usuarios_delega
+				where
+					login= '{login}'
+			</select>
+    </unit>
+		<unit id="TcKajoolTiposTelefonosDto">
+			<select id="row">
+				select
+          *
+        from
+          tc_kajool_tipos_telefonos
+				where
+          {condicion}
+			</select>
+			<select id="comboTiposTelefonos">
+				select
+          id_tipo_telefono id_key, descripcion
+        from
+          tc_kajool_tipos_telefonos
+				where
+          {condicion}
+				order by
+				  id_tipo_telefono
+			</select>
+		</unit>
+		<unit id="TcKajoolTiposUrlsDto">
+			<select id="row">
+				select
+          *
+        from
+          tc_kajool_tipos_urls
+				where
+          {condicion}
+			</select>
+			<select id="comboTiposUrls">
+				select
+          id_tipo_url id_key, descripcion
+        from
+          tc_kajool_tipos_urls
+				where
+          {condicion}
+				order by
+				  id_tipo_url
+			</select>
+		</unit>
+    <unit id="TcKajoolInmueblesDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_kajool_inmuebles
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_inmuebles
+        where
+          id_escuela = {idEscuela} and id_domicilio = {idDomicilio}
+      </select>
+    	<select id="latlongPorIdEscuela">
+				select
+          latitud,longitud
+        from
+          tc_kajool_inmuebles
+				where
+          id_escuela = {idEscuela}
+			</select>
+		</unit>
+    <unit id="TrKajoolPersonasDiscapaDto">
+      <select id="row">
+        select
+          id_persona_tipo_discapacidad as id_key,
+          id_persona,
+          id_tipo_discapacidad
+         from
+          tr_kajool_personas_discapa
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_kajool_personas_discapa
+        where
+          id_persona = {idEmpleado} and id_tipo_discapacidad = {idTipoDiscapacidad}
+      </select>
+      <delete id="rows">
+        delete from
+          tr_kajool_personas_discapa
+        where
+          id_persona = {idEmpleado}
+      </delete>
+    </unit>
+     <unit id="TrKajoolPersonasLenguasDto">
+      <select id="row">
+        select
+          id_persona_lengua as id_key,
+          id_persona,
+          id_lengua,
+          descripcion
+        from
+          tr_kajool_personas_lenguas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_kajool_personas_lenguas
+        where
+           id_persona = {idEmpleado} and id_lengua = {idLengua} and descripcion = '{descripcion}'
+      </select>
+      <delete id="rows">
+        delete from
+          tr_kajool_personas_lenguas
+        where
+          id_persona = {idEmpleado}
+      </delete>
+    </unit>
+    <unit id="TcKajoolTiposDiscapacidadDto">
+      <select id="row">
+        select
+          id_tipo_discapacidad as id_key,
+          descripcion
+        from
+          tc_kajool_tipos_discapacidad
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_tipos_discapacidad
+        where
+          descripcion = '{descripcion}'
+      </select>
+    </unit>
+    <unit id="TcKajoolLenguasDto">
+      <select id="row">
+        select
+          id_lengua as id_key,
+          descripcion,
+          concat(clave,' - ',descripcion) lengua_completa
+        from
+          tc_kajool_lenguas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_lenguas
+        where
+          id_tipo_lengua = {idTipoLengua} and descripcion = '{descripcion}'
+      </select>
+      <select id="findByClave">
+        select
+          id_lengua
+        from
+          tc_kajool_lenguas
+        where
+          clave = '{clave}'
+      </select>
+    </unit>
+      <unit id="TcKajoolTiposLenguasDto">
+      <select id="row">
+        select
+          id_tipo_lengua as id_key,
+          descripcion
+        from
+          tc_kajool_tipos_lenguas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_tipos_lenguas
+        where
+          descripcion = '{descripcion}'
+      </select>
+    </unit>
+    <unit id="TcKajoolContadorAyudasDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_kajool_contador_ayudas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_contador_ayudas
+        where
+          date_format(registro, '%Y%m%d') = '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcJanalMenusEncabezadoDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_janal_menus_encabezado
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+					*
+        from
+					tc_janal_menus_encabezado
+        where
+        clave = '{clave}'
+      </select>
+    </unit>
+    <unit id="TcKajoolAyudasDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_kajool_ayudas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_ayudas
+        where
+          clave = '{clave}' and descripcion = '{descripcion}'
+      </select>
+    </unit>
+        <unit id="TcJanalCatalogosDto">
+      <select id="row">
+        select
+        tc_janal_catalogos.id_catalogo as id_key,
+        tc_janal_catalogos.*
+        from
+          tc_janal_catalogos
+        where
+          descripcion like '%{descripcion}%'
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_janal_catalogos
+        where
+          nombre = '{nombre}' and descripcion = '{descripcion}'
+      </select>
+      <select id="dinamicos">
+        select
+          tc_janal_catalogos.id_catalogo as id_key,
+          tc_janal_catalogos.*
+        from
+          tc_janal_catalogos
+        where
+          id_catalogo = {idCatalogo}
+      </select>
+    </unit>
+    <unit id="TcKajoolEscuelasEscalasDto">
+      <select id="row">
+        select
+          id_escuela_escala as id_key,
+          id_mapa_escuela,
+          id_tipo_escala,
+          rango
+        from
+          tc_kajool_escuelas_escalas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_escuelas_escalas
+        where
+          id_escuela_escala = {idEscuelaEscala} and id_mapa_escuela = {idMapaEscuela} and id_tipo_escala = {idTipoEscala} and rango = '{rango}'
+      </select>
+    </unit>
+    <unit id="TcCamposDto">
+      <select id="row">
+        select
+          id_campo as id_key,
+          tc_janal_campos.*
+        from
+          tc_janal_campos
+        where
+          id_catalogo = {idCatalogo}
+      </select>
+    </unit>
+
+    <unit id="TrJanalMensajesUsuariosDto">
+      <select id="row">
+        select
+          *
+        from
+          tr_janal_mensajes_usuarios
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_janal_mensajes_usuarios
+        where
+          id_mensaje_usuario = {idMensajeUsuario}
+      </select>
+    </unit>
+    <unit id="TcJanalCamposDto">
+      <select id="row">
+        select
+          tc_janal_campos.id_campo as id_key,
+          tc_janal_campos.*
+        from
+          tc_janal_campos
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_janal_campos
+        where
+          id_campo = {idCampo}
+      </select>
+    </unit>
+		<unit id="AdministracionTablas">
+			<insert id="row">
+				create table {tabla} ({campos})
+			</insert>
+			<delete id="rows">
+				truncate table {tabla}
+			</delete>
+			<delete id="drop">
+				drop table {tabla}
+			</delete>
+		</unit>
+		
+		<unit id="TcJanalDefinicionesAvancesDto">
+      <select id="row">
+        select
+          tc_janal_definiciones_avances.id_definicion_avance id_key_definicion_avance, tc_janal_definiciones_avances.*
+        from
+          tc_janal_definiciones_avances
+        where
+          id_grupo= {idGrupo}
+				order by
+					orden
+      </select>
+      <select id="definicionAvance">
+        select
+          tc_janal_definiciones_avances.id_definicion_avance id_key_definicion_avance, tc_janal_definiciones_avances.*
+        from
+          tc_janal_definiciones_avances
+        where
+          id_definicion_avance= {idDefinicionAvance}
+      </select>
+			<select id="activo">
+				select
+					tc_janal_definiciones_avances.id_definicion_avance id_key_definicion_avance, tc_janal_definiciones_avances.*
+				from
+					tc_janal_definiciones_avances
+				where
+					id_grupo= {idGrupo}
+					and activo= {activo}
+				order by
+					orden
+			</select>
+			<select id="estatus">
+				select
+          tc_janal_definiciones_avances.id_definicion_avance id_key_definicion_avance, tc_janal_definiciones_avances.*
+				from
+          tc_janal_definiciones_avances
+				where
+          id_grupo= {idGrupo} and
+				  estatus= {estatus}
+					and ('{fecha}' = 'null' or '{fecha}'= date_format(registro, '%d/%c/%Y'))
+				order by
+					orden
+			</select>
+			<select id="orden">
+				select
+          tc_janal_definiciones_avances.id_definicion_avance id_key_definicion_avance, tc_janal_definiciones_avances.*
+        from
+          tc_janal_definiciones_avances
+        where
+          id_grupo= {idGrupo}
+					and orden= {orden}
+					and id_definicion_avance &lt;&gt; {idDefinicionAvance}
+				order by
+					orden
+			</select>
+			<select id="ordenMaximo">
+				select
+          max(orden) orden
+        from
+          tc_janal_definiciones_avances
+        where
+          id_grupo= {idGrupo}
+			</select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_janal_definiciones_avances
+        where
+          id_grupo = {idGrupo} and descripcion = '{descripcion}' and activo = {activo}
+      </select>
+    </unit>							
+     <unit id="TcKajoolEscuelasDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_kajool_escuelas
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_escuelas
+        where
+          clave = '{clave}' and id_plantel = {idPlantel}
+      </select>
+    </unit>
+    <unit id="TcKajoolPlantelesDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_kajool_planteles
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_kajool_planteles
+        where
+          clave = '{clave}'
+      </select>
+    </unit>
+    <unit id="TrKajoolEscuelasGdoGpoDto">
+      <select id="row">
+        select
+          id_escuela_gdo_gpo as id_key,
+          id_mapa_ciclo,
+          id_periodo,
+          grado,
+          grupo,
+          maximo_alumnos
+        from
+          tr_kajool_escuelas_gdo_gpo
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_kajool_escuelas_gdo_gpo
+        where
+          id_mapa_ciclo = {idMapaCiclo} and grado = '{grado}' and id_periodo = {idPeriodo} and grupo = '{grupo}'
+      </select>
+    </unit>
+    <unit id="TrKajoolAlumnosGruposDto">
+      <select id="row">
+        select
+          *
+        from
+          tr_kajool_alumnos_grupos
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_kajool_alumnos_grupos
+        where
+          id_escuela_gdo_gpo = {idEscuelaGdoGpo} and id_alumno = {idAlumno}
+      </select>
+    </unit>
+     <unit id="TrJanalMenusEncPerfilDto">
+      <select id="row">
+        select
+          *
+        from
+          tr_janal_menus_enc_perfil
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_janal_menus_enc_perfil
+        where
+          id_menu_encabezado = {idMenuEncabezado} and id_perfil = {idPerfil}
+      </select>
+    </unit>		
+    <unit id="TcJanalModulosDto">
+      <select id="row">
+        select
+          *
+        from
+          tc_janal_modulos
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tc_janal_modulos
+        where
+          descripcion = '{descripcion}'
+      </select>
+      <select id="comboModulos">
+        select
+          tc_janal_modulos.id_modulo id_key, tc_janal_modulos.*
+        from
+          tc_janal_modulos
+      </select>
+    </unit>
+	 <unit id="TrJanalBuzonDto">
+      <select id="row">
+        select
+          *
+        from
+          tr_janal_buzon
+        where
+          {condicion}
+      </select>
+      <select id="identically">
+        select
+          *
+        from
+          tr_janal_buzon
+        where
+          id_buzon={idBuzon}
+      </select>
+    </unit>
+	 <unit id="TcKajoolFotosEscuelasDto">
+      <select id="fotoEscuela">
+        select
+          id_foto_escuela as id_key,
+          ruta_apache_foto
+        from
+          tc_kajool_fotos_escuelas
+        where
+          id_escuela = {idEscuela}
+      </select>
+   </unit>
+   <unit id="TrKajoolEscuelasTipoTelefo">
+     <select id="row">
+       select
+         telefono
+       from
+         tr_kajool_escuelas_tipos_telefo
+       where
+         id_escuela={idEscuela}
+     </select>
+   </unit>
+   <unit id="TrKajoolEscuelasUrls">
+     <select id="row">
+       select
+         url
+       from
+         tr_kajool_escuelas_tipos_urls
+       where
+         id_escuela={idEscuela}
+     </select>
+   </unit>
+   	 <unit id="TcJanalProblematicasDto">
+      <select id="row">
+        select
+          id_problematica as id_key,
+          descripcion
+        from
+          tc_janal_problematicas
+        where
+          {condicion}
+      </select>
+    </unit>		
+		<unit id="TrJanalPerfilesJerarquiasDto">
+			<select id="row">
+			  select
+          *
+        from
+          tr_janal_perfiles_jerarquias
+        where
+          {condicion} 	
+			</select>
+			<delete id="rows">
+				delete from tr_janal_perfiles_jerarquias where id_perfil= {idPerfil}
+			</delete>
+		</unit>
+    <unit id="TcJanalConfiguracionesDto">
+      <select id="row">
+        select
+          tc_janal_configuraciones.id_configuracion as id_key,
+          tc_janal_configuraciones.*
+        from
+          tc_janal_configuraciones
+        where
+          {condicion}
+      </select>
+    </unit>    
+    <unit id="TrJanalIndicadoresPerfilDto">
+      <select id="row">
+        select
+          *
+        from
+          tr_janal_indicadores_perfil
+        where
+          {condicion}
+      </select>
+    </unit>
+				
+		<unit id="TcJanalAyudasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_janal_ayudas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_janal_ayudas
+        where      
+          clave = '{clave}' and descripcion = '{descripcion}'
+      </select>
+    </unit>
+		<unit id="TcJanalContadorAyudasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_janal_contador_ayudas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_janal_contador_ayudas
+        where      
+          id_usuario = {idUsuario} and id_contar_ayuda = {idContarAyuda} 
+      </select>
+    </unit>				    
+    <unit id="TcJanalInsumosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_janal_insumos
+        where 
+          {condicion} 
+       order by
+         orden desc 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_janal_insumos
+        where      
+          id_insumo = {idInsumo}
+      </select>
+      <select id="lazy">
+        select
+         id_insumo as id_key,
+         tc_janal_insumos.*
+        from
+         tc_janal_insumos
+        where
+         {condicion}
+        {sortOrder}
+      </select>
+      <select id="maxOrden">
+        select 
+          max(orden) + 1 orden 
+        from 
+          tc_janal_insumos        
+      </select>
+    </unit>      
+    <unit id="TcJanalCuentasMovilDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_janal_cuentas_movil
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_janal_cuentas_movil
+        where      
+          id_cuenta_movil = {idCuentaMovil} and id_entidad = {idEntidad} and cuenta = '{cuenta}'
+      </select>
+      <select id="lazy">
+        select
+         id_cuenta_movil as id_key,
+         tc_janal_cuentas_movil.*
+        from
+         tc_janal_cuentas_movil
+        where
+         {condicion}
+        {sortOrder}
+      </select>
+    </unit>    		
+  </dml>
+</process>
+

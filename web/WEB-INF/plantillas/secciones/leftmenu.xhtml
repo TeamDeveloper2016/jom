@@ -1,0 +1,50 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui">
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.min.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.searchfield.min.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.counters.min.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.navbars.min.js"/>
+  <h:outputScript library="sentinel" name="js/jquery.sentinel.layout-1.0.1.js"/>
+  <h:outputScript library="sentinel" name="js/jquery.sentinel.menu-1.0.0.js"/>
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.effects.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.searchfield.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.counters.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.navbars.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.themes-1.0.1.min.css"/>	
+	<style>
+		.mm-noresultsmsg,
+		.mm-search input,
+		.mm-title {
+			font-size: 18px;font-family: titillium_webregular;
+		}
+		.mm-close {
+			font-size: 20px;font-family: titillium_webregular;
+			font-weight: bold; 
+		}
+	</style>
+	<script type="text/javascript">
+		$(document).on('click', 'ul.mm-listview > li > a', function(e) {
+			clean();
+		});
+	</script>	
+	<h:form prependId="false" id="encabezado">
+		<div id="panelMmenu" class="NoDisplay">	
+			<div id="layout-menubar" class="Unselectable fontRegular slimmenu">
+				<div class="layout-menubarinner-box" id="buttonArea">
+					<a href="#" class="BordRad3" onclick="mmenu.open();">
+					<i class="icon-menu-1" style="color: white"/></a>
+				</div>
+				<nav id="collapseMenu">
+					<h:outputText value="#{kajoolMenuGaleryMenu.mmenu}" escape="false"/>
+				</nav>
+			</div>
+		</div>
+    <p:remoteCommand name="clean" actionListener="#{kaanaPlantillasSecciones.doCleanFlash}" process="@this"/>
+	</h:form>	
+</ui:composition>

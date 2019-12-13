@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Cuentas por cobrar de los clientes" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'razonSocial' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+      };
+			
+			fieldsDialog = {
+				'busqueda'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'},
+        'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
+			};
+    </script>		
+		<style>
+			.janal-tr-orange {
+				background-color: #ABEBC6 !important;
+			}
+		</style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-find" class="ui-grid-col-3">
+					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.isMatriz}"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasSaldos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel for="consecutivo" value="No. ticket:"/>
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
+							<p:outputLabel for="dias" value="Días vencidos:"/>
+							<p:inputText id="dias" value="#{manticCatalogosClientesCuentasSaldos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="vencidos" value="Vencidos:"/>
+							<p:selectOneMenu id="vencidos" value="#{manticCatalogosClientesCuentasSaldos.attrs.vencidos}" converter="javax.faces.Long" styleClass="janal-wid-96">
+								<f:selectItem itemLabel="NO" itemValue="2"/>
+								<f:selectItem itemLabel="SI" itemValue="1"/>
+							</p:selectOneMenu>
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+  						<p:separator/>
+						</p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+					</p:panel>
+				</div>
+				<p:spacer/>
+				<div id="collapse-content" class="ui-grid-col-9">
+					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasSaldos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasSaldos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasSaldos.lazyModel.rowCount gt manticCatalogosClientesCuentasSaldos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosClientesCuentasSaldos.toColor(filtro)}">
+						<f:facet name="header" >
+							<div class="lg-pantalla">
+								<p:menuButton   value="Opciones">
+									<p:menuitem value="Ticket express" action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
+									<p:separator/>
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                </p:menuButton>
+							</div>  
+							<div class="xs-pantalla">   
+								<p:commandButton action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							</div>  
+						</f:facet>												
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+							<f:facet name="header">
+								<h:outputText value="Ticket"/>
+							</f:facet>
+							<h:outputText value="#{filtro['consecutivo']}"/>
+						</p:column>					
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+							<f:facet name="header">
+								<h:outputText value="Cliente"/>
+							</f:facet>
+							<h:outputText value="#{filtro['razonSocial']}"/>
+						</p:column>					
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<f:facet name="header">
+								<h:outputText value="Vendedor"/>
+							</f:facet>
+							<h:outputText value="#{filtro['persona']}"/>
+						</p:column>											
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{filtro['estatus']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.importe}">
+							<f:facet name="header">
+								<h:outputText value="Importe"/>
+							</f:facet>
+							<h:outputText value="#{filtro['importe']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.saldo}">
+							<f:facet name="header">
+								<h:outputText value="Saldo"/>
+							</f:facet>
+							<h:outputText value="#{filtro['saldo']}"/>
+						</p:column>						
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.regitro}">
+							<f:facet name="header">
+								<h:outputText value="Fecha" title="Fecha en la que se hizo la venta"/>
+							</f:facet>
+							<h:outputText value="#{filtro['registro']}"/>
+						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
+							<f:facet name="header">
+								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
+							</f:facet>
+							<h:outputText value="#{filtro['limite']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{filtro.dias}">
+							<f:facet name="header">
+								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
+							</f:facet>
+							<h:outputText value="#{filtro['dias']}"/>
+						</p:column>
+						<f:facet name="footer">
+							<div style="display:flow-root;">
+								<p:outputLabel value="Las filas que estan color, son cuentas por cobrar que se agregaron de forma de manual" style="float: left;" escape="false"/>
+								<div style="float:right;">
+    							<p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.lazyModel==null?0:manticCatalogosClientesCuentasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
+								</div>
+							</div>
+						</f:facet>
+					</p:dataTable>
+					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
+						<p:menuitem id="consultar" action="#{manticCatalogosClientesCuentasSaldos.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar venta" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this tabla" />					
+            <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this tabla"/>					
+            <p:separator/>					
+						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
+            <p:separator/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="reporteDetalle" icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
+						<p:separator/>					
+            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+          </p:contextMenu>
+				</div>
+			</div>	
+    </div>			
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasSaldos.doRegresar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasSaldos.doRegresar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla" />
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar estado de cuenta" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">																	
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticCatalogosClientesCuentasSaldos.correos}" selection="#{manticCatalogosClientesCuentasSaldos.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreosReenviar_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticCatalogosClientesCuentasSaldos.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosClientesCuentasSaldos.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoClientes" widgetVar="dlgClientes" header="Busqueda de cliente" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoClientes', fieldsDialog);janal.refresh();">		
+			<h:form id="formDialogoClientes" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
+					<p:outputLabel for="busqueda" value="Nombre:"/>
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
+						<p:inputText id="busqueda" value="#{manticCatalogosClientesCuentasSaldos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
+						<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesCuentasSaldos.doClientes}" process="@this busqueda" update="encontrados resultados" onstart="return janal.partial('dialogo');"/>
+					</h:panelGrid>
+					<p:outputLabel for="encontrados" value="Encontrados:"/>
+					<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesCuentasSaldos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+						<f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="RFC">
+							<h:outputText value="#{item.rfc}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-100" headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>  
+					</p:selectOneMenu>
+					<p:spacer/>
+					<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosClientesCuentasSaldos.attrs.resultados}]" style="float: right !important"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog> 
+		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar plazo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();janal.restore();janal.refresh();" onShow="janal.change('formDialogoPlazo', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoPlazo" prependId="false">
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="plazo" value="Plazo:"/>
+          <p:selectOneRadio id="plazo" value="#{manticCatalogosClientesCuentasSaldos.attrs.plazo}" columns="1">
+						<p:ajax event="change" listener="#{manticCatalogosClientesCuentasSaldos.doCalcularPlazo}" process="@this"  update="panelFechas"/>
+						<f:selectItem itemLabel="Últimos 30 días" itemValue="1"/>
+						<f:selectItem itemLabel="De inicio de mes" itemValue="2"/>
+						<f:selectItem itemLabel="Periodo" itemValue="3"/>
+						<f:selectItem itemLabel="Cuentas pendientes" itemValue="4"/>
+					</p:selectOneRadio>
+				</h:panelGrid>	
+        <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100"  id="panelFechas">
+					<h:outputLabel for="vigenciaIni" value="Inicio"/>
+          <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
+          <h:outputLabel for="vigenciaFin" value="Fin"/>
+          <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
+				</h:panelGrid>
+        <hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this,@parent" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide();" />
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgPlazo').hide();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

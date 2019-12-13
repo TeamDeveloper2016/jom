@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Bienvenido" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
+    <h:outputScript library="janal" name="highcharts/js/highcharts.js"/>    
+    <script type="text/javascript">			
+			function loadChart(id, json) {
+				if (json !== '') { $('#' + id).highcharts(JSON.parse(json)); }
+			};
+
+			function skinChart() {
+				this.cfg.shadow = false;
+				this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
+				this.cfg.grid = {
+					background: '#f3f5f7',
+					borderColor: '#e5ebf0',
+					gridLineColor: '#e5ebf0',
+					shadow: false
+				};
+				this.cfg.axesDefaults = {
+					rendererOptions: {
+						textColor: '#9fadb5'
+					}
+				};
+				this.cfg.seriesDefaults = {
+					shadow: false,
+					markerOptions: { shadow: false }
+				};
+			}
+			;
+
+			function skinPie() {
+				this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+				this.cfg.grid = {
+					background: '#ffffff',
+					borderColor: '#eaeaea',
+					gridLineColor: '#e5ebf0',
+					shadow: false,
+					borderWidth: 0
+				};
+				this.cfg.seriesDefaults.shadow = false;
+			}
+			;
+    </script>
+    <style type="text/css">
+      .jqplot-target, .jqplot-axis {
+				color: #9fadb5;
+      }
+      .jqplot-title {
+				display: none;
+      }
+      rect.highcharts-background{
+				fill: transparent !important;
+      }
+      .janal-progressbar-1 .ui-progressbar-value{
+				background-color: orange !important;			
+				background-image: none !important;
+      }
+      .janal-progressbar-2 .ui-progressbar-value{
+				background-color: green !important;
+				background-image: none !important;				
+      }
+      .janal-progressbar-3 .ui-progressbar-value{
+				background-color: yellow !important;				
+				background-image: none !important;
+      }
+      .janal-progressbar-4 .ui-progressbar-value{
+				background-color: red !important;				
+				background-image: none !important;
+      }
+      .janal-progressbar-5 .ui-progressbar-value{
+				background-color: blue !important;
+				background-image: none !important;
+      }
+      .janal-progressbar-6 .ui-progressbar-value{
+				background-color: brown !important;
+				background-image: none !important;
+      }
+      .janal-progressbar-7 .ui-progressbar-value{
+				background-color: gold !important;
+				background-image: none !important;
+      }
+      .janal-progressbar-8 .ui-progressbar-value{
+				background-color: pink !important;
+				background-image: none !important;
+      }
+      .janal-progressbar-9 .ui-progressbar-value{
+				background-color: purple !important;
+				background-image: none !important;				
+      }
+      .janal-progressbar-10 .ui-progressbar-value{
+				background-color: cyan !important;				
+				background-image: none !important;
+      }
+			.wid-calendarizacion-48{
+				width: 35%
+			}
+			.wid-calendarizacion-10{
+				width: 30%
+			}
+			.wid-calendarizacion-47{
+				width: 35%
+			}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <!-- SECTION 1 -->
+    <div class="Container100">
+      <div class="ContainerIndent">        					
+        <div class="Container50 Responsive">					
+					<div class="Container50 Responsive">					
+						<div class="ContainerIndent">
+							<p:panel style="min-height: 360px;">
+								<i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
+								<div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
+								<div class="EmptyBox10"></div>
+								<div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
+								<div class="EmptyBox20"></div>
+								<p:separator styleClass="Wid100"/>
+								<div class="EmptyBox20"></div>
+								<div class="Fs16 Fright">
+									<a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-mail hardblue"> Buzón (0)</i></a>
+									<a href="#{kajoolTablero.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolTablero.attrs.mensajesNoLeidos})</i></a>
+									<a href="#{kajoolTablero.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
+								</div>
+								<div class="EmptyBox20"></div>
+								<p:separator styleClass="Wid100"/>
+								<div class="EmptyBox20"></div>
+								<span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
+								<pe:tooltip for="@(.janal-help-1)" showEvent="click">
+									<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
+								</pe:tooltip>
+								<i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
+								<i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
+								<div class="EmptyBox10"></div>              
+							</p:panel>
+						</div>										
+					</div>
+					<div class="Container50 Responsive">          
+						<div class="ContainerIndent">
+							<p:panel style="min-height: 360px;">
+								<i class="icon-sitemap Fs50 Fleft Wid25 red TexAlCenter"></i>
+								<div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
+								<div class="EmptyBox10"></div>
+								<div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolTablero.attrs.contadoresGenerales.total}</span> personas</div>
+								<div class="EmptyBox10"></div>   
+								<div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el sistema</div>
+								<div class="EmptyBox20"></div>
+								<p:separator styleClass="Wid100"></p:separator>
+								<div class="EmptyBox20"></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Administrador<br/><span class="Fs20 orange">#{kajoolTablero.attrs.contadoresGenerales.adminEncuesta}</span></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Gerente<br/><span class="Fs20 orange">#{kajoolTablero.attrs.contadoresGenerales.gerente}</span></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Vendedor<br/><span class="Fs20 red">#{kajoolTablero.attrs.contadoresGenerales.vendedor}</span></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Caja<br/><span class="Fs20 hardblue">#{kajoolTablero.attrs.contadoresGenerales.cajero}</span></div>
+								<div class="EmptyBox10"></div>              
+							</p:panel>
+						</div>															
+					</div>   						
+        </div>   						
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">            
+            <p:panel style="height:360px;" class="graphic-update-sucursal">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-chart-outline"></i> Utilidad por sucursal
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-utilidad-por-sucursal"></div>
+                <script type="text/javascript">
+									$(document).ready(function () {
+										loadChart('kajool-chart-utilidad-por-sucursal', '#{kajoolTablero.attrs.utilidadPorSucursal}');
+									});
+                </script>
+              </div>
+							<div class="Container100 Responsive TexAlCenter">					
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-sucursal" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoUtilidadSucursales}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoUtilidadSucursales}" styleClass="graphic-update-sucursal"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoUtilidadSucursales}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-sucursal" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																	
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleUtilidadSucursales}" title="#{kajoolTablero.attrs.semanaUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedSemanaUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																																					
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleUtilidadSucursales}" title="#{kajoolTablero.attrs.quincenaUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedQuincenaUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.mesUtilidadSucursales} #{kajoolTablero.attrs.mesTitleUtilidadSucursales}" title="#{kajoolTablero.attrs.mesUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedMesUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleUtilidadSucursales}" title="#{kajoolTablero.attrs.trimestreUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedTrimestreUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleUtilidadSucursales}" title="#{kajoolTablero.attrs.semestreUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedSemestreUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>								
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.anioTitleUtilidadSucursales}" title="#{kajoolTablero.attrs.anioUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedAnioUtilidadSucursales}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioUtilidadSucursales}" styleClass="graphic-update-sucursal">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+							</div>
+            </p:panel>						
+          </div>
+        </div>
+
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">
+            <div class="EmptyBox10"></div>                
+            <p:panel id="panelMest" style="min-height: 482px;" class="periodo-update-empleado graphic-update-empleado">
+              <i class="icon-users Fs50 Fleft Wid25 orange TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Ventas por trabajador</div>
+              <div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por trabajador <span class="orange"></span></div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+              <div class="Container100 Responsive TexAlCenter">
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-empleado" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoVentasPorEmpleado}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoVentasPorEmpleado}" styleClass="graphic-update-empleado"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoVentasPorEmpleado}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-empleado" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaVentasPorEmpleado}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedDiaVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaVentasPorEmpleado}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleVentasPorEmpleado}" title="#{kajoolTablero.attrs.semanaVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedSemanaVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																																					
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleVentasPorEmpleado}" title="#{kajoolTablero.attrs.quincenaVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedQuincenaVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.mesVentasPorEmpleado} #{kajoolTablero.attrs.mesTitleVentasPorEmpleado}" title="#{kajoolTablero.attrs.mesVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedMesVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleVentasPorEmpleado}" title="#{kajoolTablero.attrs.trimestreVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedTrimestreVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleVentasPorEmpleado}" title="#{kajoolTablero.attrs.semestreVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedSemestreVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>								
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.anioTitleVentasPorEmpleado}" title="#{kajoolTablero.attrs.anioVentasPorEmpleado}" styleClass="graphic-update-empleado" rendered="#{!kajoolTablero.attrs.renderedAnioVentasPorEmpleado}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioVentasPorEmpleado}" styleClass="graphic-update-empleado">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'VENTAS_EMPLEADO')}" update="@(.graphic-update-empleado) @(.periodo-update-empleado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>											
+								</h:panelGrid>
+							</div>								
+							<div>
+                <p:scrollPanel class="graphic-update-empleado" styleClass="Wid95" style="height: 350px;">
+                  <h:panelGroup class="graphic-update-empleado" id="panelVentas" styleClass="Wid90">			
+										<c:forEach class="graphic-update-empleado" items="#{kajoolTablero.attrs.ventasEmpleados}" var="prop" varStatus="index">										
+											<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="#{prop.nombre}"/></div>
+											<h:panelGrid columns="2" title="Total de ventas: #{prop.total}" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+												<p:progressBar value="#{prop.porcentaje}" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-#{prop.style}"/>
+												<p:outputLabel value="#{prop.porcentaje}%" style="width: 50px; text-align: right; display: grid;"/>
+											</h:panelGrid>
+											<p:separator styleClass="Wid100"/>
+										</c:forEach>                    
+                  </h:panelGroup>
+                </p:scrollPanel>
+              </div>
+            </p:panel>
+          </div>
+          <div class="EmptyBox10"></div>
+          <div class="ContainerIndent">
+            <p:panel style="min-height:360px;" class="graphic-update">
+              <div class="Container40 Responsive Fs20">
+                <i class="icon-down-big"></i> Articulos por terminarse
+              </div>
+              <div class="Container60 Responsive Fs12">                  
+                <!--p:selectOneMenu id="entidad" label="Sucursal" styleClass="Wid70 Fright" rendered="#{kajoolTablero.attrs.isAdmin}">                  
+                  <f:selectItems value="#{kajoolTablero.sucursales}"/>
+                </p:selectOneMenu-->                
+              </div>
+              <div class="EmptyBox10"></div>
+              <div class="Container100">
+                <h:form id="sucursales">                  			                  
+                  <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolTablero.articulos}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolTablero.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                    <f:facet name="header">
+                      <p:menuButton value="Opciones">
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
+                      </p:menuButton>
+                    </f:facet>
+                    <p:column styleClass="janal-column-left ColWid10 Responsive">
+                      <f:facet name="header">
+                        <h:outputText value="Articulo"/>
+                      </f:facet>
+                      <h:outputText value="#{row.nombre}"  />
+                    </p:column>                    
+                    <p:column styleClass="janal-column-right ColWid10 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Stock"/>
+                      </f:facet>
+                      <h:outputText value="#{row.stock}"/>
+                    </p:column>                    
+                    <f:facet name="footer">
+                      <p:outputLabel value="Total [#{kajoolTablero.articulos.size()}] registros"/>
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdfCapturista">                    
+                    <pe:exporter type="pdf"  skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXlsCapturista">
+                    <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                  </h:commandLink>	                  
+                </h:form>
+              </div>
+            </p:panel>
+          </div>
+					<div class="EmptyBox10"></div>
+					<c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
+						<!--div class="Container50 Responsive"-->
+							<div class="ContainerIndent">
+								<p:panel style="min-height:250px;" class="graphic-update-ventas">
+									<div class="Container100 Responsive Fs20">
+										<i class="icon-chart-bar"></i> #{prop.titulo}
+									</div>
+									<div class="Container100">
+										<div id="kajool-chart-avance-#{prop.id}"></div>
+										<script type="text/javascript">
+											$(document).ready(function () {
+												loadChart('kajool-chart-avance-#{prop.id}', '#{prop.json}');
+											});
+										</script>
+									</div>
+									<div class="Container100 Responsive TexAlCenter">					
+										<h:panelGrid  columns="3" class="Wid100 graphic-update-ventas" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+											<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoVentasSucursal}" styleClass="graphic-update-ventas"/>
+											<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>
+										</h:panelGrid>
+										<h:panelGrid  columns="3" class="Wid100 periodo-update-ventas" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedDiaVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>																
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleVentasSucursal}" title="#{kajoolTablero.attrs.semanaVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedSemanaVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>																																					
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleVentasSucursal}" title="#{kajoolTablero.attrs.quincenaVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedQuincenaVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>									
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.mesVentasSucursal} #{kajoolTablero.attrs.mesTitleVentasSucursal}" title="#{kajoolTablero.attrs.mesVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedMesVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>									
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleVentasSucursal}" title="#{kajoolTablero.attrs.trimestreVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedTrimestreVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>									
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleVentasSucursal}" title="#{kajoolTablero.attrs.semestreVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedSemestreVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>								
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.anioTitleVentasSucursal}" title="#{kajoolTablero.attrs.anioVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedAnioVentasSucursal}"/>
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioVentasSucursal}" styleClass="graphic-update-ventas">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>											
+										</h:panelGrid>
+									</div>
+								</p:panel>
+							</div>
+						<!--/div-->
+					</c:forEach>
+					<!--div class="Container50 Responsive"-->
+						<div class="ContainerIndent">            
+							<p:panel style="height:360px;" class="graphic-update-cobrar">
+								<div class="Container100 Responsive Fs20">
+									<i class="icon-money"></i> Cuentas por cobrar
+								</div>
+								<div class="Container100">
+									<div id="kajool-chart-avance-cobro"></div>
+									<script type="text/javascript">
+										$(document).ready(function () {
+											loadChart('kajool-chart-avance-cobro', '#{kajoolTablero.attrs.jsonCobro}');
+										});
+									</script>
+								</div>
+								<div class="Container100 Responsive TexAlCenter">					
+									<h:panelGrid  columns="3" class="Wid100 graphic-update-cobrar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoCuentasCobrar}" styleClass="graphic-update-cobrar"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+									</h:panelGrid>
+									<h:panelGrid  columns="3" class="Wid100 periodo-update-cobrar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+										
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleCuentasCobrar}" title="#{kajoolTablero.attrs.semanaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>																																					
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleCuentasCobrar}" title="#{kajoolTablero.attrs.quincenaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.mesCuentasCobrar} #{kajoolTablero.attrs.mesTitleCuentasCobrar}" title="#{kajoolTablero.attrs.mesCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedMesCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleCuentasCobrar}" title="#{kajoolTablero.attrs.trimestreCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleCuentasCobrar}" title="#{kajoolTablero.attrs.semestreCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>								
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.anioTitleCuentasCobrar}" title="#{kajoolTablero.attrs.anioCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedAnioCuentasCobrar}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasCobrar}" styleClass="graphic-update-cobrar">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>	
+										
+									</h:panelGrid>
+								</div>
+							</p:panel>
+						</div>
+					<!--/div-->
+        </div>		  
+
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">            
+            <div class="EmptyBox10"></div>
+            <p:panel style="height:303px;" class="graphic-update-utilidad-caja">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-chart-outline"></i> Utilidad por caja
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-json-utilidad-por-caja"></div>
+                <script type="text/javascript">
+									$(document).ready(function () {
+										loadChart('kajool-chart-json-utilidad-por-caja', '#{kajoolTablero.attrs.jsonUtilidadPorCaja}');
+									});
+                </script>
+              </div>
+							<div class="Container100 Responsive TexAlCenter">					
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-utilidad-caja" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoUtilidadCaja}" styleClass="graphic-update-utilidad-caja"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-utilidad-caja" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>		
+									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleUtilidadCaja}" title="#{kajoolTablero.attrs.semanaUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedSemanaUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																																					
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleUtilidadCaja}" title="#{kajoolTablero.attrs.quincenaUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedQuincenaUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.mesUtilidadCaja} #{kajoolTablero.attrs.mesTitleUtilidadCaja}" title="#{kajoolTablero.attrs.mesUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedMesUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleUtilidadCaja}" title="#{kajoolTablero.attrs.trimestreUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedTrimestreUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleUtilidadCaja}" title="#{kajoolTablero.attrs.semestreUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedSemestreUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>								
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.anioTitleUtilidadCaja}" title="#{kajoolTablero.attrs.anioUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedAnioUtilidadCaja}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioUtilidadCaja}" styleClass="graphic-update-utilidad-caja">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+									
+								</h:panelGrid>
+							</div>
+            </p:panel>
+          </div>
+
+          <div class="Container100 Responsive">
+            <div class="ContainerIndent">
+              <div class="EmptyBox10"></div>
+              <p:panel style="min-height:402px;" class="graphic-update-art-vendidos">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-cube"></i>Articulos mas vendidos 
+                  <p:separator styleClass="Wid100"/>
+                </div>
+                <div class="Container100">
+                  <div id="kajool-chart-avance-nacional"></div>
+                  <script type="text/javascript">
+										$(document).ready(function () {
+											loadChart('kajool-chart-avance-nacional', '#{kajoolTablero.attrs.jsonVentas.json}');
+											$("text").each(function (index) {
+												if ($(this).text() === 'Highcharts.com') {
+													$(this).text(' ');
+												}
+											});
+										});
+                  </script>
+                </div>
+								<div class="Container100 Responsive TexAlCenter">					
+									<h:panelGrid  columns="3" class="Wid100 graphic-update-art-vendidos" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoArticulosMasVentas}" styleClass="graphic-update-art-vendidos"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+									</h:panelGrid>
+									<h:panelGrid  columns="3" class="Wid100 periodo-update-art-vendidos" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+										
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleArticulosMasVentas}" title="#{kajoolTablero.attrs.semanaArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedSemanaArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>																																					
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleArticulosMasVentas}" title="#{kajoolTablero.attrs.quincenaArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedQuincenaArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.mesArticulosMasVentas} #{kajoolTablero.attrs.mesTitleArticulosMasVentas}" title="#{kajoolTablero.attrs.mesArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedMesArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleArticulosMasVentas}" title="#{kajoolTablero.attrs.trimestreArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedTrimestreArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleArticulosMasVentas}" title="#{kajoolTablero.attrs.semestreArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedSemestreArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>								
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.anioTitleArticulosMasVentas}" title="#{kajoolTablero.attrs.anioArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedAnioArticulosMasVentas}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioArticulosMasVentas}" styleClass="graphic-update-art-vendidos">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+										
+									</h:panelGrid>
+								</div>
+              </p:panel>
+            </div>	
+          </div>
+          <div class="Container100 Responsive">
+            <div class="ContainerIndent">
+              <div class="EmptyBox10"></div>
+              <p:panel style="min-height:402px;" class="graphic-update-art-utilidad">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-dollar"></i>Articulos con mayor utilidad 
+                  <p:separator styleClass="Wid100"/>
+                </div>								
+                <div class="Container100">
+                  <div id="kajool-chart-avance-nacional-dos"></div>
+                  <script type="text/javascript">
+										$(document).ready(function () {
+											loadChart('kajool-chart-avance-nacional-dos', '#{kajoolTablero.attrs.jsonUtilidad.json}');
+											$("text").each(function (index) {
+												if ($(this).text() === 'Highcharts.com') {
+													$(this).text(' ');
+												}
+											});
+										});
+                  </script>
+                </div>
+								<div class="Container100 Responsive TexAlCenter">					
+									<h:panelGrid  columns="3" class="Wid100 graphic-update-art-utilidad" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+									</h:panelGrid>
+									<h:panelGrid  columns="3" class="Wid100 periodo-update-art-utilidad" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>			
+										
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleArticulosMasUtilidad}" title="#{kajoolTablero.attrs.semanaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedSemanaArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>																																					
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleArticulosMasUtilidad}" title="#{kajoolTablero.attrs.quincenaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedQuincenaArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.mesArticulosMasUtilidad} #{kajoolTablero.attrs.mesTitleArticulosMasUtilidad}" title="#{kajoolTablero.attrs.mesArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedMesArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleArticulosMasUtilidad}" title="#{kajoolTablero.attrs.trimestreArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedTrimestreArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>									
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleArticulosMasUtilidad}" title="#{kajoolTablero.attrs.semestreArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedSemestreArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>								
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.anioTitleArticulosMasUtilidad}" title="#{kajoolTablero.attrs.anioArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedAnioArticulosMasUtilidad}"/>
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+										
+									</h:panelGrid>
+								</div>
+              </p:panel>
+            </div>				     
+          </div>						
+        </div>            				
+				<div class="Container50 Responsive">
+          <div class="ContainerIndent">            
+            <p:panel style="height:360px;" class="graphic-update-pagar">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-bank"></i> Cuentas por pagar
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-avance-pago"></div>
+                <script type="text/javascript">
+									$(document).ready(function () {
+										loadChart('kajool-chart-avance-pago', '#{kajoolTablero.attrs.jsonPago}');
+									});
+                </script>
+              </div>
+							<div class="Container100 Responsive TexAlCenter">					
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-pagar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoCuentasPagar}" styleClass="graphic-update-pagar"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-pagar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaCuentasPagar}" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleCuentasPagar}" title="#{kajoolTablero.attrs.semanaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasPagar}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																																					
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleCuentasPagar}" title="#{kajoolTablero.attrs.quincenaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasPagar}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.mesCuentasPagar} #{kajoolTablero.attrs.mesTitleCuentasPagar}" title="#{kajoolTablero.attrs.mesCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedMesCuentasPagar}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleCuentasPagar}" title="#{kajoolTablero.attrs.trimestreCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasPagar}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>									
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleCuentasPagar}" title="#{kajoolTablero.attrs.semestreCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasPagar}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>								
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.anioTitleCuentasPagar}" title="#{kajoolTablero.attrs.anioCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedAnioCuentasPagar}"/>
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasPagar}" styleClass="graphic-update-pagar">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+									
+								</h:panelGrid>
+							</div>
+            </p:panel>
+          </div>
+        </div>
+      </div>
+    </div>		
+		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
+			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>
+			<p:panelGrid layout="grid" columns="1" style="background: transparent;">
+				<h:outputText value="Administrador Web" styleClass="Fs20"/>
+				<p:spacer height="3px"/>
+				<h:outputText value="#{kajoolTablero.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
+			</p:panelGrid>
+		</p:notificationBar>
+  </ui:define>
+</ui:composition>

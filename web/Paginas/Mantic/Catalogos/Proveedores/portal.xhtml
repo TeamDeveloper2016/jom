@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Información de los portales asociados a los proveedor(es)" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'proveedor': {validaciones: 'libre', mascara: 'libre'},
+				'codigo'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: false}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100">
+						<p:outputLabel for="codigo" value="Razón social:"/>
+						<p:autoComplete id="codigo" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresPortal.attrs.proveedor}" completeMethod="#{manticCatalogosProveedoresPortal.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:ajax event="itemSelect" listener="#{manticCatalogosProveedoresPortal.doLoad}" process="@this" update="pagina cuenta contrasenia tabla tablaTransferencia" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<f:facet name="itemtip">
+								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+									<h:outputText value="Clave:" />
+									<h:outputText value="#{custom.clave}" />
+									<h:outputText value="RFC:" />
+									<h:outputText value="#{custom.rfc}" />
+									<h:outputText value="Razón social:" />
+									<h:outputText value="#{custom.razonSocial}" />
+								</h:panelGrid>
+							</f:facet>
+						</p:autoComplete>			
+						<p:spacer/><p:separator/>
+						<p:outputLabel for="pagina"  value="Pagina:"/>
+						<p:inputText id="pagina" value="#{manticCatalogosProveedoresPortal.attrs.pagina}" readonly="true" styleClass="janal-wid-100-txt"/>
+						<p:outputLabel for="cuenta"  value="Cuenta:"/>
+						<p:inputText id="cuenta" value="#{manticCatalogosProveedoresPortal.attrs.cuenta}" readonly="true" styleClass="janal-wid-100-txt"/>
+						<p:outputLabel for="contrasenia"  value="Contraseña:"/>
+						<p:inputText id="contrasenia" value="#{manticCatalogosProveedoresPortal.attrs.contrasenia}" readonly="true" styleClass="janal-wid-100-txt"/>
+					</p:panelGrid>  
+					<p:separator/>
+					<p:fieldset legend="Cuentas de servicios">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModelServicios}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModelServicios.rowCount gt manticCatalogosProveedoresPortal.lazyModelServicios.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Banco"/>
+								</f:facet>
+								<h:outputText value="#{filtro['nombre']}"/>
+							</p:column>				
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Convenio"/>
+								</f:facet>
+								<h:outputText value="#{filtro['convenioCuenta']}"/>
+							</p:column>
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Referencia"/>
+								</f:facet>
+								<h:outputText value="#{filtro['clabeReferencia']}"/>
+							</p:column>            							
+							<f:facet name="footer">
+								<h:outputText value="Total [#{manticCatalogosProveedoresPortal.lazyModelServicios==null?0:manticCatalogosProveedoresPortal.lazyModelServicios.rowCount}] registros"/>
+							</f:facet>
+						</p:dataTable>
+					</p:fieldset>
+					<p:separator/>
+					<p:fieldset legend="Cuentas de transferencias">
+						<p:dataTable lazy="true" id="tablaTransferencia" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModel.rowCount gt manticCatalogosProveedoresPortal.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Banco"/>
+								</f:facet>
+								<h:outputText value="#{filtro['nombre']}"/>
+							</p:column>				
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Cuenta"/>
+								</f:facet>
+								<h:outputText value="#{filtro['convenioCuenta']}"/>
+							</p:column>
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Clabe"/>
+								</f:facet>
+								<h:outputText value="#{filtro['clabeReferencia']}"/>
+							</p:column>            							
+							<f:facet name="footer">
+								<h:outputText value="Total [#{manticCatalogosProveedoresPortal.lazyModel==null?0:manticCatalogosProveedoresPortal.lazyModel.rowCount}] registros"/>
+							</f:facet>
+						</p:dataTable>
+					</p:fieldset>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+</ui:composition>

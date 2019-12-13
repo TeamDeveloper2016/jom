@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Diferencias de la nota de entrada contra sus devoluciones" />
+	<ui:define name="librerias">
+		<style>
+			.janal-tr-orange {
+				background-color: #ABEBC6 !important;
+			}
+		</style>
+	</ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-12">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticNotasEntradasDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticNotasEntradasDiferencias.lazyModel.rowCount gt manticNotasEntradasDiferencias.lazyModel.pageSize}" selection="#{manticNotasEntradasDiferencias.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{manticNotasEntradasDiferencias.toColor(row)}">
+						<p:ajax event="rowSelect" listener="#{manticNotasEntradasDiferencias.doRowSelectEvent}" update="notas tabla" process="@this tabla"  skipChildren="false"/>
+            <f:facet name="header" >
+							<div style="float: left; font-weight: normal !important;">
+							  <h:outputText value="Detalle de los articulos de la nota entrada"/>
+							</div>
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticNotasEntradasDiferencias.doReporte('NOTA_ENTRADA_DETALLE_D')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-rotate-right" value="Recargar nota" actionListener="#{manticNotasEntradasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-pdf-o" title="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticNotasEntradasDiferencias.doReporte('NOTA_ENTRADA_DETALLE_D')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:commandButton icon="fa fa-rotate-right" title="Recargar la nota de entrada" actionListener="#{manticNotasEntradasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Nota entrada"/>
+              </f:facet>
+							<p:commandLink action="#{manticNotasEntradasDiferencias.doNotaEntrada}">
+								<f:setPropertyActionListener target="#{manticNotasEntradasDiferencias.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
+                <h:outputText value="#{row['consecutivo']}"/>
+							</p:commandLink>	
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+              <f:facet name="header">
+                <h:outputText value="Costo"/>
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+              <f:facet name="header">
+                <h:outputText value="Cantidad"/>
+              </f:facet>
+              <h:outputText value="#{row['cantidad']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
+              <f:facet name="header">
+                <h:outputText value="Cantidad [+/-]"/>
+              </f:facet>
+              <h:outputText value="#{row['cantidades']}"/>
+            </p:column>		
+						<p:column headerText="PDF" style="text-align: center" styleClass="janal-wid-col-38">
+							<p:commandLink actionListener="#{manticNotasEntradasDiferencias.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1}">
+								<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+							</p:commandLink>	
+						</p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Suma de la columna de cantidad: #{manticNotasEntradasDiferencias.suma}   Total [#{manticNotasEntradasDiferencias.lazyModel==null?0:manticNotasEntradasDiferencias.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+					<p:spacer height="3px"/>
+					<p:outputLabel value="Click sobre la fila para filtrar los registro de las devoluciones de los articulo seleccionado."/>
+        </div>
+			</div>
+			<p:spacer height="3px"/>
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-12">
+          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="row" value="#{manticNotasEntradasDiferencias.lazyDevoluciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticNotasEntradasDiferencias.lazyDevoluciones.rowCount gt manticNotasEntradasDiferencias.lazyDevoluciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header" >
+							<div style="float: left; font-weight: normal !important;">
+  							<h:outputText value="Detalle de los articulos de la(s) devolucion(es) asociadas"/>
+							</div>	
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Devolución"/>
+              </f:facet>
+							<p:commandLink action="#{manticNotasEntradasDiferencias.doDevolucion}">
+								<f:setPropertyActionListener target="#{manticNotasEntradasDiferencias.attrs.idDevolucion}" value="#{row.idDevolucion}"/>
+                <h:outputText value="#{row['consecutivo']}"/>
+							</p:commandLink>	
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}" title="Código SAT: #{row['sat']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+              <f:facet name="header">
+                <h:outputText value="Costo"/>
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+              <f:facet name="header">
+                <h:outputText value="Cantidad"/>
+              </f:facet>
+              <h:outputText value="#{row['cantidad']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Suma de la columna de cantidad: #{manticNotasEntradasDiferencias.cantidades}   Total [#{manticNotasEntradasDiferencias.lazyDevoluciones==null?0:manticNotasEntradasDiferencias.lazyDevoluciones.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+        </div>
+      </div>
+    </div>		
+    <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+    <div class="janal-line-button">
+      <div class="lg-pantalla">
+        <p:commandButton id="regresar" process="@this" icon="fa fa-reply" accesskey="r" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+      </div>	
+      <div class="xs-pantalla">
+        <p:commandButton id="regresarIcon" process="@this" icon="fa fa-reply" accesskey="r" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+      </div>		
+    </div>
+  </ui:define>  
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticNotasEntradasDiferencias.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticNotasEntradasDiferencias.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+  <ui:param name="componenteBloqueo" value="tabla notas regresar regresarIcon"/>
+</ui:composition>
