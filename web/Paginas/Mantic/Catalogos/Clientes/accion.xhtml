@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="#{manticCatalogosClientesAccion.attrs.nombreAccion} al catálogo de cliente" />
+  <ui:param name="titulo" value="#{manticCatalogosClientesAccion.attrs.nombreAccion} al catálogo de condominos" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -55,7 +55,7 @@
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.clave}"/>                    
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
-                <p:outputLabel for="razonSocial" value="Razon social:"/>
+                <p:outputLabel for="razonSocial" value="Nombre:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}"/>                                    
 								<p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
 								<p:selectOneMenu id="tipoVenta" value="#{manticCatalogosClientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
