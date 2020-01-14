@@ -129,8 +129,10 @@ public class Transaccion extends TransaccionFactura {
 			} // if
 		} // if
 		sesion.flush();
+		/*
 		if(idCliente > -1)
 			registraClienteFacturama(sesion, idCliente);    
+		*/
     return regresar;
   } // procesarCliente
 
@@ -183,7 +185,7 @@ public class Transaccion extends TransaccionFactura {
 				if (registraClientesTipoContacto(sesion, idCliente)) {
 					regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
 					sesion.flush();
-					actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
+					//actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
 				}
 			} // if
 		} // if    
@@ -200,7 +202,7 @@ public class Transaccion extends TransaccionFactura {
         if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteRepresentanteDto.class, params) > -1L) {
           if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteTipoContactoDto.class, params) > -1L) {
             regresar = DaoFactory.getInstance().delete(sesion, TcManticClientesDto.class, this.registroCliente.getIdCliente()) >= 1L;
-						eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
+						//eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
           }
         } // if
       } // if
