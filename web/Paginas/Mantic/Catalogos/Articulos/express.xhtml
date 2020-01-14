@@ -43,7 +43,7 @@
       width: 350px !important;
 		}		
   </style>		
-	<p:dialog header="Agregar articulo de forma express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="notificarExpress();" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" dynamic="true" width="70%" resizable="false" closeOnEscape="true" closable="true" appendTo="@(body)" styleClass="janal-dialog-express">
+	<p:dialog header="Agregar partida de forma express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="notificarExpress();" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" dynamic="true" width="70%" resizable="false" closeOnEscape="true" closable="true" appendTo="@(body)" styleClass="janal-dialog-express">
 		<h:form id="formDialogoExpressArticulos" prependId="false">
 			<p:remoteCommand name="notificarExpress" actionListener="#{manticCatalogosArticulosExpress.doUpdateArticuloExpress}" process="@this" update="@(.generales) @(.express) @(.calculos) @(.filas)" oncomplete="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);"/>
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -72,7 +72,7 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:inputText id="satDialog" styleClass="janal-wid-100-txt generales" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.sat}"/>                    
-              <p:autoComplete id="nombreDialog" placeholder="ej. BOTE CESPOL 3/4" var="customNombreDialog" itemLabel="#{customNombreDialog.nombre}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customNombreDialog}" value="#{manticCatalogosArticulosExpress.attrs.nombreExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteNombre}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
+              <p:autoComplete id="nombreDialog" placeholder="ej. Mantenimiento alberca" var="customNombreDialog" itemLabel="#{customNombreDialog.nombre}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customNombreDialog}" value="#{manticCatalogosArticulosExpress.attrs.nombreExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteNombre}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
 								<p:ajax event="itemSelect" process="@this" update="precioDialog descripcionDialog @(.calculos) @(.express)" listener="#{manticCatalogosArticulosExpress.doAsignaNombre}"/>
 								<p:ajax event="blur" process="@this descripcionDialog" update="descripcionDialog" listener="#{manticCatalogosArticulosExpress.doUpdateNombre}"/>
 								<f:facet name="itemtip">

@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosArticulosAccion.attrs.nombreAccion} al catálogo de artículo" />
+	<ui:param name="titulo" value="#{manticCatalogosArticulosAccion.attrs.nombreAccion} al catálogo de partidas" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 
@@ -102,7 +102,7 @@
 								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
 								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
+								<p:outputLabel for="idTipoArticulo" value="Tipo:"/>
 								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
 									<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
