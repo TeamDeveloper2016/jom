@@ -9,9 +9,9 @@ package mx.org.kaana.kajool.enums;
  */
 public enum EPaginasPrivilegios {
 
-	DEFAULT   ("Bienvenida", "/Paginas/Contenedor/bienvenida.jsf"),
-	ESCUELAS  ("Centros de trabajo", "/Paginas/Escuelas/filtro.jsf"),
-	PERFILES  ("Perfiles", "/Paginas/Acceso/Perfil/filtro.jsf");
+	DEFAULT   ("Bienvenida", "/Paginas/Contenedor/bienvenida.jom"),
+	ESCUELAS  ("Centros de trabajo", "/Paginas/Escuelas/filtro.jom"),
+	PERFILES  ("Perfiles", "/Paginas/Acceso/Perfil/filtro.jom");
 	
 	private String descripcion;
 	private String path;

@@ -84,7 +84,7 @@ public class Sentinel extends IBaseMenu implements Serializable {
         getMenu().append("<li class=\"Animated05\">");
         getMenu().append("<a href=\"");
         getMenu().append(JsfBase.getFacesContext().getExternalContext().getRequestContextPath());
-        getMenu().append("/Exclusiones/salir.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
+        getMenu().append("/Exclusiones/salir.jom\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
         getMenu().append("</ul></li>");
       } // else				
     } // try
@@ -136,7 +136,7 @@ public class Sentinel extends IBaseMenu implements Serializable {
       regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-calculator\"></i>Calculadora</a></li>");			
 			regresar.append("<li class=\"Animated05\">");
       regresar.append("<a href=\"").append(context);
-      regresar.append("/Exclusiones/salir.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
+      regresar.append("/Exclusiones/salir.jom\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
       regresar.append("</ul></li>");
       regresar.append("<li onclick=\"janal.bloquear();PF('wDialogoBuzonSugerencias').show();\" class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"fa fa-inbox fa-1x");
       regresar.append("\"></i></li>");

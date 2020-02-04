@@ -579,7 +579,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public String doClientes(){
 		String regresar= null;
 		try {
-			regresar= "cliente.jsf".concat(Constantes.REDIRECIONAR);
+			regresar= "cliente.jom".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

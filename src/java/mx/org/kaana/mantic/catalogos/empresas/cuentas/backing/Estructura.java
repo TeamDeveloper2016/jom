@@ -202,7 +202,7 @@ public class Estructura extends IBaseFilter implements Serializable {
       rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null){
 				regresar= "abono".concat(Constantes.REDIRECIONAR);
-				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/estructura.jsf".concat(Constantes.REDIRECIONAR));				
+				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/estructura.jom".concat(Constantes.REDIRECIONAR));				
 				JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));								
       } // if
       else{

@@ -161,7 +161,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doEliminar
 	
 	public String doPuntoVenta(){
-		return "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Ventas/accion.jom".concat(Constantes.REDIRECIONAR);
 	} // doPuntoVenta
 	
 	public String doImportar() {

@@ -47,7 +47,7 @@ public class Autentifica implements Serializable {
   } // Autentifica
 
   public Autentifica(Persona persona) {
-    this(new Monitoreo(), persona, new Sucursal(serialVersionUID), new ArrayList<UsuarioMenu>(), new ArrayList<UsuarioMenu>(), EPaginasPrivilegios.DEFAULT, new Credenciales(), "/Paginas/Contenedor/bienvenida.jsf");
+    this(new Monitoreo(), persona, new Sucursal(serialVersionUID), new ArrayList<UsuarioMenu>(), new ArrayList<UsuarioMenu>(), EPaginasPrivilegios.DEFAULT, new Credenciales(), "/Paginas/Contenedor/bienvenida.jom");
   } // Autentifica
 
   public Autentifica(Monitoreo monitoreo, Persona persona, Sucursal empresa, List<UsuarioMenu> menu, List<UsuarioMenu> topMenu, EPaginasPrivilegios redirect, Credenciales credenciales, String paginaActual) {
@@ -374,7 +374,7 @@ public class Autentifica implements Serializable {
 
   public String redirectMenu() throws Exception {
 		String regresar= this.redirectMenu(this.persona.getIdMenu());
-    return Cadena.isVacio(regresar)? "/Paginas/Contenedor/bienvenida.jsf".concat(Constantes.REDIRECIONAR): regresar.concat(Constantes.REDIRECIONAR);
+    return Cadena.isVacio(regresar)? "/Paginas/Contenedor/bienvenida.jom".concat(Constantes.REDIRECIONAR): regresar.concat(Constantes.REDIRECIONAR);
   } // toRedirectMenu
 
   public String redirectMenu(Long idMenu) throws Exception {

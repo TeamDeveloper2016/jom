@@ -65,7 +65,7 @@ public class PageFilter extends HttpServlet implements Filter {
   public void setPaginaExclusion(String paginaExclusion) {
     if (paginaExclusion == null) {
       //this.paginaExclusion = "/Librerias/Funciones/errorPage.jsp?error=Favor de autenticarse";
-      this.paginaExclusion = "/Exclusiones/error.jsf";
+      this.paginaExclusion = "/Exclusiones/error.jom";
     } else {
       this.paginaExclusion = paginaExclusion;
     }
@@ -90,7 +90,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaBloqueo(String paginaBloqueo) {
     if (paginaBloqueo == null) {
-      this.paginaBloqueo = "/Exclusiones/bloqueo.jsf";
+      this.paginaBloqueo = "/Exclusiones/bloqueo.jom";
     } else {
       this.paginaBloqueo = paginaBloqueo;
     }

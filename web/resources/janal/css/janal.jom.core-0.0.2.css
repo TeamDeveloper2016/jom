@@ -394,7 +394,7 @@ div.ui-panelgrid-content {
   width: 180px;
   text-align: center;  
 }
-.janal-logo-mini {width: 102px;}
+.janal-logo-mini {width: 53px;}
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
@@ -417,7 +417,7 @@ div.ui-panelgrid-content {
     width: 80px;
     text-align: center;  
   }
-  .janal-logo-mini {width:100px;}
+  .janal-logo-mini {width:53px;}
   .janal-grid-row {}
   .xs-pantalla{display:block;}
   .lg-pantalla{display: none;}
@@ -465,7 +465,7 @@ div.ui-panelgrid-content {
     width: 80px;
     text-align: center;  
   }
-  .janal-logo-mini {width:100px;}
+  .janal-logo-mini {width:53px;}
   .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
   .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
   .margin-fecha {padding-left: 0px;}

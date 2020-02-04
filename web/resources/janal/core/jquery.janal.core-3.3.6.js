@@ -1344,7 +1344,7 @@
 		forward: function() {
 			$janal.console('janal.forward: Se activo el evento de redireccionar para salir');
 			$janal.desbloquear();
-			document.location.href= $janal.toContext().concat("/Exclusiones/salir.jsf?faces-redirect=true");
+			document.location.href= $janal.toContext().concat("/Exclusiones/salir.jom?faces-redirect=true");
 		},
 		pivot: function() {
 			$janal.console('janal.pivot: '+ $($janal.lastNameFocus)? $($janal.lastNameFocus).attr('id'): 'undefined');
