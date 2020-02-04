@@ -2,7 +2,7 @@
 <hibernate-configuration>  
   <session-factory>    
     <property name="hibernate.dialect">org.hibernate.dialect.MariaDB53Dialect</property>
-		<property name="connection.datasource">java://comp/env/jdbc/manticDS</property>    
+		<property name="connection.datasource">java://comp/env/jdbc/jomDS</property>    
     <!-- Habilitar cuando el desplegado sea para weblogic 
       <property name="connection.datasource">jdbc/manticDS</property>    
      -->		
