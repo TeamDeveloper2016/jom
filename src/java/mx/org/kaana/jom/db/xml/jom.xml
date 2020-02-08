@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las tablas de MANTIC
+-->
+<process>
+  <model>    
+  </model>
+  <dml>
+    <unit id="TcJomApartadosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_apartados
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_apartados
+        where      
+          id_apartado = {idApartado}
+      </select>
+    </unit>
+   <unit id="TcJomApartadosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_apartados_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_apartados_bitacora
+        where      
+          id_apartado_bitacora = {idApartadoBitacora}
+      </select>
+    </unit>		
+	    <unit id="TcJomApartadosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_apartados_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_apartados_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcJomCuotasFijasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_cuotas_fijas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_cuotas_fijas
+        where      
+          id_cuota_fija = {idCuotaFija}
+      </select>
+    </unit>	
+   <unit id="TcJomIncidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_incidentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_incidentes
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>			
+    <unit id="TcJomIncidentesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_incidentes_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_incidentes_archivos
+        where      
+          registro = {registro}
+      </select>
+    </unit>		
+    <unit id="TcJomIncidentesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_incidentes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_incidentes_bitacora
+        where      
+          id_incidente_bitacora = {idIncidenteBitacora}
+      </select>
+    </unit>		
+    <unit id="TcJomIncidentesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_incidentes_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_incidentes_estatus
+        where      
+          nombres = '{nombres}'
+      </select>
+    </unit>		
+    <unit id="TcJomTiposServiciosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_jom_tipos_servicios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_jom_tipos_servicios
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+  </dml>    
+</process>

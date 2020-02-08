@@ -19,13 +19,20 @@
      
    </module>
    
-     <module id="mantic" load="true" mapping="true" backing="false" dto="mx.org.kaana.mantic.db.dto" msg="/mx/org/kaana/mantic/msg">
+   <module id="mantic" load="true" mapping="true" backing="false" dto="mx.org.kaana.mantic.db.dto" msg="/mx/org/kaana/mantic/msg">
      <file-xml>mx/org/kaana/mantic/db/xml/mantic.xml</file-xml>
      <file-xml>mx/org/kaana/mantic/db/xml/vistas.xml</file-xml>
      <file-xml>mx/org/kaana/mantic/db/xml/foxpro.xml</file-xml>
      <file-xml>mx/org/kaana/mantic/db/xml/ireport.xml</file-xml>
      <file-xml>mx/org/kaana/mantic/db/xml/josql.xml</file-xml> 
-     
+   </module>
+
+   <module id="jom" load="true" mapping="true" backing="false" dto="mx.org.kaana.jom.db.dto" msg="/mx/org/kaana/jom/msg">
+     <file-xml>mx/org/kaana/jom/db/xml/jom.xml</file-xml>
+     <file-xml>mx/org/kaana/jom/db/xml/vistas.xml</file-xml>
+     <file-xml>mx/org/kaana/jom/db/xml/foxpro.xml</file-xml>
+     <file-xml>mx/org/kaana/jom/db/xml/ireport.xml</file-xml>
+     <file-xml>mx/org/kaana/jom/db/xml/josql.xml</file-xml> 
    </module>
 
 
