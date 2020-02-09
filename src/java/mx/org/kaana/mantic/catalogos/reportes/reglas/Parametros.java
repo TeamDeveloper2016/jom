@@ -66,6 +66,7 @@ public final class Parametros implements Serializable {
       params.put("idEmpresa", this.idEmpresa);	
       datosEmpresa = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
       if(datosEmpresa != null){
+				regresar.put("REPORTE_LOGO", "logo.png");
         regresar.put("REPORTE_EMPRESA",datosEmpresa.toString("nombre")!=null? datosEmpresa.toString("nombre"):" ");
         regresar.put("REPORTE_EMPRESA_DIRECCION", datosEmpresa.toString("empresaDireccion")!=null?datosEmpresa.toString("empresaDireccion"):" ");
         regresar.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia")!=null?datosEmpresa.toString("colonia"):" ");
@@ -96,7 +97,7 @@ public final class Parametros implements Serializable {
       params= new HashMap<>();	
       params.put("idAlmacen", idKeyAlmacen);	
 			datosAlmacen = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosAlmacen", params);
-      if(datosAlmacen != null && isOrigen){
+      if(datosAlmacen != null && isOrigen){        
         this.comunes.put("REPORTE_ALMACEN_CLAVE", datosAlmacen.toString("clave")!=null? datosAlmacen.toString("clave"):" ");
         this.comunes.put("REPORTE_ALMACEN_DIRECCION", datosAlmacen.toString("almacenDireccion")!=null? datosAlmacen.toString("almacenDireccion"):" ");
         this.comunes.put("REPORTE_ALMACEN_COLONIA", datosAlmacen.toString("colonia")!=null? datosAlmacen.toString("colonia"):" ");
