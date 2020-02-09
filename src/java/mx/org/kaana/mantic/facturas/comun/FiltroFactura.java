@@ -194,7 +194,7 @@ public abstract class FiltroFactura extends IBaseTicket {
       params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
 			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
-			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+			if(seleccionado!= null && seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
 				Transferir transferir= null;
 				try {
           transferir= new Transferir(seleccionado.toString("idFacturama"));
