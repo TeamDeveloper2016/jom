@@ -61,7 +61,7 @@ public class TcManticAlertasDto implements IBaseDto, Serializable {
     setIdAlerta(idAlerta);
     setIdNotifica(idNotifica);
     setMensaje(mensaje);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));//alertas
   }
 	
   public void setIdUsuario(Long idUsuario) {
