@@ -171,14 +171,14 @@
     <res-auth>Container</res-auth>
   </resource-ref>
   
-	<!--<servlet>
+	<servlet>
 		<servlet-name>jersey-serlvet</servlet-name>  
     <servlet-class>  
       com.sun.jersey.spi.container.servlet.ServletContainer  
     </servlet-class>  
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>mx.org.kaana.kajool.servicios.ws.publicar</param-value>
+      <param-value>mx.org.kaana.jom.servicios.ws.publicar</param-value>
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
@@ -196,7 +196,7 @@
    <servlet-name>jersey-serlvet</servlet-name>  
    <url-pattern>/system/*</url-pattern>  
  </servlet-mapping> 
-	-->
+	
 	
 	<servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>

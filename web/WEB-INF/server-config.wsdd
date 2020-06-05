@@ -45,6 +45,13 @@
 	 <parameter name="className" value="org.apache.axis.Version"/>
  </service>
  
+ <service name="Elemento" provider="java:RPC">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="className" value="mx.org.kaana.jom.servicios.ws.publicar.Elemento"/>
+ </service>
+
+
+ 
  <transport name="http">
   <requestFlow>
    <handler type="URLMapper"/>
